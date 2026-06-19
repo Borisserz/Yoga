@@ -6,6 +6,7 @@ public struct PoseDetailView: View {
     @State private var progress: Double = 0
     @State private var isPlaying = false
     @State private var timer: Timer?
+    @State private var showAICamera = false
 
     public var body: some View {
         ScrollView {
@@ -43,12 +44,25 @@ public struct PoseDetailView: View {
                     .padding()
                     .background(.pink.opacity(0.2), in: RoundedRectangle(cornerRadius: 14))
 
-                Button(isPlaying ? "Остановить" : "Старт") {
-                    isPlaying ? stop() : start()
+                HStack(spacing: 16) {
+                    Button(isPlaying ? "Остановить" : "Старт") {
+                        isPlaying ? stop() : start()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    
+                    Button {
+                        showAICamera = true
+                    } label: {
+                        Label("AI-Камера", systemImage: "camera.viewfinder")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.indigo)
                 }
-                .buttonStyle(.borderedProminent)
             }
             .padding()
+        }
+        .fullScreenCover(isPresented: $showAICamera) {
+            AICameraSessionView(poseName: pose.name)
         }
         .onDisappear { stop() }
     }
