@@ -24,8 +24,16 @@ public final class AppState {
     public var lastSessionScore: Int = 0          // 0...100, from the most recent AI session
     public var onboardingLevelKey: String = "onb.level.beginner"
     public var onboardingGoalKey: String = "onb.goal.flexibility"
-    /// Public name shown on the community leaderboard and shared achievement cards.
-    public var displayName: String = "Yogi"
+
+    // MARK: Personalization profile (captured during onboarding)
+    /// Focus areas / pain points the user wants to work on (e.g. "onb.focus.back").
+    public var focusAreaKeys: [String] = []
+    /// Target number of practice days per week.
+    public var weeklyTargetDays: Int = 3
+    /// Preferred time of day for practice (e.g. "onb.time.morning").
+    public var preferredTimeKey: String = "onb.time.morning"
+    /// Preferred session length in minutes.
+    public var sessionLengthMinutes: Int = 10
 
     // MARK: Transient UI state (not persisted)
     public var selectedTab: Int = 0
@@ -45,22 +53,31 @@ public final class AppState {
 
     public var mood: String { L(moodKey) }
 
-    /// Whether a practice session has already been recorded today.
+    /// Distinct days a session was logged in the current calendar week.
+    public var sessionsThisWeek: Int {
+        let cal = Calendar.current
+        guard let week = cal.dateInterval(of: .weekOfYear, for: Date()) else { return 0 }
+        let days = Set(sessions.filter { week.contains($0.date) }.map { cal.startOfDay(for: $0.date) })
+        return days.count
+    }
+
+    /// 0...1 progress toward this week's practice-day goal.
+    public var weeklyGoalProgress: Double {
+        weeklyTargetDays > 0 ? min(1, Double(sessionsThisWeek) / Double(weeklyTargetDays)) : 0
+    }
+
+    /// Whether a session has already been recorded today.
     public var practicedToday: Bool {
         guard let last = lastSessionDate else { return false }
         return Calendar.current.isDate(last, inSameDayAs: Date())
     }
 
-    // MARK: - Notifications
-
-    /// Recomputes notifications: a daily reminder at the user's habitual hour
-    /// plus an evening "don't lose your streak" nudge when one is at risk.
-    public func refreshReminders() {
-        NotificationManager.shared.refreshSchedules(
-            sessions: sessions,
-            streakDays: streakDays,
-            practicedToday: practicedToday
-        )
+    /// Days since the last session (nil if the user has never practiced).
+    public var daysSinceLastSession: Int? {
+        guard let last = lastSessionDate else { return nil }
+        let cal = Calendar.current
+        return cal.dateComponents([.day], from: cal.startOfDay(for: last),
+                                  to: cal.startOfDay(for: Date())).day
     }
 
     // MARK: - Level / XP
@@ -102,10 +119,19 @@ public final class AppState {
 
     // MARK: - Mutations
 
-    public func completeOnboarding(levelKey: String? = nil, goalKey: String? = nil) {
+    public func completeOnboarding(levelKey: String? = nil,
+                                   goalKey: String? = nil,
+                                   focusAreas: [String]? = nil,
+                                   weeklyTarget: Int? = nil,
+                                   preferredTime: String? = nil,
+                                   sessionLength: Int? = nil) {
         hasCompletedOnboarding = true
         if let levelKey { onboardingLevelKey = levelKey }
         if let goalKey { onboardingGoalKey = goalKey }
+        if let focusAreas { focusAreaKeys = focusAreas }
+        if let weeklyTarget { weeklyTargetDays = weeklyTarget }
+        if let preferredTime { preferredTimeKey = preferredTime }
+        if let sessionLength { sessionLengthMinutes = sessionLength }
         unlockAchievement("achievement.first_step")
         persist()
     }
@@ -142,20 +168,14 @@ public final class AppState {
                                                  "pose": poseKey ?? "free",
                                                  "accuracy": Int((accuracy ?? 0) * 100)])
         FirebaseManager.shared.saveUserStats(userId: currentUserId,
-                                             name: displayName,
                                              minutes: completedMinutes,
-                                             streak: streakDays,
-                                             xp: totalXP,
-                                             level: level)
+                                             streak: streakDays)
         Task {
             let end = Date()
             let start = end.addingTimeInterval(TimeInterval(-minutes * 60))
             await HealthKitManager.shared.saveMindfulMinutes(minutes: minutes, startDate: start, endDate: end)
         }
         persist()
-        // Practising today removes any pending streak-protection nudge and keeps
-        // the habitual reminder time up to date.
-        refreshReminders()
     }
 
     private func updateStreak() {
@@ -200,6 +220,10 @@ public final class AppState {
         lastSessionScore = 0
         onboardingLevelKey = "onb.level.beginner"
         onboardingGoalKey = "onb.goal.flexibility"
+        focusAreaKeys = []
+        weeklyTargetDays = 3
+        preferredTimeKey = "onb.time.morning"
+        sessionLengthMinutes = 10
         selectedTab = 0
         UserDefaults.standard.removeObject(forKey: storageKey)
     }
@@ -220,7 +244,10 @@ public final class AppState {
         var lastSessionScore: Int
         var onboardingLevelKey: String
         var onboardingGoalKey: String
-        var displayName: String?
+        var focusAreaKeys: [String]?
+        var weeklyTargetDays: Int?
+        var preferredTimeKey: String?
+        var sessionLengthMinutes: Int?
     }
 
     private func persist() {
@@ -238,7 +265,10 @@ public final class AppState {
             lastSessionScore: lastSessionScore,
             onboardingLevelKey: onboardingLevelKey,
             onboardingGoalKey: onboardingGoalKey,
-            displayName: displayName
+            focusAreaKeys: focusAreaKeys,
+            weeklyTargetDays: weeklyTargetDays,
+            preferredTimeKey: preferredTimeKey,
+            sessionLengthMinutes: sessionLengthMinutes
         )
         if let data = try? JSONEncoder().encode(snapshot) {
             UserDefaults.standard.set(data, forKey: storageKey)
@@ -265,6 +295,9 @@ public final class AppState {
         lastSessionScore = snapshot.lastSessionScore
         onboardingLevelKey = snapshot.onboardingLevelKey
         onboardingGoalKey = snapshot.onboardingGoalKey
-        displayName = snapshot.displayName ?? "Yogi"
+        focusAreaKeys = snapshot.focusAreaKeys ?? []
+        weeklyTargetDays = snapshot.weeklyTargetDays ?? 3
+        preferredTimeKey = snapshot.preferredTimeKey ?? "onb.time.morning"
+        sessionLengthMinutes = snapshot.sessionLengthMinutes ?? 10
     }
 }

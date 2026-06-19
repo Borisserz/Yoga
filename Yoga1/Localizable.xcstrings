@@ -5900,755 +5900,568 @@
         }
       }
     },
-    "Turn sideways so the camera sees your whole body": {
+    "Good morning": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Turn sideways so the camera sees your whole body"
+            "value": "Good morning"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Повернитесь боком, чтобы камера видела всё тело"
+            "value": "Доброе утро"
           }
         }
       }
     },
-    "Lift your hips — don't let them sag": {
+    "Good afternoon": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lift your hips — don't let them sag"
+            "value": "Good afternoon"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поднимите таз — не позволяйте ему провисать"
+            "value": "Добрый день"
           }
         }
       }
     },
-    "Lower your hips — keep your body in one line": {
+    "Good evening": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lower your hips — keep your body in one line"
+            "value": "Good evening"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Опустите таз — держите тело в одну линию"
+            "value": "Добрый вечер"
           }
         }
       }
     },
-    "Straighten your arms, stack shoulders over wrists": {
+    "Here's your practice for today": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Straighten your arms, stack shoulders over wrists"
+            "value": "Here's your practice for today"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выпрямите руки, плечи над запястьями"
+            "value": "Вот твоя практика на сегодня"
           }
         }
       }
     },
-    "Strong plank! Hold steady.": {
+    "Today": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strong plank! Hold steady."
+            "value": "Today"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сильная планка! Держите ровно."
+            "value": "Сегодня"
           }
         }
       }
     },
-    "Lie on your stomach, sideways to the camera": {
+    "Tune today's energy": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lie on your stomach, sideways to the camera"
+            "value": "Tune today's energy"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Лягте на живот, боком к камере"
+            "value": "Настрой энергию на сегодня"
           }
         }
       }
     },
-    "Lift your chest higher into the back bend": {
+    "Why this practice?": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lift your chest higher into the back bend"
+            "value": "Why this practice?"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поднимите грудь выше в прогибе"
+            "value": "Почему именно это?"
           }
         }
       }
     },
-    "Keep your hips and legs on the mat": {
+    "Tailored to your goal of %@, your focus on %@, and today's energy.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keep your hips and legs on the mat"
+            "value": "Tailored to your goal of %@, your focus on %@, and today's energy."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Держите таз и ноги на коврике"
+            "value": "Подобрано под твою цель «%1$@», фокус на «%2$@» и сегодняшнюю энергию."
           }
         }
       }
     },
-    "Soften your elbows and relax the shoulders": {
+    "Weekly goal": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Soften your elbows and relax the shoulders"
+            "value": "Weekly goal"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Смягчите локти и расслабьте плечи"
+            "value": "Цель на неделю"
           }
         }
       }
     },
-    "Beautiful cobra — open the heart.": {
+    "Goal reached — beautiful work!": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Beautiful cobra — open the heart."
+            "value": "Goal reached — beautiful work!"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Прекрасная кобра — раскройте сердце."
+            "value": "Цель достигнута — отличная работа!"
           }
         }
       }
     },
-    "Step fully into the frame, facing the camera": {
+    "%lld of %lld practice days this week": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Step fully into the frame, facing the camera"
+            "value": "%lld of %lld practice days this week"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Войдите полностью в кадр, лицом к камере"
+            "value": "%1$lld из %2$lld дней практики на этой неделе"
           }
         }
       }
     },
-    "Keep both legs straight": {
+    "Pose %lld of %lld": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keep both legs straight"
+            "value": "Pose %lld of %lld"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Держите обе ноги прямыми"
+            "value": "Поза %1$lld из %2$lld"
           }
         }
       }
     },
-    "Open your arms in a line — one up, one down": {
+    "Pause": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open your arms in a line — one up, one down"
+            "value": "Pause"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Раскройте руки в линию — одна вверх, другая вниз"
+            "value": "Пауза"
           }
         }
       }
     },
-    "Lovely triangle — lengthen both sides.": {
+    "Resume": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lovely triangle — lengthen both sides."
+            "value": "Resume"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отличный треугольник — вытягивайте обе стороны."
+            "value": "Продолжить"
           }
         }
       }
     },
-    "Sit sideways to the camera, in full view": {
+    "Next pose": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sit sideways to the camera, in full view"
+            "value": "Next pose"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сядьте боком к камере, полностью в кадре"
+            "value": "Следующая поза"
           }
         }
       }
     },
-    "Lift your legs off the floor": {
+    "Finish": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lift your legs off the floor"
+            "value": "Finish"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Оторвите ноги от пола"
+            "value": "Завершить"
           }
         }
       }
     },
-    "Lean back and lift into a V shape": {
+    "Practice complete": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lean back and lift into a V shape"
+            "value": "Practice complete"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Отклонитесь назад и поднимитесь в форму V"
+            "value": "Практика завершена"
           }
         }
       }
     },
-    "Open the V a little and lift your chest": {
+    "%lld poses • %lld min": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open the V a little and lift your chest"
+            "value": "%lld poses • %lld min"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Чуть раскройте V и приподнимите грудь"
+            "value": "%1$lld поз • %2$lld мин"
           }
         }
       }
     },
-    "Straighten your legs": {
+    "%lld-day streak 🔥": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Straighten your legs"
+            "value": "%lld-day streak 🔥"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выпрямите ноги"
+            "value": "Серия %lld дн. 🔥"
           }
         }
       }
     },
-    "Strong core — hold the boat!": {
+    "Let's tailor a practice that fits you.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Strong core — hold the boat!"
+            "value": "Let's tailor a practice that fits you."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сильный кор — держите лодку!"
+            "value": "Давай подберём практику, которая подходит именно тебе."
           }
         }
       }
     },
-    "Bend your front knee toward 90°": {
+    "What needs love?": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bend your front knee toward 90°"
+            "value": "What needs love?"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Согните переднее колено ближе к 90°"
+            "value": "Над чем поработаем?"
           }
         }
       }
     },
-    "Don't dip your front knee too low": {
+    "Pick any — or none.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Don't dip your front knee too low"
+            "value": "Pick any — or none."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Не опускайте переднее колено слишком низко"
+            "value": "Выбери любое — или ничего."
           }
         }
       }
     },
-    "Reach both arms overhead": {
+    "How many days a week?": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reach both arms overhead"
+            "value": "How many days a week?"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вытяните обе руки над головой"
+            "value": "Сколько дней в неделю?"
           }
         }
       }
     },
-    "Mighty Warrior I!": {
+    "Every day": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mighty Warrior I!"
+            "value": "Every day"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Могучий Воин I!"
+            "value": "Каждый день"
           }
         }
       }
     },
-    "Lift one leg up, parallel to the floor": {
+    "%lld days a week": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lift one leg up, parallel to the floor"
+            "value": "%lld days a week"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поднимите одну ногу параллельно полу"
+            "value": "%lld дней в неделю"
           }
         }
       }
     },
-    "Extend your lifted leg straight": {
+    "When do you practice?": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Extend your lifted leg straight"
+            "value": "When do you practice?"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Выпрямите поднятую ногу"
+            "value": "Когда тебе удобно?"
           }
         }
       }
     },
-    "Floating half moon — find your balance!": {
+    "Session length?": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Floating half moon — find your balance!"
+            "value": "Session length?"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Парящий полумесяц — найдите равновесие!"
+            "value": "Длительность сессии?"
           }
         }
       }
     },
-    "Kneel sideways to the camera": {
+    "Your plan is ready!": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kneel sideways to the camera"
+            "value": "Your plan is ready!"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Встаньте на колени боком к камере"
+            "value": "Твой план готов!"
           }
         }
       }
     },
-    "Kneel down with hips over your knees": {
+    "onb.focus.back": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kneel down with hips over your knees"
+            "value": "Back"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Встаньте на колени, таз над коленями"
+            "value": "Спина"
           }
         }
       }
     },
-    "Lift your hips and press them forward": {
+    "onb.focus.hips": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lift your hips and press them forward"
+            "value": "Hips"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поднимите таз и подайте его вперёд"
+            "value": "Бёдра"
           }
         }
       }
     },
-    "Open your chest and arch back": {
+    "onb.focus.shoulders": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open your chest and arch back"
+            "value": "Shoulders"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Раскройте грудь и прогнитесь назад"
+            "value": "Плечи"
           }
         }
       }
     },
-    "Deep camel — breathe into the stretch.": {
+    "onb.focus.stress": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deep camel — breathe into the stretch."
+            "value": "Stress relief"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Глубокий верблюд — дышите в растяжение."
+            "value": "Снятие стресса"
           }
         }
       }
     },
-    "Lie on your back, sideways to the camera": {
+    "onb.focus.sleep": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lie on your back, sideways to the camera"
+            "value": "Better sleep"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Лягте на спину, боком к камере"
+            "value": "Лучший сон"
           }
         }
       }
     },
-    "Lift your hips toward the ceiling": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lift your hips toward the ceiling"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Поднимите таз к потолку"
-          }
-        }
-      }
-    },
-    "Bend your knees, bring your heels closer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bend your knees, bring your heels closer"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Согните колени, придвиньте пятки ближе"
-          }
-        }
-      }
-    },
-    "Push your hips higher into a straight line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Push your hips higher into a straight line"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Поднимите таз выше в прямую линию"
-          }
-        }
-      }
-    },
-    "Strong bridge — lift and breathe.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Strong bridge — lift and breathe."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сильный мост — поднимайтесь и дышите."
-          }
-        }
-      }
-    },
-    "Sit sideways to the camera, legs in view": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sit sideways to the camera, legs in view"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сядьте боком к камере, ноги в кадре"
-          }
-        }
-      }
-    },
-    "Straighten your legs in front of you": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Straighten your legs in front of you"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Выпрямите ноги перед собой"
-          }
-        }
-      }
-    },
-    "Hinge at the hips and fold forward": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hinge at the hips and fold forward"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сложитесь вперёд от тазобедренных суставов"
-          }
-        }
-      }
-    },
-    "Lovely fold — relax your neck.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lovely fold — relax your neck."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Прекрасный наклон — расслабьте шею."
-          }
-        }
-      }
-    },
-    "category.all": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Все"
-          }
-        }
-      }
-    },
-    "category.strength": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Strength"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сила"
-          }
-        }
-      }
-    },
-    "category.flexibility": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Flexibility"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Гибкость"
-          }
-        }
-      }
-    },
-    "category.balance": {
+    "onb.focus.balance": {
       "extractionState": "manual",
       "localizations": {
         "en": {
@@ -6665,13 +6478,64 @@
         }
       }
     },
-    "category.restorative": {
+    "onb.time.morning": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Restorative"
+            "value": "Morning"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Утро"
+          }
+        }
+      }
+    },
+    "onb.time.afternoon": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afternoon"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "День"
+          }
+        }
+      }
+    },
+    "onb.time.evening": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evening"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вечер"
+          }
+        }
+      }
+    },
+    "intensity.restore": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore"
           }
         },
         "ru": {
@@ -6682,427 +6546,121 @@
         }
       }
     },
-    "Search poses": {
+    "intensity.balanced": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Search poses"
+            "value": "Balanced"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поиск поз"
+            "value": "Баланс"
           }
         }
       }
     },
-    "Leaderboard": {
+    "intensity.energize": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leaderboard"
+            "value": "Energize"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Лидерборд"
+            "value": "Энергия"
           }
         }
       }
     },
-    "Leaderboard & challenges": {
+    "intensity.auto": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Leaderboard & challenges"
+            "value": "Auto"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Лидерборд и челленджи"
+            "value": "Авто"
           }
         }
       }
     },
-    "Community": {
+    "today.title.easeback": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Community"
+            "value": "Ease back in"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сообщество"
+            "value": "Мягкое возвращение"
           }
         }
       }
     },
-    "leaderboard.scope.minutes": {
+    "today.title.calm": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Minutes"
+            "value": "Calm & restore"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Минуты"
+            "value": "Спокойствие и восстановление"
           }
         }
       }
     },
-    "leaderboard.scope.streak": {
+    "today.title.energize": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Streak"
+            "value": "Energize & strengthen"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Серия"
+            "value": "Энергия и сила"
           }
         }
       }
     },
-    "leaderboard.scope.xp": {
+    "today.title.flow": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "XP"
+            "value": "Daily flow"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Опыт"
-          }
-        }
-      }
-    },
-    "challenge.minutes.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Minutes Marathon"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Марафон минут"
-          }
-        }
-      }
-    },
-    "challenge.streak.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Streak Showdown"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Битва серий"
-          }
-        }
-      }
-    },
-    "challenge.xp.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "XP Sprint"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Спринт опыта"
-          }
-        }
-      }
-    },
-    "challenge.empty": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Be the first to set a record!"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Станьте первым, кто установит рекорд!"
-          }
-        }
-      }
-    },
-    "%@ leads with %lld min": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ leads with %lld min"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ лидирует с %2$lld мин"
-          }
-        }
-      }
-    },
-    "%@ leads with a %lld-day streak": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ leads with a %lld-day streak"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ лидирует с серией в %2$lld дн."
-          }
-        }
-      }
-    },
-    "%@ leads with %lld XP": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ leads with %lld XP"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%1$@ лидирует с %2$lld XP"
-          }
-        }
-      }
-    },
-    "You're ranked #%lld": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You're ranked #%lld"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вы на месте №%lld"
-          }
-        }
-      }
-    },
-    "%lld 🔥": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld 🔥"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld 🔥"
-          }
-        }
-      }
-    },
-    "You": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вы"
-          }
-        }
-      }
-    },
-    "Share achievement": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Share achievement"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Поделиться достижением"
-          }
-        }
-      }
-    },
-    "Share": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Share"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Поделиться"
-          }
-        }
-      }
-    },
-    "My yoga achievement": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "My yoga achievement"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Моё достижение в йоге"
-          }
-        }
-      }
-    },
-    "Achievement unlocked": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Achievement unlocked"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Достижение получено"
-          }
-        }
-      }
-    },
-    "Your name": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your name"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ваше имя"
-          }
-        }
-      }
-    },
-    "Tap a badge to share it": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tap a badge to share it"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Нажмите на значок, чтобы поделиться"
-          }
-        }
-      }
-    },
-    "streak.notif.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Don't lose your streak! 🔥"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Не теряй свою серию! 🔥"
-          }
-        }
-      }
-    },
-    "streak.notif.body": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You're on a %lld-day streak. A short practice keeps it alive."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "У тебя серия %lld дн. Короткая практика сохранит её."
+            "value": "Поток дня"
           }
         }
       }
