@@ -109,6 +109,11 @@ struct QuickActionsRow: View {
     var body: some View {
         HStack(spacing: 12) {
             NavigationLink {
+                MeditationLibraryView()
+            } label: {
+                QuickActionCard(title: "Meditate", systemImage: "moon.stars.fill", color: .indigo)
+            }
+            NavigationLink {
                 BreathCoachView()
             } label: {
                 QuickActionCard(title: "Breathing", systemImage: "wind", color: .teal)

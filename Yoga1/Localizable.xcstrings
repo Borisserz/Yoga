@@ -5900,308 +5900,1175 @@
         }
       }
     },
-    "Good morning": {
+    "med.cat.all": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Good morning"
+            "value": "All"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Доброе утро"
+            "value": "Все"
           }
         }
       }
     },
-    "Good afternoon": {
+    "med.cat.morning": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Good afternoon"
+            "value": "Morning"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Добрый день"
+            "value": "Утро"
           }
         }
       }
     },
-    "Good evening": {
+    "med.cat.focus": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Good evening"
+            "value": "Focus"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Добрый вечер"
+            "value": "Фокус"
           }
         }
       }
     },
-    "Here's your practice for today": {
+    "med.cat.sleep": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Here's your practice for today"
+            "value": "Sleep"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Вот твоя практика на сегодня"
+            "value": "Сон"
           }
         }
       }
     },
-    "Today": {
+    "med.cat.stress": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Today"
+            "value": "Anti-stress"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Сегодня"
+            "value": "Антистресс"
           }
         }
       }
     },
-    "Tune today's energy": {
+    "med.cat.anxiety": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tune today's energy"
+            "value": "Anxiety"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Настрой энергию на сегодня"
+            "value": "Тревога"
           }
         }
       }
     },
-    "Why this practice?": {
+    "med.cat.gratitude": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Why this practice?"
+            "value": "Gratitude"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Почему именно это?"
+            "value": "Благодарность"
           }
         }
       }
     },
-    "Tailored to your goal of %@, your focus on %@, and today's energy.": {
+    "med.morning_intention.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tailored to your goal of %@, your focus on %@, and today's energy."
+            "value": "Morning Intention"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Подобрано под твою цель «%1$@», фокус на «%2$@» и сегодняшнюю энергию."
+            "value": "Утреннее намерение"
           }
         }
       }
     },
-    "Weekly goal": {
+    "med.morning_intention.subtitle": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Weekly goal"
+            "value": "Start your day with a calm, clear intention."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Цель на неделю"
+            "value": "Начни день со спокойным и ясным намерением."
           }
         }
       }
     },
-    "Goal reached — beautiful work!": {
+    "med.breath_awareness.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Goal reached — beautiful work!"
+            "value": "Breath Awareness"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Цель достигнута — отличная работа!"
+            "value": "Осознание дыхания"
           }
         }
       }
     },
-    "%lld of %lld practice days this week": {
+    "med.breath_awareness.subtitle": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld of %lld practice days this week"
+            "value": "Anchor your focus with the rhythm of your breath."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld из %2$lld дней практики на этой неделе"
+            "value": "Сосредоточься на ритме своего дыхания."
           }
         }
       }
     },
-    "Pose %lld of %lld": {
+    "med.body_scan.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pose %lld of %lld"
+            "value": "Body Scan"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Поза %1$lld из %2$lld"
+            "value": "Сканирование тела"
           }
         }
       }
     },
-    "Pause": {
+    "med.body_scan.subtitle": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pause"
+            "value": "Release tension head to toe and drift into rest."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Пауза"
+            "value": "Отпусти напряжение от макушки до пят и расслабься."
           }
         }
       }
     },
-    "Resume": {
+    "med.loving_kindness.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Resume"
+            "value": "Loving Kindness"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Продолжить"
+            "value": "Любящая доброта"
           }
         }
       }
     },
-    "Next pose": {
+    "med.loving_kindness.subtitle": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Next pose"
+            "value": "Cultivate warmth and gratitude for yourself and others."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Следующая поза"
+            "value": "Взрасти тепло и благодарность к себе и другим."
           }
         }
       }
     },
-    "Finish": {
+    "med.anxiety_grounding.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Finish"
+            "value": "Grounding"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Завершить"
+            "value": "Заземление"
           }
         }
       }
     },
-    "Practice complete": {
+    "med.anxiety_grounding.subtitle": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Practice complete"
+            "value": "A quick grounding practice to calm anxious moments."
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "Практика завершена"
+            "value": "Быстрая практика заземления для тревожных моментов."
           }
         }
       }
     },
-    "%lld poses • %lld min": {
+    "med.stress_release.title": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%lld poses • %lld min"
+            "value": "Stress Release"
           }
         },
         "ru": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$lld поз • %2$lld мин"
+            "value": "Снятие стресса"
+          }
+        }
+      }
+    },
+    "med.stress_release.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let go of the day's tension and feel lighter."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отпусти напряжение дня и почувствуй лёгкость."
+          }
+        }
+      }
+    },
+    "med.silent_sit.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silent Sit"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тихое сидение"
+          }
+        }
+      }
+    },
+    "med.silent_sit.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quiet, unguided sitting with gentle interval bells."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Тихая практика без слов с мягкими сигналами."
+          }
+        }
+      }
+    },
+    "med.sleep_winddown.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleep Wind-Down"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перед сном"
+          }
+        }
+      }
+    },
+    "med.sleep_winddown.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A long, soft timer to ease you toward sleep."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Долгий мягкий таймер, чтобы плавно уснуть."
+          }
+        }
+      }
+    },
+    "med.deep_calm.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deep Calm"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Глубокий покой"
+          }
+        }
+      }
+    },
+    "med.deep_calm.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settle into deep stillness at your own pace."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Погрузись в глубокую тишину в своём темпе."
+          }
+        }
+      }
+    },
+    "med.morning_intention.s1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settle in and take three slow breaths. A new day is beginning."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Устройся удобно и сделай три медленных вдоха. Начинается новый день."
+          }
+        }
+      }
+    },
+    "med.morning_intention.s2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feel your body waking up. Notice the gentle weight of being here, now."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Почувствуй, как тело просыпается. Ощути мягкое присутствие здесь и сейчас."
+          }
+        }
+      }
+    },
+    "med.morning_intention.s3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bring to mind one intention for today. How do you want to feel?"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вспомни одно намерение на сегодня. Как ты хочешь себя чувствовать?"
+          }
+        }
+      }
+    },
+    "med.morning_intention.s4": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Picture yourself moving through the day with that intention, calm and steady."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Представь, как проживаешь день с этим намерением — спокойно и уверенно."
+          }
+        }
+      }
+    },
+    "med.morning_intention.s5": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carry this calm with you. When you're ready, gently open your eyes."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Унеси этот покой с собой. Когда будешь готов(а), мягко открой глаза."
+          }
+        }
+      }
+    },
+    "med.breath_awareness.s1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sit comfortably and let your spine grow tall. Soften your shoulders."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сядь удобно, вытяни позвоночник. Расслабь плечи."
+          }
+        }
+      }
+    },
+    "med.breath_awareness.s2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bring your attention to your breath. Don't change it — just notice it."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перенеси внимание на дыхание. Не меняй его — просто наблюдай."
+          }
+        }
+      }
+    },
+    "med.breath_awareness.s3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow the air as it flows in… and as it flows out."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Следи за воздухом на вдохе… и на выдохе."
+          }
+        }
+      }
+    },
+    "med.breath_awareness.s4": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When your mind wanders, that's okay. Gently return to the breath."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Если мысли уплыли — это нормально. Мягко вернись к дыханию."
+          }
+        }
+      }
+    },
+    "med.breath_awareness.s5": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest here in this steady awareness for a few more breaths."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Побудь в этом ровном осознании ещё несколько вдохов."
+          }
+        }
+      }
+    },
+    "med.body_scan.s1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lie down and let your whole body grow heavy. Close your eyes."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ляг и позволь телу стать тяжёлым. Закрой глаза."
+          }
+        }
+      }
+    },
+    "med.body_scan.s2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bring your attention to your feet. Let them soften and release."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Перенеси внимание на стопы. Дай им расслабиться и отпустить."
+          }
+        }
+      }
+    },
+    "med.body_scan.s3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move up to your legs and hips. Let go of any holding."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Поднимись к ногам и бёдрам. Отпусти всё напряжение."
+          }
+        }
+      }
+    },
+    "med.body_scan.s4": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soften your belly, chest, and back. Breathe slowly."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расслабь живот, грудь и спину. Дыши медленно."
+          }
+        }
+      }
+    },
+    "med.body_scan.s5": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Release your shoulders, arms, and hands. Let them melt."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Отпусти плечи, руки и кисти. Пусть они растают."
+          }
+        }
+      }
+    },
+    "med.body_scan.s6": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soften your face and jaw. Let your whole body rest completely."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расслабь лицо и челюсть. Дай всему телу полностью отдохнуть."
+          }
+        }
+      }
+    },
+    "med.loving_kindness.s1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settle in and bring a soft smile to your face."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Устройся удобно и позволь лёгкой улыбке появиться на лице."
+          }
+        }
+      }
+    },
+    "med.loving_kindness.s2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bring to mind someone you love. Silently wish them: may you be happy."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Вспомни того, кого любишь. Молча пожелай: будь счастлив(а)."
+          }
+        }
+      }
+    },
+    "med.loving_kindness.s3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Now offer the same to yourself: may I be happy, may I be at ease."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Теперь пожелай это себе: пусть я буду счастлив(а) и спокоен(йна)."
+          }
+        }
+      }
+    },
+    "med.loving_kindness.s4": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extend it wider: may all beings be safe, may all beings be free."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Расширь шире: пусть все существа будут в безопасности и свободны."
+          }
+        }
+      }
+    },
+    "med.loving_kindness.s5": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rest in this warmth and kindness. Let it fill you."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Побудь в этом тепле и доброте. Дай им наполнить тебя."
+          }
+        }
+      }
+    },
+    "med.anxiety_grounding.s1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take one slow breath. You are safe in this moment."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сделай один медленный вдох. В этот момент ты в безопасности."
+          }
+        }
+      }
+    },
+    "med.anxiety_grounding.s2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notice five things you can see around you."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заметь пять вещей, которые ты видишь вокруг."
+          }
+        }
+      }
+    },
+    "med.anxiety_grounding.s3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notice four things you can feel — your seat, your hands, the air."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заметь четыре ощущения — опору, руки, воздух."
+          }
+        }
+      }
+    },
+    "med.anxiety_grounding.s4": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notice three things you can hear, near and far."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Заметь три звука — близкие и далёкие."
+          }
+        }
+      }
+    },
+    "med.anxiety_grounding.s5": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take a long exhale. The wave has passed. You are here."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сделай длинный выдох. Волна прошла. Ты здесь."
+          }
+        }
+      }
+    },
+    "med.stress_release.s1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sit comfortably and take a deep breath in… and a long sigh out."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Сядь удобно, глубоко вдохни… и с долгим выдохом отпусти."
+          }
+        }
+      }
+    },
+    "med.stress_release.s2": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan for any tension. Where are you holding stress today?"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найди напряжение. Где сегодня прячется стресс?"
+          }
+        }
+      }
+    },
+    "med.stress_release.s3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breathe into that area. With each exhale, let a little go."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Подыши в это место. С каждым выдохом отпускай понемногу."
+          }
+        }
+      }
+    },
+    "med.stress_release.s4": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drop your shoulders. Unclench your jaw. Soften your hands."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Опусти плечи. Расслабь челюсть. Смягчи кисти."
+          }
+        }
+      }
+    },
+    "med.stress_release.s5": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feel lighter now. Carry this ease into the rest of your day."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Почувствуй лёгкость. Унеси её в остаток дня."
+          }
+        }
+      }
+    },
+    "med.timer.prompt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breathe gently and let your thoughts drift by."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Дыши мягко и позволь мыслям проплывать мимо."
+          }
+        }
+      }
+    },
+    "achievement.zen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inner Peace"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Внутренний покой"
+          }
+        }
+      }
+    },
+    "Meditation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meditation"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Медитация"
+          }
+        }
+      }
+    },
+    "Meditate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meditate"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Медитация"
+          }
+        }
+      }
+    },
+    "Find your calm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find your calm"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Найди свой покой"
+          }
+        }
+      }
+    },
+    "Today's pick": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's pick"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбор дня"
+          }
+        }
+      }
+    },
+    "Guided": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guided"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "С озвучкой"
+          }
+        }
+      }
+    },
+    "Timer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timer"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Таймер"
+          }
+        }
+      }
+    },
+    "Choose a length": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a length"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выбери длительность"
+          }
+        }
+      }
+    },
+    "Begin meditation": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Begin meditation"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Начать медитацию"
+          }
+        }
+      }
+    },
+    "%lld steps": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld steps"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld шагов"
+          }
+        }
+      }
+    },
+    "Take a moment": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take a moment"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Побудь в моменте"
+          }
+        }
+      }
+    },
+    "You meditated for %lld min": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You meditated for %lld min"
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Медитация: %lld мин"
           }
         }
       }
@@ -6219,448 +7086,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Серия %lld дн. 🔥"
-          }
-        }
-      }
-    },
-    "Let's tailor a practice that fits you.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Let's tailor a practice that fits you."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Давай подберём практику, которая подходит именно тебе."
-          }
-        }
-      }
-    },
-    "What needs love?": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "What needs love?"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Над чем поработаем?"
-          }
-        }
-      }
-    },
-    "Pick any — or none.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pick any — or none."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Выбери любое — или ничего."
-          }
-        }
-      }
-    },
-    "How many days a week?": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "How many days a week?"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Сколько дней в неделю?"
-          }
-        }
-      }
-    },
-    "Every day": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Every day"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Каждый день"
-          }
-        }
-      }
-    },
-    "%lld days a week": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld days a week"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld дней в неделю"
-          }
-        }
-      }
-    },
-    "When do you practice?": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "When do you practice?"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Когда тебе удобно?"
-          }
-        }
-      }
-    },
-    "Session length?": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Session length?"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Длительность сессии?"
-          }
-        }
-      }
-    },
-    "Your plan is ready!": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your plan is ready!"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Твой план готов!"
-          }
-        }
-      }
-    },
-    "onb.focus.back": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Back"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Спина"
-          }
-        }
-      }
-    },
-    "onb.focus.hips": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hips"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Бёдра"
-          }
-        }
-      }
-    },
-    "onb.focus.shoulders": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shoulders"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Плечи"
-          }
-        }
-      }
-    },
-    "onb.focus.stress": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stress relief"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Снятие стресса"
-          }
-        }
-      }
-    },
-    "onb.focus.sleep": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Better sleep"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Лучший сон"
-          }
-        }
-      }
-    },
-    "onb.focus.balance": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Balance"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Баланс"
-          }
-        }
-      }
-    },
-    "onb.time.morning": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Morning"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Утро"
-          }
-        }
-      }
-    },
-    "onb.time.afternoon": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Afternoon"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "День"
-          }
-        }
-      }
-    },
-    "onb.time.evening": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Evening"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Вечер"
-          }
-        }
-      }
-    },
-    "intensity.restore": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Restore"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Восстановление"
-          }
-        }
-      }
-    },
-    "intensity.balanced": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Balanced"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Баланс"
-          }
-        }
-      }
-    },
-    "intensity.energize": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Energize"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Энергия"
-          }
-        }
-      }
-    },
-    "intensity.auto": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auto"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Авто"
-          }
-        }
-      }
-    },
-    "today.title.easeback": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ease back in"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Мягкое возвращение"
-          }
-        }
-      }
-    },
-    "today.title.calm": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calm & restore"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Спокойствие и восстановление"
-          }
-        }
-      }
-    },
-    "today.title.energize": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Energize & strengthen"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Энергия и сила"
-          }
-        }
-      }
-    },
-    "today.title.flow": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Daily flow"
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Поток дня"
           }
         }
       }
