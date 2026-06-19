@@ -92,7 +92,7 @@ public struct OnboardingFlowView: View {
                     if step < 3 {
                         step += 1
                     } else {
-                        app.completeOnboarding()
+                        app.completeOnboarding(levelKey: experienceLevel, goalKey: mainGoal)
                     }
                 }
             } label: {

@@ -20,6 +20,10 @@ public final class AppState {
     public var moodKey: String = "mood.calm"
     public var journalEntries: [JournalEntry] = []
     public var sessions: [SessionRecord] = []
+    public var totalXP: Int = 0
+    public var lastSessionScore: Int = 0          // 0...100, from the most recent AI session
+    public var onboardingLevelKey: String = "onb.level.beginner"
+    public var onboardingGoalKey: String = "onb.goal.flexibility"
 
     // MARK: Transient UI state (not persisted)
     public var selectedTab: Int = 0
@@ -29,7 +33,7 @@ public final class AppState {
     /// Set by `AuthManager` once Firebase resolves the user.
     public var currentUserId: String = "local_user"
 
-    private let storageKey = "yoga_app_state_v1"
+    private let storageKey = "yoga_app_state_v2"
 
     public init() {
         load()
@@ -38,6 +42,27 @@ public final class AppState {
     // MARK: - Display helpers
 
     public var mood: String { L(moodKey) }
+
+    // MARK: - Level / XP
+
+    /// Current level derived from total XP. Each level needs progressively more XP.
+    public var level: Int { max(1, Int((Double(totalXP) / 100.0).squareRoot()) + 1) }
+
+    private func xpFloor(forLevel level: Int) -> Int {
+        let n = max(0, level - 1)
+        return n * n * 100
+    }
+
+    /// XP accumulated within the current level.
+    public var xpIntoLevel: Int { totalXP - xpFloor(forLevel: level) }
+
+    /// XP span between the current level and the next one.
+    public var xpForNextLevel: Int { xpFloor(forLevel: level + 1) - xpFloor(forLevel: level) }
+
+    /// 0...1 progress towards the next level.
+    public var levelProgress: Double {
+        xpForNextLevel > 0 ? min(1, Double(xpIntoLevel) / Double(xpForNextLevel)) : 0
+    }
 
     /// Minutes practiced per weekday for the last 7 days (oldest first).
     public var weeklyActivity: [(label: String, minutes: Int)] {
@@ -57,8 +82,10 @@ public final class AppState {
 
     // MARK: - Mutations
 
-    public func completeOnboarding() {
+    public func completeOnboarding(levelKey: String? = nil, goalKey: String? = nil) {
         hasCompletedOnboarding = true
+        if let levelKey { onboardingLevelKey = levelKey }
+        if let goalKey { onboardingGoalKey = goalKey }
         unlockAchievement("achievement.first_step")
         persist()
     }
@@ -78,14 +105,22 @@ public final class AppState {
     }
 
     /// Records a completed practice session and updates streak + totals.
-    public func completeSession(minutes: Int, poseKey: String? = nil) {
+    public func completeSession(minutes: Int, poseKey: String? = nil, accuracy: Double? = nil) {
         completedMinutes += minutes
-        sessions.append(SessionRecord(durationMinutes: minutes, poseKey: poseKey))
+        sessions.append(SessionRecord(durationMinutes: minutes, poseKey: poseKey, accuracy: accuracy))
+
+        // Award XP: time practiced plus an accuracy bonus from the AI coach.
+        let accuracyBonus = Int((accuracy ?? 0) * 20)
+        totalXP += minutes * 10 + accuracyBonus
+        lastSessionScore = accuracy != nil ? Int((accuracy ?? 0) * 100) : 0
+
         updateStreak()
         pulseAnimation.toggle()
 
         AnalyticsManager.shared.log(event: "session_complete",
-                                    parameters: ["minutes": minutes, "pose": poseKey ?? "free"])
+                                    parameters: ["minutes": minutes,
+                                                 "pose": poseKey ?? "free",
+                                                 "accuracy": Int((accuracy ?? 0) * 100)])
         FirebaseManager.shared.saveUserStats(userId: currentUserId,
                                              minutes: completedMinutes,
                                              streak: streakDays)
@@ -135,6 +170,10 @@ public final class AppState {
         lastSessionDate = nil
         journalEntries = []
         sessions = []
+        totalXP = 0
+        lastSessionScore = 0
+        onboardingLevelKey = "onb.level.beginner"
+        onboardingGoalKey = "onb.goal.flexibility"
         selectedTab = 0
         UserDefaults.standard.removeObject(forKey: storageKey)
     }
@@ -151,6 +190,10 @@ public final class AppState {
         var moodKey: String
         var journalEntries: [JournalEntry]
         var sessions: [SessionRecord]
+        var totalXP: Int
+        var lastSessionScore: Int
+        var onboardingLevelKey: String
+        var onboardingGoalKey: String
     }
 
     private func persist() {
@@ -163,7 +206,11 @@ public final class AppState {
             lastSessionDate: lastSessionDate,
             moodKey: moodKey,
             journalEntries: journalEntries,
-            sessions: sessions
+            sessions: sessions,
+            totalXP: totalXP,
+            lastSessionScore: lastSessionScore,
+            onboardingLevelKey: onboardingLevelKey,
+            onboardingGoalKey: onboardingGoalKey
         )
         if let data = try? JSONEncoder().encode(snapshot) {
             UserDefaults.standard.set(data, forKey: storageKey)
@@ -186,5 +233,9 @@ public final class AppState {
         moodKey = snapshot.moodKey
         journalEntries = snapshot.journalEntries
         sessions = snapshot.sessions
+        totalXP = snapshot.totalXP
+        lastSessionScore = snapshot.lastSessionScore
+        onboardingLevelKey = snapshot.onboardingLevelKey
+        onboardingGoalKey = snapshot.onboardingGoalKey
     }
 }

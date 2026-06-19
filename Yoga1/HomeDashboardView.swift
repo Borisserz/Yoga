@@ -13,6 +13,7 @@ public struct HomeDashboardView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         HeroCard()
+                        LevelBanner()
                         StatsCard(minutes: app.completedMinutes, streak: app.streakDays, mood: app.mood)
                         QuickActionsRow()
                         IdeaCarouselView(ideaKeys: YogaLibrary.visionIdeaKeys)
@@ -209,6 +210,50 @@ struct QuickPoseGrid: View {
                 }
             }
         }
+    }
+}
+
+struct LevelBanner: View {
+    @Environment(AppState.self) private var app
+
+    var body: some View {
+        HStack(spacing: 16) {
+            LevelRing(level: app.level, progress: app.levelProgress)
+                .frame(width: 64, height: 64)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(L("Level %lld", app.level))
+                    .font(.headline)
+                ProgressView(value: app.levelProgress)
+                    .tint(.mint)
+                Text(L("%lld / %lld XP", app.xpIntoLevel, app.xpForNextLevel))
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.7))
+            }
+            Spacer()
+        }
+        .padding()
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+    }
+}
+
+struct LevelRing: View {
+    let level: Int
+    let progress: Double
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(.white.opacity(0.15), lineWidth: 7)
+            Circle()
+                .trim(from: 0, to: CGFloat(progress))
+                .stroke(Color.mint, style: StrokeStyle(lineWidth: 7, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+            Text("\(level)")
+                .font(.system(size: 24, weight: .bold, design: .rounded))
+                .foregroundStyle(.mint)
+        }
+        .animation(.easeOut(duration: 0.5), value: progress)
     }
 }
 
