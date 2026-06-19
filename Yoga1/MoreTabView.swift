@@ -24,6 +24,32 @@ public struct MoreTabView: View {
                     .padding(.vertical, 8)
                 }
 
+                Section("Level") {
+                    HStack(spacing: 16) {
+                        LevelRing(level: app.level, progress: app.levelProgress)
+                            .frame(width: 56, height: 56)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(L("Level %lld", app.level))
+                                .font(.headline)
+                            Text(L("%lld XP", app.totalXP))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        if app.lastSessionScore > 0 {
+                            VStack(spacing: 2) {
+                                Text(L("%lld%%", app.lastSessionScore))
+                                    .font(.headline)
+                                    .foregroundStyle(.mint)
+                                Text("Last AI score")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+
                 if !app.earnedAchievements.isEmpty {
                     Section("Achievements") {
                         ScrollView(.horizontal, showsIndicators: false) {

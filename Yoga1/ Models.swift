@@ -82,12 +82,16 @@ public struct SessionRecord: Identifiable, Codable, Hashable {
     public var date: Date
     public var durationMinutes: Int
     public var poseKey: String?
+    /// AI accuracy for the session, 0...1, when the camera coach was used.
+    public var accuracy: Double?
 
-    public init(id: UUID = UUID(), date: Date = Date(), durationMinutes: Int, poseKey: String? = nil) {
+    public init(id: UUID = UUID(), date: Date = Date(), durationMinutes: Int,
+                poseKey: String? = nil, accuracy: Double? = nil) {
         self.id = id
         self.date = date
         self.durationMinutes = durationMinutes
         self.poseKey = poseKey
+        self.accuracy = accuracy
     }
 }
 
