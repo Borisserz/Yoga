@@ -4,33 +4,35 @@ import Vision
 public struct AICameraSessionView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var cameraManager = CameraManager()
-    
-    let poseName: String
+
+    let poseKey: String
+    private let displayName: String
     private let algorithm: YogaPoseAlgorithm
-    
-    @State private var feedbackText = "Инициализация..."
+
+    @State private var feedbackText = L("camera.initializing")
     @State private var isCorrect = false
     @State private var correctTime: TimeInterval = 0
     @State private var timer: Timer?
-    
+
     private let targetHoldSeconds = 10.0
-    
-    public init(poseName: String) {
-        self.poseName = poseName
-        self.algorithm = YogaPoseAnalyzer.getAlgorithm(for: poseName)
+
+    public init(poseKey: String) {
+        self.poseKey = poseKey
+        self.displayName = YogaLibrary.displayName(forKey: poseKey)
+        self.algorithm = YogaPoseAnalyzer.getAlgorithm(for: poseKey)
     }
-    
+
     public var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            
+
             if cameraManager.isAuthorized {
                 CameraPreview(session: cameraManager.session)
                     .ignoresSafeArea()
-                
+
                 PoseOverlayView(joints: cameraManager.joints)
                     .ignoresSafeArea()
-                
+
                 VStack {
                     HStack {
                         Button {
@@ -44,29 +46,27 @@ public struct AICameraSessionView: View {
                         Spacer()
                     }
                     .padding()
-                    
+
                     Spacer()
-                    
-                    // UI widget for AI Feedback
+
                     VStack(spacing: 8) {
-                        Text(poseName)
+                        Text(displayName)
                             .font(.headline)
                             .foregroundStyle(.white.opacity(0.8))
-                        
+
                         Text(feedbackText)
                             .font(.title2.bold())
                             .foregroundStyle(isCorrect ? .mint : .yellow)
                             .multilineTextAlignment(.center)
                             .lineLimit(2)
                             .minimumScaleFactor(0.5)
-                        
-                        // Progress bar for holding the pose
+
                         ProgressView(value: min(correctTime / targetHoldSeconds, 1.0))
                             .tint(.mint)
                             .padding(.horizontal)
-                        
+
                         if correctTime >= targetHoldSeconds {
-                            Button("Продолжить") {
+                            Button("Continue") {
                                 dismiss()
                             }
                             .buttonStyle(.borderedProminent)
@@ -80,11 +80,11 @@ public struct AICameraSessionView: View {
                     .padding(.bottom, 20)
                 }
             } else if cameraManager.authorizationStatus == .denied {
-                VStack {
-                    Text("Доступ к камере запрещен")
+                VStack(spacing: 16) {
+                    Text("Camera access denied")
                         .font(.title2)
                         .foregroundStyle(.white)
-                    Button("В настройки") {
+                    Button("Open Settings") {
                         if let url = URL(string: UIApplication.openSettingsURLString) {
                             UIApplication.shared.open(url)
                         }
@@ -92,7 +92,7 @@ public struct AICameraSessionView: View {
                     .buttonStyle(.borderedProminent)
                 }
             } else {
-                ProgressView("Запуск камеры...")
+                ProgressView("Starting camera…")
                     .foregroundStyle(.white)
             }
         }
@@ -105,22 +105,21 @@ public struct AICameraSessionView: View {
             timer?.invalidate()
         }
     }
-    
+
     private func startAnalysisLoop() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
             let result = algorithm.analyze(joints: cameraManager.joints)
-            
-            // Speak feedback if it changed or it's correct
+
             if result.feedback != feedbackText {
                 VoiceCoach.shared.speak(result.feedback)
             } else if result.isCorrect && correctTime == 0.0 {
                 VoiceCoach.shared.speak(result.feedback)
             }
-            
+
             withAnimation {
                 feedbackText = result.feedback
                 isCorrect = result.isCorrect
-                
+
                 if isCorrect {
                     correctTime += 0.5
                     if correctTime == 0.5 {
@@ -129,11 +128,12 @@ public struct AICameraSessionView: View {
                     if correctTime >= targetHoldSeconds {
                         HapticsManager.shared.playSuccess()
                         timer?.invalidate()
-                        feedbackText = "Отлично! Вы продержали позу."
-                        VoiceCoach.shared.speak("Отлично! Вы продержали позу.", force: true)
+                        let done = L("camera.hold_complete")
+                        feedbackText = done
+                        VoiceCoach.shared.speak(done, force: true)
                     }
                 } else {
-                    correctTime = max(0, correctTime - 0.25) // penalty for breaking pose
+                    correctTime = max(0, correctTime - 0.25)
                 }
             }
         }

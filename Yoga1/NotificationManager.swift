@@ -3,43 +3,43 @@ import UserNotifications
 
 public final class NotificationManager {
     public static let shared = NotificationManager()
-    
+
     private init() {}
-    
+
     public func requestAuthorization() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { [weak self] granted, error in
             if granted {
-                print("Notification permission granted.")
-                self.scheduleDailyReminder()
+                self?.scheduleDailyReminder()
             } else if let error = error {
+                #if DEBUG
                 print("Notification permission error: \(error.localizedDescription)")
+                #endif
             }
         }
     }
-    
-    public func scheduleDailyReminder() {
+
+    public func scheduleDailyReminder(hour: Int = 8, minute: Int = 0) {
         let center = UNUserNotificationCenter.current()
         center.removeAllPendingNotificationRequests()
-        
+
         let content = UNMutableNotificationContent()
-        content.title = "Время для йоги 🧘‍♀️"
-        content.body = "Самое время сделать глубокий вдох и уделить себе 10 минут."
+        content.title = L("notif.title")
+        content.body = L("notif.body")
         content.sound = .default
-        
-        // Schedule for 8:00 AM every day
+
         var dateComponents = DateComponents()
-        dateComponents.hour = 8
-        dateComponents.minute = 0
-        
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
         let request = UNNotificationRequest(identifier: "daily_yoga_reminder", content: content, trigger: trigger)
-        
+
         center.add(request) { error in
+            #if DEBUG
             if let error = error {
                 print("Error scheduling notification: \(error.localizedDescription)")
-            } else {
-                print("Successfully scheduled daily 8 AM reminder.")
             }
+            #endif
         }
     }
 }

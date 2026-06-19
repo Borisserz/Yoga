@@ -1,26 +1,29 @@
 import SwiftUI
 
 public struct OnboardingFlowView: View {
-    @Environment(AppStateManager.self) private var appState
+    @Environment(AppState.self) private var app
     @State private var step = 0
-    @State private var experienceLevel = "Новичок"
-    @State private var mainGoal = "Гибкость"
-    
+    @State private var experienceLevel = "onb.level.beginner"
+    @State private var mainGoal = "onb.goal.flexibility"
+
+    private let levels = ["onb.level.beginner", "onb.level.intermediate", "onb.level.advanced"]
+    private let goals = ["onb.goal.flexibility", "onb.goal.strength", "onb.goal.calm"]
+
     public init() {}
-    
+
     public var body: some View {
         VStack {
             Spacer()
-            
+
             if step == 0 {
                 VStack(spacing: 20) {
                     Image(systemName: "figure.yoga")
                         .font(.system(size: 80))
                         .foregroundStyle(.mint)
-                    Text("Добро пожаловать в Yoga Epic")
+                    Text("Welcome to Yoga Epic")
                         .font(.largeTitle.bold())
                         .multilineTextAlignment(.center)
-                    Text("Твой личный проводник в мир спокойствия и силы.")
+                    Text("Your personal guide to a world of calm and strength.")
                         .font(.title3)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -28,12 +31,14 @@ public struct OnboardingFlowView: View {
                 .transition(.move(edge: .leading))
             } else if step == 1 {
                 VStack(spacing: 20) {
-                    Text("Твой уровень?")
+                    Text("Your level?")
                         .font(.largeTitle.bold())
-                    
-                    ForEach(["Новичок", "Средний", "Продвинутый"], id: \.self) { level in
-                        Button(action: { experienceLevel = level }) {
-                            Text(level)
+
+                    ForEach(levels, id: \.self) { level in
+                        Button {
+                            experienceLevel = level
+                        } label: {
+                            Text(L(level))
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -46,12 +51,14 @@ public struct OnboardingFlowView: View {
                 .transition(.move(edge: .trailing))
             } else if step == 2 {
                 VStack(spacing: 20) {
-                    Text("Главная цель?")
+                    Text("Main goal?")
                         .font(.largeTitle.bold())
-                    
-                    ForEach(["Гибкость", "Сила", "Спокойствие"], id: \.self) { goal in
-                        Button(action: { mainGoal = goal }) {
-                            Text(goal)
+
+                    ForEach(goals, id: \.self) { goal in
+                        Button {
+                            mainGoal = goal
+                        } label: {
+                            Text(L(goal))
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -67,29 +74,29 @@ public struct OnboardingFlowView: View {
                     Image(systemName: "sparkles")
                         .font(.system(size: 80))
                         .foregroundStyle(.mint)
-                    Text("Твоя программа готова!")
+                    Text("Your program is ready!")
                         .font(.largeTitle.bold())
                         .multilineTextAlignment(.center)
-                    Text("Уровень: \(experienceLevel)\nЦель: \(mainGoal)")
+                    Text(L("Level: %@\nGoal: %@", L(experienceLevel), L(mainGoal)))
                         .font(.title3)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }
                 .transition(.move(edge: .trailing))
             }
-            
+
             Spacer()
-            
-            Button(action: {
+
+            Button {
                 withAnimation {
                     if step < 3 {
                         step += 1
                     } else {
-                        appState.completeOnboarding()
+                        app.completeOnboarding()
                     }
                 }
-            }) {
-                Text(step == 3 ? "Начать" : "Далее")
+            } label: {
+                Text(step == 3 ? "Begin" : "Next")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()

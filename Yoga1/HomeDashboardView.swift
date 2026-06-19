@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct HomeDashboardView: View {
-    @EnvironmentObject private var state: YogaAppState
+    @Environment(AppState.self) private var app
     @State private var animateBackground = false
 
     public init() {}
@@ -13,9 +13,10 @@ public struct HomeDashboardView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         HeroCard()
-                        StatsCard(minutes: state.completedMinutes, streak: state.streakDays, mood: state.mood)
-                        IdeaCarouselView(ideas: YogaLibrary.visionIdeas)
-                        QuickPoseGrid(poses: Array(YogaLibrary.poses.prefix(4))) // Показываем 4 позы
+                        StatsCard(minutes: app.completedMinutes, streak: app.streakDays, mood: app.mood)
+                        QuickActionsRow()
+                        IdeaCarouselView(ideaKeys: YogaLibrary.visionIdeaKeys)
+                        QuickPoseGrid(poses: Array(YogaLibrary.poses.prefix(4)))
                     }
                     .padding()
                 }
@@ -27,19 +28,19 @@ public struct HomeDashboardView: View {
 }
 
 struct HeroCard: View {
-    @EnvironmentObject private var state: YogaAppState
+    @Environment(AppState.self) private var app
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Сегодняшний импульс")
+            Text("Today's impulse")
                 .font(.headline)
                 .foregroundStyle(.white.opacity(0.8))
-            Text("Погрузись в поток, где движение превращается в историю")
+            Text("Dive into the flow where movement becomes a story")
                 .font(.title2.bold())
             Button {
-                state.selectedTab = 1
+                app.selectedTab = 2
             } label: {
-                Label("Запустить практику", systemImage: "play.fill")
+                Label("Start practice", systemImage: "play.fill")
                     .font(.headline)
                     .padding(.horizontal, 18)
                     .padding(.vertical, 12)
@@ -58,8 +59,8 @@ struct HeroCard: View {
                 .font(.largeTitle)
                 .foregroundStyle(.white)
                 .padding()
-                .rotationEffect(.degrees(state.pulseAnimation ? 20 : -20))
-                .animation(.easeInOut(duration: 1.6).repeatForever(), value: state.pulseAnimation)
+                .rotationEffect(.degrees(app.pulseAnimation ? 20 : -20))
+                .animation(.easeInOut(duration: 1.6).repeatForever(), value: app.pulseAnimation)
         }
     }
 }
@@ -72,9 +73,9 @@ struct StatsCard: View {
     var body: some View {
         VStack(spacing: 16) {
             HStack {
-                StatPill(title: "Минут", value: "\(minutes)", color: .mint)
-                StatPill(title: "Серия", value: "\(streak)", color: .orange)
-                StatPill(title: "Настрой", value: mood, color: .pink)
+                StatPill(title: "Minutes", value: "\(minutes)", color: .mint)
+                StatPill(title: "Streak", value: "\(streak)", color: .orange)
+                StatPill(title: "Mood", value: mood, color: .pink)
             }
             .frame(maxWidth: .infinity)
         }
@@ -84,7 +85,7 @@ struct StatsCard: View {
 }
 
 struct StatPill: View {
-    let title: String
+    let title: LocalizedStringKey
     let value: String
     let color: Color
 
@@ -103,21 +104,58 @@ struct StatPill: View {
     }
 }
 
+struct QuickActionsRow: View {
+    var body: some View {
+        HStack(spacing: 12) {
+            NavigationLink {
+                BreathCoachView()
+            } label: {
+                QuickActionCard(title: "Breathing", systemImage: "wind", color: .teal)
+            }
+            NavigationLink {
+                ChallengeArenaView()
+            } label: {
+                QuickActionCard(title: "Quests", systemImage: "flame.fill", color: .orange)
+            }
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+struct QuickActionCard: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: systemImage)
+                .font(.title3)
+            Text(title)
+                .font(.headline)
+            Spacer()
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(color.opacity(0.2), in: RoundedRectangle(cornerRadius: 18))
+    }
+}
+
 struct IdeaCarouselView: View {
-    let ideas: [String]
+    let ideaKeys: [String]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Цепляющие идеи")
+            Text("Inspiring ideas")
                 .font(.title3.bold())
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
-                    ForEach(Array(ideas.enumerated()), id: \.offset) { item in
+                    ForEach(Array(ideaKeys.enumerated()), id: \.offset) { item in
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Идея #\(item.offset + 1)")
+                            Text(L("Idea #%lld", item.offset + 1))
                                 .font(.caption)
                                 .foregroundStyle(.white.opacity(0.7))
-                            Text(item.element)
+                            Text(L(item.element))
                                 .font(.headline)
                                 .lineLimit(4)
                         }
@@ -144,24 +182,30 @@ struct QuickPoseGrid: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Быстрый старт")
+            Text("Quick start")
                 .font(.title3.bold())
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(poses) { pose in
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(pose.name)
-                            .font(.headline)
-                        Text(pose.sanskrit)
-                            .font(.caption)
-                            .foregroundStyle(.white.opacity(0.6))
-                        Spacer()
-                        Text("\(pose.holdSeconds) сек")
-                            .font(.caption.bold())
+                    NavigationLink {
+                        PoseDetailView(pose: pose)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(pose.name)
+                                .font(.headline)
+                            Text(pose.sanskrit)
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.6))
+                            Spacer()
+                            Text(L("%lld sec", pose.holdSeconds))
+                                .font(.caption.bold())
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(height: 130)
+                        .background(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing), in: RoundedRectangle(cornerRadius: 18))
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .frame(height: 130)
-                    .background(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing), in: RoundedRectangle(cornerRadius: 18))
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.white)
                 }
             }
         }
@@ -174,19 +218,19 @@ struct AnimatedGradientBackground: View {
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            
+
             Circle()
                 .fill(Color.purple.opacity(0.7))
                 .frame(width: 300)
                 .blur(radius: 120)
                 .offset(x: animate ? 100 : -100, y: animate ? -200 : 0)
-            
+
             Circle()
                 .fill(Color.blue.opacity(0.6))
                 .frame(width: 300)
                 .blur(radius: 120)
                 .offset(x: animate ? -100 : 100, y: animate ? 200 : 0)
-                
+
             Circle()
                 .fill(Color.mint.opacity(0.5))
                 .frame(width: 250)

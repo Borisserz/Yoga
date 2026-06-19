@@ -2,73 +2,34 @@ import SwiftUI
 
 public enum YogaLibrary {
     public static let poses: [YogaPose] = [
-        YogaPose(name: "Поза Потока 1", sanskrit: "Virabhadrasana II", level: 1, holdSeconds: 20, focus: "Сила ног", mantra: "Я держу баланс", gradient: [.mint, .teal], instructions: [
-            "Широко расставьте ноги (примерно 1 метр).",
-            "Поверните правую стопу на 90 градусов наружу.",
-            "Согните правое колено так, чтобы оно было ровно над лодыжкой.",
-            "Вытяните руки в стороны параллельно полу.",
-            "Смотрите поверх пальцев правой руки. Спина прямая."
-        ]),
-        YogaPose(name: "Сила Гор 2", sanskrit: "Tadasana", level: 1, holdSeconds: 30, focus: "Осанка", mantra: "Я как гора", gradient: [.orange, .pink], instructions: [
-            "Встаньте прямо, стопы вместе или на ширине таза.",
-            "Распределите вес равномерно по всей стопе.",
-            "Подтяните колени и выровняйте таз.",
-            "Опустите плечи вниз и назад, раскройте грудную клетку.",
-            "Руки опущены вдоль тела или вытянуты вверх. Макушкой тянитесь в небо."
-        ]),
-        YogaPose(name: "Полет Дракона 3", sanskrit: "Bakasana", level: 3, holdSeconds: 15, focus: "Баланс на руках", mantra: "Я лечу", gradient: [.purple, .blue], instructions: [
-            "Сядьте на корточки, поставьте ладони на пол перед собой на ширине плеч.",
-            "Слегка согните руки в локтях.",
-            "Оторвите таз от пола и упритесь коленями в верхнюю часть рук (ближе к подмышкам).",
-            "Перенесите вес тела вперед на руки.",
-            "Постепенно оторвите стопы от пола, балансируя на ладонях."
-        ]),
-        YogaPose(name: "Тихий океан 4", sanskrit: "Balasana", level: 1, holdSeconds: 60, focus: "Восстановление", mantra: "Я спокоен", gradient: [.indigo, .cyan], instructions: [
-            "Сядьте на колени, таз опустите на пятки.",
-            "Наклонитесь вперед, положив лоб на коврик.",
-            "Руки вытяните далеко вперед перед собой или опустите вдоль тела.",
-            "Расслабьте шею, плечи и спину.",
-            "Дышите глубоко, чувствуя растяжение позвоночника."
-        ]),
-        YogaPose(name: "Огненный шар 5", sanskrit: "Utkatasana", level: 2, holdSeconds: 25, focus: "Выносливость", mantra: "Энергия во мне", gradient: [.red, .purple], instructions: [
-            "Встаньте прямо, стопы вместе.",
-            "На вдохе поднимите прямые руки вверх.",
-            "На выдохе согните колени и опустите таз вниз, словно садитесь на невидимый стул.",
-            "Следите, чтобы колени не выходили далеко за носки.",
-            "Спина прямая, грудь раскрыта, взгляд направлен вперед."
-        ]),
-        YogaPose(name: "Дерево Жизни 6", sanskrit: "Vrksasana", level: 1, holdSeconds: 30, focus: "Равновесие", mantra: "Я пускаю корни", gradient: [.green, .yellow], instructions: [
-            "Встаньте прямо. Перенесите вес на левую ногу.",
-            "Согните правую ногу и положите стопу на внутреннюю часть левого бедра (или голени, но не на колено!).",
-            "Отведите правое колено в сторону, раскрывая таз.",
-            "Сложите ладони перед грудью или поднимите их над головой.",
-            "Найдите неподвижную точку перед собой для баланса."
-        ]),
-        YogaPose(name: "Собака мордой вниз 7", sanskrit: "Adho Mukha Svanasana", level: 1, holdSeconds: 40, focus: "Растяжка спины", mantra: "Я открыт миру", gradient: [.blue, .mint], instructions: [
-            "Встаньте на четвереньки, ладони под плечами, колени под тазом.",
-            "Оттолкнитесь руками от коврика, поднимите таз вверх и назад.",
-            "Выпрямите руки и спину, образуя ровную линию.",
-            "Постарайтесь выпрямить колени и опустить пятки на пол (или держите колени слегка согнутыми).",
-            "Расслабьте шею, смотрите на свои стопы."
-        ])
+        YogaPose(key: "warrior_ii",   sanskrit: "Virabhadrasana II",      level: 1, holdSeconds: 20, gradient: [.mint, .teal]),
+        YogaPose(key: "tadasana",     sanskrit: "Tadasana",               level: 1, holdSeconds: 30, gradient: [.orange, .pink]),
+        YogaPose(key: "bakasana",     sanskrit: "Bakasana",               level: 3, holdSeconds: 15, gradient: [.purple, .blue]),
+        YogaPose(key: "balasana",     sanskrit: "Balasana",               level: 1, holdSeconds: 60, gradient: [.indigo, .cyan]),
+        YogaPose(key: "utkatasana",   sanskrit: "Utkatasana",             level: 2, holdSeconds: 25, gradient: [.red, .purple]),
+        YogaPose(key: "vrksasana",    sanskrit: "Vrksasana",              level: 1, holdSeconds: 30, gradient: [.green, .yellow]),
+        YogaPose(key: "downward_dog", sanskrit: "Adho Mukha Svanasana",   level: 1, holdSeconds: 40, gradient: [.blue, .mint])
     ]
 
-    public static let visionIdeas: [String] = [
-        "Создай мини-историю «Пробуждение города» из 5 поз.",
-        "Создай мини-историю «Тихий океан внутри».",
-        "Создай мини-историю «Сила рассвета».",
-        "Создай мини-историю «Космический шторм»."
-    ]
+    /// Stable keys used to build the introductory "flow" course.
+    public static let starterFlow: [String] = ["downward_dog", "warrior_ii", "vrksasana", "balasana"]
+
+    public static let visionIdeaKeys: [String] = ["idea.1", "idea.2", "idea.3", "idea.4"]
 
     public static let breathPatterns: [BreathPattern] = [
-        BreathPattern(title: "Квадрат 4-4-4", inhale: 4, hold: 4, exhale: 4, rounds: 6, color: .cyan),
-        BreathPattern(title: "Глубокое 5-2-7", inhale: 5, hold: 2, exhale: 7, rounds: 5, color: .mint),
-        BreathPattern(title: "Огонь 2-0-2", inhale: 2, hold: 0, exhale: 2, rounds: 14, color: .orange)
+        BreathPattern(titleKey: "breath.box",  inhale: 4, hold: 4, exhale: 4, rounds: 6,  color: .cyan),
+        BreathPattern(titleKey: "breath.deep", inhale: 5, hold: 2, exhale: 7, rounds: 5,  color: .mint),
+        BreathPattern(titleKey: "breath.fire", inhale: 2, hold: 0, exhale: 2, rounds: 14, color: .orange)
     ]
 
     public static let quests: [ChallengeQuest] = [
-        ChallengeQuest(title: "Квест 1: Пик энергии", subtitle: "Собери связку из 4 поз", duration: 11, reward: "Бейдж #1", icon: "flame.fill", palette: [.orange, .pink]),
-        ChallengeQuest(title: "Квест 2: Дзен", subtitle: "10 минут чистого дыхания", duration: 10, reward: "Бейдж Воздуха", icon: "wind", palette: [.mint, .teal]),
-        ChallengeQuest(title: "Квест 3: Испытание огнем", subtitle: "Сложные позы на 20 минут", duration: 20, reward: "Бейдж Пламени", icon: "bolt.fill", palette: [.purple, .blue])
+        ChallengeQuest(keyPrefix: "quest.1", duration: 11, icon: "flame.fill", palette: [.orange, .pink]),
+        ChallengeQuest(keyPrefix: "quest.2", duration: 10, icon: "wind",       palette: [.mint, .teal]),
+        ChallengeQuest(keyPrefix: "quest.3", duration: 20, icon: "bolt.fill",  palette: [.purple, .blue])
     ]
+
+    /// Convenience lookup used to localize a stored pose key for display.
+    public static func displayName(forKey key: String) -> String {
+        poses.first(where: { $0.key == key })?.name ?? key
+    }
 }

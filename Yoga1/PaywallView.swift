@@ -1,44 +1,44 @@
 import SwiftUI
 
 public struct PaywallView: View {
-    @Environment(AppStateManager.self) private var appState
+    @Environment(AppState.self) private var app
     @Environment(\.dismiss) private var dismiss
-    
+
     public init() {}
-    
+
     public var body: some View {
         VStack(spacing: 24) {
             Spacer()
-            
+
             Image(systemName: "crown.fill")
                 .font(.system(size: 80))
                 .foregroundStyle(.yellow)
-            
+
             Text("Yoga Epic Premium")
                 .font(.largeTitle.bold())
                 .multilineTextAlignment(.center)
-            
-            Text("Открой доступ ко всем практикам, дыхательным техникам и персональным программам.")
+
+            Text("Unlock access to all practices, breathing techniques, and personal programs.")
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            
+
             VStack(spacing: 16) {
-                FeatureRow(icon: "figure.yoga", text: "100+ премиум-классов")
-                FeatureRow(icon: "chart.bar.fill", text: "Продвинутая статистика")
-                FeatureRow(icon: "flame.fill", text: "Эксклюзивные квесты")
+                FeatureRow(icon: "figure.yoga", text: "100+ premium classes")
+                FeatureRow(icon: "chart.bar.fill", text: "Advanced statistics")
+                FeatureRow(icon: "flame.fill", text: "Exclusive quests")
             }
             .padding(.top, 20)
-            
+
             Spacer()
-            
+
             Button {
-                appState.activatePremium()
+                app.activatePremium()
                 dismiss()
                 HapticsManager.shared.playSuccess()
             } label: {
-                Text("Оформить подписку")
+                Text("Subscribe")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -46,11 +46,11 @@ public struct PaywallView: View {
                     .foregroundStyle(.black)
                     .clipShape(Capsule())
             }
-            
+
             Button {
                 dismiss()
             } label: {
-                Text("Позже")
+                Text("Later")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -62,8 +62,8 @@ public struct PaywallView: View {
 
 private struct FeatureRow: View {
     let icon: String
-    let text: String
-    
+    let text: LocalizedStringKey
+
     var body: some View {
         HStack(spacing: 16) {
             Image(systemName: icon)

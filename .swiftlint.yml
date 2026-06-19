@@ -1,0 +1,39 @@
+included:
+  - Yoga1
+  - Yoga1Tests
+
+excluded:
+  - Yoga1/Localizable.xcstrings
+  - Yoga1.xcodeproj
+  - .agents
+
+disabled_rules:
+  - trailing_whitespace
+  - todo
+
+opt_in_rules:
+  - empty_count
+  - force_unwrapping
+  - closure_spacing
+  - first_where
+
+line_length:
+  warning: 160
+  error: 240
+  ignores_comments: true
+
+identifier_name:
+  min_length: 1
+  excluded:
+    - id
+    - i
+    - x
+    - y
+    - L
+
+type_name:
+  max_length: 60
+
+function_body_length:
+  warning: 80
+  error: 160

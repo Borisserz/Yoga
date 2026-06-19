@@ -1,12 +1,16 @@
 import SwiftUI
 
 public struct PoseDetailView: View {
-    @EnvironmentObject private var state: YogaAppState
+    @Environment(AppState.self) private var app
     let pose: YogaPose
     @State private var progress: Double = 0
     @State private var isPlaying = false
     @State private var timer: Timer?
     @State private var showAICamera = false
+
+    public init(pose: YogaPose) {
+        self.pose = pose
+    }
 
     public var body: some View {
         ScrollView {
@@ -23,13 +27,13 @@ public struct PoseDetailView: View {
                     VStack {
                         Text(pose.name)
                             .font(.title.bold())
-                        Text("\(Int(progress * Double(pose.holdSeconds))) / \(pose.holdSeconds) сек")
+                        Text(L("%lld / %lld sec", Int(progress * Double(pose.holdSeconds)), pose.holdSeconds))
                             .font(.headline)
                     }
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Шаги")
+                    Text("Steps")
                         .font(.title3.bold())
                     ForEach(Array(pose.instructions.enumerated()), id: \.offset) { index, step in
                         Text("\(index + 1). \(step)")
@@ -39,21 +43,21 @@ public struct PoseDetailView: View {
                     }
                 }
 
-                Text("Мантра: \(pose.mantra)")
+                Text(L("Mantra: %@", pose.mantra))
                     .font(.headline)
                     .padding()
                     .background(.pink.opacity(0.2), in: RoundedRectangle(cornerRadius: 14))
 
                 HStack(spacing: 16) {
-                    Button(isPlaying ? "Остановить" : "Старт") {
+                    Button(isPlaying ? "Stop" : "Start") {
                         isPlaying ? stop() : start()
                     }
                     .buttonStyle(.borderedProminent)
-                    
+
                     Button {
                         showAICamera = true
                     } label: {
-                        Label("AI-Камера", systemImage: "camera.viewfinder")
+                        Label("AI Camera", systemImage: "camera.viewfinder")
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.indigo)
@@ -61,8 +65,10 @@ public struct PoseDetailView: View {
             }
             .padding()
         }
+        .navigationTitle(pose.name)
+        .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(isPresented: $showAICamera) {
-            AICameraSessionView(poseName: pose.name)
+            AICameraSessionView(poseKey: pose.key)
         }
         .onDisappear { stop() }
     }
@@ -78,7 +84,7 @@ public struct PoseDetailView: View {
                 progress = 1
                 t.invalidate()
                 isPlaying = false
-                state.completeSession(minutes: max(1, pose.holdSeconds / 60))
+                app.completeSession(minutes: max(1, pose.holdSeconds / 60), poseKey: pose.key)
             }
         }
     }

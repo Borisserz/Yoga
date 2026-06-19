@@ -1,8 +1,9 @@
 import SwiftUI
 
 public struct BreathCoachView: View {
-    @State private var selected = YogaLibrary.breathPatterns.first!
-    @State private var phase = "Готов?"
+    @State private var selected: BreathPattern = YogaLibrary.breathPatterns.first
+        ?? BreathPattern(titleKey: "breath.box", inhale: 4, hold: 4, exhale: 4, rounds: 6, color: .cyan)
+    @State private var phase = L("phase.ready")
     @State private var scale: CGFloat = 0.6
     @State private var running = false
     @State private var breathingTask: Task<Void, Never>?
@@ -11,16 +12,16 @@ public struct BreathCoachView: View {
 
     public var body: some View {
         VStack(spacing: 20) {
-            Text("Дыхательный коуч")
+            Text("Breathing coach")
                 .font(.largeTitle.bold())
-            Picker("Паттерн", selection: $selected) {
+            Picker("Pattern", selection: $selected) {
                 ForEach(YogaLibrary.breathPatterns) { pattern in
                     Text(pattern.title).tag(pattern)
                 }
             }
             .pickerStyle(.wheel)
             .frame(height: 120)
-            .onChange(of: selected) { _ in
+            .onChange(of: selected) { _, _ in
                 reset()
             }
 
@@ -38,11 +39,11 @@ public struct BreathCoachView: View {
                 .foregroundStyle(.white.opacity(0.75))
 
             HStack(spacing: 20) {
-                Button(running ? "Сброс" : "Старт дыхания") {
+                Button(running ? "Reset" : "Start breathing") {
                     running ? reset() : runPattern()
                 }
                 .buttonStyle(.borderedProminent)
-                
+
                 Button {
                     let isPlaying = AudioManager.shared.toggleAmbientSound()
                     if isPlaying {
@@ -56,6 +57,7 @@ public struct BreathCoachView: View {
             }
         }
         .padding()
+        .navigationTitle("Breathing")
         .onDisappear {
             reset()
             AudioManager.shared.stop()
@@ -69,7 +71,7 @@ public struct BreathCoachView: View {
             for _ in 0..<selected.rounds {
                 if Task.isCancelled { break }
                 await MainActor.run {
-                    phase = "Вдох"
+                    phase = L("phase.inhale")
                     HapticsManager.shared.playLightImpact()
                     withAnimation(.easeInOut(duration: selected.inhale)) { scale = 1.0 }
                 }
@@ -77,13 +79,13 @@ public struct BreathCoachView: View {
 
                 if Task.isCancelled { break }
                 await MainActor.run {
-                    phase = "Пауза"
+                    phase = L("phase.hold")
                 }
                 try? await Task.sleep(nanoseconds: UInt64(selected.hold * 1_000_000_000))
 
                 if Task.isCancelled { break }
                 await MainActor.run {
-                    phase = "Выдох"
+                    phase = L("phase.exhale")
                     HapticsManager.shared.playMediumImpact()
                     withAnimation(.easeInOut(duration: selected.exhale)) { scale = 0.6 }
                 }
@@ -91,7 +93,7 @@ public struct BreathCoachView: View {
             }
             if !Task.isCancelled {
                 await MainActor.run {
-                    phase = "Готово"
+                    phase = L("phase.done")
                     HapticsManager.shared.playSuccess()
                     running = false
                 }
@@ -104,7 +106,7 @@ public struct BreathCoachView: View {
         breathingTask = nil
         running = false
         withAnimation(.easeOut(duration: 0.5)) {
-            phase = "Готов?"
+            phase = L("phase.ready")
             scale = 0.6
         }
     }

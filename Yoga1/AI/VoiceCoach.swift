@@ -27,7 +27,10 @@ public final class VoiceCoach: NSObject, AVSpeechSynthesizerDelegate {
         }
         
         let utterance = AVSpeechUtterance(string: text)
-        utterance.voice = AVSpeechSynthesisVoice(language: "ru-RU")
+        // Speak in the user's current language instead of a hard-coded locale.
+        let preferred = Locale.preferredLanguages.first ?? "en-US"
+        utterance.voice = AVSpeechSynthesisVoice(language: preferred)
+            ?? AVSpeechSynthesisVoice(language: "en-US")
         utterance.rate = 0.5 // Normal speed
         utterance.pitchMultiplier = 1.1 // Slightly uplifting voice
         

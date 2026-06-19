@@ -1,9 +1,8 @@
 import SwiftUI
 
 public struct SessionStudioView: View {
-    @EnvironmentObject private var state: YogaAppState
-    @Environment(AppStateManager.self) private var appState
-    
+    @Environment(AppState.self) private var app
+
     @State private var selectedLevel = 1
     @State private var showAmbient = false
     @State private var showPaywall = false
@@ -17,15 +16,15 @@ public struct SessionStudioView: View {
     public var body: some View {
         NavigationStack {
             VStack(spacing: 14) {
-                Picker("Уровень", selection: $selectedLevel) {
-                    Text("Легко").tag(1)
-                    Text("Средне").tag(2)
-                    Text("Продвинуто").tag(3)
+                Picker("Level", selection: $selectedLevel) {
+                    Text("Easy").tag(1)
+                    Text("Medium").tag(2)
+                    Text("Advanced").tag(3)
                 }
                 .pickerStyle(.segmented)
 
                 Button {
-                    if appState.isPremiumActivated {
+                    if app.isPremiumActivated {
                         showAmbient.toggle()
                     } else {
                         showPaywall.toggle()
@@ -33,8 +32,8 @@ public struct SessionStudioView: View {
                     }
                 } label: {
                     HStack {
-                        Label("Открыть Ambient-сцену", systemImage: "sparkles.tv")
-                        if !appState.isPremiumActivated {
+                        Label("Open Ambient scene", systemImage: "sparkles.tv")
+                        if !app.isPremiumActivated {
                             Spacer()
                             Image(systemName: "crown.fill").foregroundStyle(.yellow)
                         }
@@ -56,7 +55,7 @@ public struct SessionStudioView: View {
                             VStack(alignment: .leading) {
                                 Text(pose.name)
                                     .font(.headline)
-                                Text("\(pose.holdSeconds) сек • \(pose.focus)")
+                                Text(L("%lld sec • %@", pose.holdSeconds, pose.focus))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -68,7 +67,7 @@ public struct SessionStudioView: View {
                 .listStyle(.plain)
             }
             .padding()
-            .navigationTitle("Студия")
+            .navigationTitle("Studio")
         }
         .sheet(isPresented: $showAmbient) {
             AmbientSceneView()
