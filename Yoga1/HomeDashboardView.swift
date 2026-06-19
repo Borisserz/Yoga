@@ -140,7 +140,7 @@ struct IdeaCarouselView: View {
 
 struct QuickPoseGrid: View {
     let poses: [YogaPose]
-    let columns = [GridItem(.adaptive(minimum: 150), spacing: 12)]
+    let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 2)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -159,6 +159,7 @@ struct QuickPoseGrid: View {
                             .font(.caption.bold())
                     }
                     .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     .frame(height: 130)
                     .background(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing), in: RoundedRectangle(cornerRadius: 18))
                 }
