@@ -171,12 +171,28 @@ struct AnimatedGradientBackground: View {
     @Binding var animate: Bool
 
     var body: some View {
-        LinearGradient(
-            colors: animate ? [.black, .purple, .blue] : [.black, .indigo, .mint],
-            startPoint: animate ? .topLeading : .bottomTrailing,
-            endPoint: animate ? .bottomTrailing : .topLeading
-        )
+        ZStack {
+            Color.black.ignoresSafeArea()
+            
+            Circle()
+                .fill(Color.purple.opacity(0.7))
+                .frame(width: 300)
+                .blur(radius: 120)
+                .offset(x: animate ? 100 : -100, y: animate ? -200 : 0)
+            
+            Circle()
+                .fill(Color.blue.opacity(0.6))
+                .frame(width: 300)
+                .blur(radius: 120)
+                .offset(x: animate ? -100 : 100, y: animate ? 200 : 0)
+                
+            Circle()
+                .fill(Color.mint.opacity(0.5))
+                .frame(width: 250)
+                .blur(radius: 100)
+                .offset(x: animate ? 50 : -50, y: animate ? 0 : 200)
+        }
         .ignoresSafeArea()
-        .animation(.easeInOut(duration: 6).repeatForever(autoreverses: true), value: animate)
+        .animation(.easeInOut(duration: 8).repeatForever(autoreverses: true), value: animate)
     }
 }
