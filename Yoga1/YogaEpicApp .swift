@@ -2,6 +2,7 @@
 
 
 import SwiftUI
+import SwiftData
 
 #if canImport(FirebaseCore)
 import FirebaseCore
@@ -40,5 +41,6 @@ public struct YogaEpicApp: App {
                     }
                 }
         }
+        .modelContainer(for: [YogaCourse.self, CourseDay.self])
     }
 }

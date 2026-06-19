@@ -12,25 +12,29 @@ public struct MainTabView: View {
                 .tabItem { Label("Дом", systemImage: "house.fill") }
                 .tag(0)
 
+            ProgramsTabView()
+                .tabItem { Label("Курсы", systemImage: "list.bullet.clipboard.fill") }
+                .tag(1)
+
             SessionStudioView()
                 .tabItem { Label("Практика", systemImage: "figure.yoga") }
-                .tag(1)
+                .tag(2)
 
             BreathCoachView()
                 .tabItem { Label("Дыхание", systemImage: "wind") }
-                .tag(2)
+                .tag(3)
 
             ChallengeArenaView()
                 .tabItem { Label("Квесты", systemImage: "flame.fill") }
-                .tag(3)
+                .tag(4)
 
             JournalView()
                 .tabItem { Label("Дневник", systemImage: "book.fill") }
-                .tag(4)
+                .tag(5)
 
             MoreTabView()
                 .tabItem { Label("Профиль", systemImage: "person.crop.circle") }
-                .tag(5)
+                .tag(6)
         }
         .accentColor(.mint)
     }
