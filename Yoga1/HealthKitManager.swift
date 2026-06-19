@@ -3,15 +3,15 @@ import HealthKit
 import Observation
 
 @Observable
-public final class HealthKitManager {
-    public static let shared = HealthKitManager()
+final class HealthKitManager {
+    static let shared = HealthKitManager()
     private let healthStore = HKHealthStore()
     
-    public var isAuthorized: Bool = false
+    var isAuthorized: Bool = false
     
-    public init() {}
+    init() {}
     
-    public func requestAuthorization() async {
+    func requestAuthorization() async {
         guard HKHealthStore.isHealthDataAvailable() else { return }
         
         let mindfulType = HKObjectType.categoryType(forIdentifier: .mindfulSession)!
@@ -31,7 +31,7 @@ public final class HealthKitManager {
         }
     }
     
-    public func saveMindfulMinutes(minutes: Int, startDate: Date, endDate: Date) async {
+    func saveMindfulMinutes(minutes: Int, startDate: Date, endDate: Date) async {
         guard isAuthorized else { return }
         let mindfulType = HKObjectType.categoryType(forIdentifier: .mindfulSession)!
         
@@ -45,7 +45,7 @@ public final class HealthKitManager {
         }
     }
     
-    public func saveYogaWorkout(durationMinutes: Int, calories: Double, startDate: Date, endDate: Date) async {
+    func saveYogaWorkout(durationMinutes: Int, calories: Double, startDate: Date, endDate: Date) async {
         guard isAuthorized else { return }
         
         let energyBurned = HKQuantity(unit: .kilocalorie(), doubleValue: calories)

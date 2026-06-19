@@ -1,6 +1,6 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct PoseDetailView: View {
+struct PoseDetailView: View {
     @Environment(AppState.self) private var app
     let pose: YogaPose
     @State private var progress: Double = 0
@@ -8,11 +8,11 @@ public struct PoseDetailView: View {
     @State private var timer: Timer?
     @State private var showAICamera = false
 
-    public init(pose: YogaPose) {
+    init(pose: YogaPose) {
         self.pose = pose
     }
 
-    public var body: some View {
+    var body: some View {
         ScrollView {
             VStack(spacing: 20) {
                 ZStack {

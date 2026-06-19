@@ -1,17 +1,17 @@
-import SwiftUI
+internal import SwiftUI
 
 /// Browse the meditation library: a daily featured pick, category filters and
 /// a card for every meditation.
-public struct MeditationLibraryView: View {
+struct MeditationLibraryView: View {
     @State private var category: MeditationCategory?
 
-    public init() {}
+    init() {}
 
     private var items: [Meditation] {
         MeditationLibrary.meditations(in: category)
     }
 
-    public var body: some View {
+    var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
@@ -152,19 +152,19 @@ private struct MeditationRowCard: View {
 
 // MARK: - Detail / launcher
 
-public struct MeditationDetailView: View {
+struct MeditationDetailView: View {
     let meditation: Meditation
     @State private var selectedMinutes: Int
     @State private var showPlayer = false
 
-    public init(meditation: Meditation) {
+    init(meditation: Meditation) {
         self.meditation = meditation
         _selectedMinutes = State(initialValue: meditation.guided
                                  ? meditation.guidedMinutes
                                  : (meditation.durationOptions.first ?? 10))
     }
 
-    public var body: some View {
+    var body: some View {
         ScrollView {
             VStack(spacing: 22) {
                 ZStack {

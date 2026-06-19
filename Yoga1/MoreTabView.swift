@@ -1,17 +1,17 @@
-import SwiftUI
+internal import SwiftUI
 
 /// Identifiable wrapper so an achievement key can drive `.sheet(item:)`.
 private struct ShareableAchievement: Identifiable {
     let id: String
 }
 
-public struct MoreTabView: View {
+struct MoreTabView: View {
     @Environment(AppState.self) private var app
     @State private var shareAchievement: ShareableAchievement?
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         @Bindable var app = app
         NavigationStack {
             List {
@@ -48,14 +48,14 @@ public struct MoreTabView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(L("Level %lld", app.level))
                                 .font(.headline)
-                            Text(L("%lld XP", app.totalXP))
+                            Text(L("xp.total", app.totalXP))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
                         Spacer()
                         if app.lastSessionScore > 0 {
                             VStack(spacing: 2) {
-                                Text(L("%lld%%", app.lastSessionScore))
+                                Text(L("score.percent", app.lastSessionScore))
                                     .font(.headline)
                                     .foregroundStyle(.mint)
                                 Text("Last AI score")

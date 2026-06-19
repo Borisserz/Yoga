@@ -1,7 +1,8 @@
-import SwiftUI
+internal import SwiftUI
 import Vision
+import AVFoundation
 
-public struct AICameraSessionView: View {
+struct AICameraSessionView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var app
     @StateObject private var cameraManager = CameraManager()
@@ -23,7 +24,7 @@ public struct AICameraSessionView: View {
 
     private let targetHoldSeconds = 10.0
 
-    public init(poseKey: String) {
+    init(poseKey: String) {
         self.poseKey = poseKey
         self.displayName = YogaLibrary.displayName(forKey: poseKey)
         self.algorithm = YogaPoseAnalyzer.getAlgorithm(for: poseKey)
@@ -33,7 +34,7 @@ public struct AICameraSessionView: View {
         totalFrames > 0 ? Int(Double(correctFrames) / Double(totalFrames) * 100) : 0
     }
 
-    public var body: some View {
+    var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
@@ -127,7 +128,8 @@ public struct AICameraSessionView: View {
 
     private func startAnalysisLoop() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
-            guard !finished else { return }
+            Task { @MainActor in
+                guard !finished else { return }
             let result = algorithm.analyze(joints: cameraManager.joints)
 
             // Only score frames where a body is actually detected.
@@ -158,6 +160,7 @@ public struct AICameraSessionView: View {
                     correctTime = max(0, correctTime - 0.25)
                 }
             }
+            }
         }
     }
 
@@ -183,7 +186,7 @@ private struct ScoreBadge: View {
     var body: some View {
         HStack(spacing: 6) {
             Image(systemName: "target")
-            Text(L("%lld%%", score))
+            Text(L("score.percent", score))
                 .font(.headline.monospacedDigit())
         }
         .foregroundStyle(.white)
@@ -214,9 +217,9 @@ private struct SessionReportCard: View {
                 .frame(width: 130, height: 130)
 
             HStack(spacing: 24) {
-                ReportStat(title: "Accuracy", value: L("%lld%%", score))
+                ReportStat(title: "Accuracy", value: L("score.percent", score))
                 ReportStat(title: "Hold time", value: L("%lld s", holdSeconds))
-                ReportStat(title: "XP", value: L("+%lld XP", xpEarned))
+                ReportStat(title: "XP", value: L("xp.earned", xpEarned))
             }
 
             Button("Done", action: onDone)

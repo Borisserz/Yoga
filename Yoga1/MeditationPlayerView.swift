@@ -1,9 +1,9 @@
-import SwiftUI
+internal import SwiftUI
 
 /// Full-screen meditation player. Guided meditations walk through timed prompts;
 /// open-timer meditations run a calm countdown with interval bells. Both show a
 /// slowly breathing orb and log the session on completion.
-public struct MeditationPlayerView: View {
+struct MeditationPlayerView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var app
 
@@ -20,7 +20,7 @@ public struct MeditationPlayerView: View {
     @State private var lastBellMinute = 0
     @State private var timer: Timer?
 
-    public init(meditation: Meditation, minutes: Int) {
+    init(meditation: Meditation, minutes: Int) {
         self.meditation = meditation
         self.minutes = minutes
     }
@@ -47,7 +47,7 @@ public struct MeditationPlayerView: View {
         return L("med.timer.prompt")
     }
 
-    public var body: some View {
+    var body: some View {
         ZStack {
             LinearGradient(colors: meditation.gradient.map { $0.opacity(0.55) },
                            startPoint: .topLeading, endPoint: .bottomTrailing)

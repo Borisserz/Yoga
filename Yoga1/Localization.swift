@@ -10,7 +10,7 @@ import Foundation
 /// looked up by a stable key) or where a value must be interpolated into a
 /// localized format string before being shown via `Text(String)`.
 @inline(__always)
-public func L(_ key: String, _ args: CVarArg...) -> String {
+func L(_ key: String, _ args: CVarArg...) -> String {
     let format = NSLocalizedString(key, comment: "")
     guard !args.isEmpty else { return format }
     return String(format: format, locale: .current, arguments: args)

@@ -1,35 +1,35 @@
-import SwiftUI
+internal import SwiftUI
 
-public final class HapticsManager {
-    public static let shared = HapticsManager()
+final class HapticsManager {
+    static let shared = HapticsManager()
     
     private init() {}
     
-    public func playLightImpact() {
+    func playLightImpact() {
         let generator = UIImpactFeedbackGenerator(style: .light)
         generator.prepare()
         generator.impactOccurred()
     }
     
-    public func playMediumImpact() {
+    func playMediumImpact() {
         let generator = UIImpactFeedbackGenerator(style: .medium)
         generator.prepare()
         generator.impactOccurred()
     }
     
-    public func playHeavyImpact() {
+    func playHeavyImpact() {
         let generator = UIImpactFeedbackGenerator(style: .heavy)
         generator.prepare()
         generator.impactOccurred()
     }
     
-    public func playSuccess() {
+    func playSuccess() {
         let generator = UINotificationFeedbackGenerator()
         generator.prepare()
         generator.notificationOccurred(.success)
     }
     
-    public func playWarning() {
+    func playWarning() {
         let generator = UINotificationFeedbackGenerator()
         generator.prepare()
         generator.notificationOccurred(.warning)

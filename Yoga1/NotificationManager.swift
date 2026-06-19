@@ -1,8 +1,8 @@
 import Foundation
 import UserNotifications
 
-public final class NotificationManager {
-    public static let shared = NotificationManager()
+final class NotificationManager {
+    static let shared = NotificationManager()
 
     private init() {}
 
@@ -15,7 +15,7 @@ public final class NotificationManager {
 
     // MARK: - Authorization
 
-    public func requestAuthorization() {
+    func requestAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { [weak self] granted, error in
             if granted {
                 // Default daily reminder until habits are known; AppState refines
@@ -34,7 +34,7 @@ public final class NotificationManager {
     /// Reschedules notifications based on the user's habits and streak state:
     /// a daily reminder at the hour the user usually practices, plus an evening
     /// "don't lose your streak" nudge whenever an active streak is still at risk.
-    public func refreshSchedules(sessions: [SessionRecord], streakDays: Int, practicedToday: Bool) {
+    func refreshSchedules(sessions: [SessionRecord], streakDays: Int, practicedToday: Bool) {
         let hour = habitualHour(from: sessions)
         scheduleDailyReminder(hour: hour, minute: 0)
 
@@ -58,7 +58,7 @@ public final class NotificationManager {
         return counts.max { $0.value < $1.value }?.key ?? 8
     }
 
-    public func scheduleDailyReminder(hour: Int = 8, minute: Int = 0) {
+    func scheduleDailyReminder(hour: Int = 8, minute: Int = 0) {
         let content = UNMutableNotificationContent()
         content.title = L("notif.title")
         content.body = L("notif.body")

@@ -1,6 +1,6 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct BreathCoachView: View {
+struct BreathCoachView: View {
     @State private var selected: BreathPattern = YogaLibrary.breathPatterns.first
         ?? BreathPattern(titleKey: "breath.box", inhale: 4, hold: 4, exhale: 4, rounds: 6, color: .cyan)
     @State private var phase = L("phase.ready")
@@ -8,9 +8,9 @@ public struct BreathCoachView: View {
     @State private var running = false
     @State private var breathingTask: Task<Void, Never>?
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         VStack(spacing: 20) {
             Text("Breathing coach")
                 .font(.largeTitle.bold())

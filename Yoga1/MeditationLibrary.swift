@@ -1,8 +1,8 @@
-import SwiftUI
+internal import SwiftUI
 
-public enum MeditationLibrary {
+enum MeditationLibrary {
 
-    public static let all: [Meditation] = [
+    static let all: [Meditation] = [
         // MARK: Guided
 
         Meditation(
@@ -110,13 +110,13 @@ public enum MeditationLibrary {
         )
     ]
 
-    public static func meditations(in category: MeditationCategory?) -> [Meditation] {
+    static func meditations(in category: MeditationCategory?) -> [Meditation] {
         guard let category else { return all }
         return all.filter { $0.category == category }
     }
 
     /// A simple daily pick that rotates through the library.
-    public static var featured: Meditation {
+    static var featured: Meditation {
         let day = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 1
         return all[day % all.count]
     }

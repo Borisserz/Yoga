@@ -1,8 +1,8 @@
 import Foundation
 import AVFoundation
 
-public final class VoiceCoach: NSObject, AVSpeechSynthesizerDelegate {
-    public static let shared = VoiceCoach()
+final class VoiceCoach: NSObject, AVSpeechSynthesizerDelegate {
+    static let shared = VoiceCoach()
     private let synthesizer = AVSpeechSynthesizer()
     private var lastSpokenPhrase: String = ""
     private var lastSpokenTime: Date = Date.distantPast
@@ -15,7 +15,7 @@ public final class VoiceCoach: NSObject, AVSpeechSynthesizerDelegate {
         try? AVAudioSession.sharedInstance().setActive(true)
     }
     
-    public func speak(_ text: String, force: Bool = false) {
+    func speak(_ text: String, force: Bool = false) {
         // Prevent spamming the same phrase within 3 seconds unless forced
         if !force && text == lastSpokenPhrase && Date().timeIntervalSince(lastSpokenTime) < 3.0 {
             return

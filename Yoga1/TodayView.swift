@@ -1,21 +1,21 @@
-import SwiftUI
+internal import SwiftUI
 
 /// The personalized home screen. Surfaces one adaptive "practice for today",
 /// lets the user retune its intensity, and tracks the weekly practice goal.
-public struct TodayView: View {
+struct TodayView: View {
     @Environment(AppState.self) private var app
     @State private var animateBackground = false
     @State private var intensityOverride: PracticeIntensity?
     @State private var showSession = false
     @State private var showWhy = false
 
-    public init() {}
+    init() {}
 
     private var plan: DailyPlan {
         AdaptivePlanEngine.plan(for: app, intensity: intensityOverride)
     }
 
-    public var body: some View {
+    var body: some View {
         let plan = self.plan
         return NavigationStack {
             ZStack {
@@ -69,7 +69,7 @@ private struct TodayPlanCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text(plan.title)
+                Text(L(plan.title))
                     .font(.title2.bold())
                 Spacer()
                 Label(L("%lld min", plan.totalMinutes), systemImage: "clock")
@@ -81,7 +81,7 @@ private struct TodayPlanCard: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     ForEach(Array(plan.rationaleChips.enumerated()), id: \.offset) { _, chip in
-                        Text(chip)
+                        Text(L(chip))
                             .font(.caption.weight(.semibold))
                             .padding(.horizontal, 10).padding(.vertical, 5)
                             .background(.black.opacity(0.25), in: Capsule())

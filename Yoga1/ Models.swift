@@ -1,23 +1,23 @@
-import SwiftUI
+internal import SwiftUI
 import Foundation
 
 // MARK: - Pose Category
 
 /// A coarse grouping used to filter poses on the Practice screen. `rawValue` is
 /// a stable, language-independent key; the user-facing label is localized.
-public enum PoseCategory: String, CaseIterable, Identifiable, Hashable {
+enum PoseCategory: String, CaseIterable, Identifiable, Hashable {
     case strength
     case flexibility
     case balance
     case restorative
 
-    public var id: String { rawValue }
+    var id: String { rawValue }
 
     /// Localized display name, e.g. "Strength" / "Сила".
-    public var title: String { L("category.\(rawValue)") }
+    var title: String { L("category.\(rawValue)") }
 
     /// SF Symbol shown on the filter chip.
-    public var icon: String {
+    var icon: String {
         switch self {
         case .strength:    return "bolt.fill"
         case .flexibility: return "figure.cooldown"
@@ -27,7 +27,7 @@ public enum PoseCategory: String, CaseIterable, Identifiable, Hashable {
     }
 
     /// Accent color for the filter chip.
-    public var tint: Color {
+    var tint: Color {
         switch self {
         case .strength:    return .orange
         case .flexibility: return .mint
@@ -42,17 +42,17 @@ public enum PoseCategory: String, CaseIterable, Identifiable, Hashable {
 /// A yoga pose. `key` is a stable, language-independent identifier used both by
 /// the AI analyzer factory (`YogaPoseAnalyzer.getAlgorithm(for:)`) and to look
 /// up localized content. User-facing text is resolved from the String Catalog.
-public struct YogaPose: Identifiable, Hashable {
-    public let id = UUID()
-    public let key: String
-    public let sanskrit: String          // Latin transliteration — same in every language
-    public let level: Int
-    public let holdSeconds: Int
-    public let gradient: [Color]
-    public let stepCount: Int
-    public let category: PoseCategory
+struct YogaPose: Identifiable, Hashable {
+    let id = UUID()
+    let key: String
+    let sanskrit: String          // Latin transliteration — same in every language
+    let level: Int
+    let holdSeconds: Int
+    let gradient: [Color]
+    let stepCount: Int
+    let category: PoseCategory
 
-    public init(key: String, sanskrit: String, level: Int, holdSeconds: Int,
+    init(key: String, sanskrit: String, level: Int, holdSeconds: Int,
                 gradient: [Color], category: PoseCategory = .flexibility, stepCount: Int = 5) {
         self.key = key
         self.sanskrit = sanskrit
@@ -63,24 +63,24 @@ public struct YogaPose: Identifiable, Hashable {
         self.stepCount = stepCount
     }
 
-    public var name: String { L("pose.\(key).name") }
-    public var focus: String { L("pose.\(key).focus") }
-    public var mantra: String { L("pose.\(key).mantra") }
-    public var instructions: [String] { (1...stepCount).map { L("pose.\(key).step\($0)") } }
+    var name: String { L("pose.\(key).name") }
+    var focus: String { L("pose.\(key).focus") }
+    var mantra: String { L("pose.\(key).mantra") }
+    var instructions: [String] { (1...stepCount).map { L("pose.\(key).step\($0)") } }
 }
 
 // MARK: - Breathing Pattern
 
-public struct BreathPattern: Identifiable, Hashable {
-    public let id = UUID()
-    public let titleKey: String
-    public let inhale: Double
-    public let hold: Double
-    public let exhale: Double
-    public let rounds: Int
-    public let color: Color
+struct BreathPattern: Identifiable, Hashable {
+    let id = UUID()
+    let titleKey: String
+    let inhale: Double
+    let hold: Double
+    let exhale: Double
+    let rounds: Int
+    let color: Color
 
-    public init(titleKey: String, inhale: Double, hold: Double, exhale: Double, rounds: Int, color: Color) {
+    init(titleKey: String, inhale: Double, hold: Double, exhale: Double, rounds: Int, color: Color) {
         self.titleKey = titleKey
         self.inhale = inhale
         self.hold = hold
@@ -89,41 +89,41 @@ public struct BreathPattern: Identifiable, Hashable {
         self.color = color
     }
 
-    public var title: String { L(titleKey) }
+    var title: String { L(titleKey) }
 }
 
 // MARK: - Challenge Quest
 
-public struct ChallengeQuest: Identifiable, Hashable {
-    public let id = UUID()
-    public let keyPrefix: String
-    public let duration: Int
-    public let icon: String
-    public let palette: [Color]
+struct ChallengeQuest: Identifiable, Hashable {
+    let id = UUID()
+    let keyPrefix: String
+    let duration: Int
+    let icon: String
+    let palette: [Color]
 
-    public init(keyPrefix: String, duration: Int, icon: String, palette: [Color]) {
+    init(keyPrefix: String, duration: Int, icon: String, palette: [Color]) {
         self.keyPrefix = keyPrefix
         self.duration = duration
         self.icon = icon
         self.palette = palette
     }
 
-    public var title: String { L("\(keyPrefix).title") }
-    public var subtitle: String { L("\(keyPrefix).subtitle") }
-    public var reward: String { L("\(keyPrefix).reward") }
+    var title: String { L("\(keyPrefix).title") }
+    var subtitle: String { L("\(keyPrefix).subtitle") }
+    var reward: String { L("\(keyPrefix).reward") }
 }
 
 // MARK: - Session Record (persisted history)
 
-public struct SessionRecord: Identifiable, Codable, Hashable {
-    public var id: UUID
-    public var date: Date
-    public var durationMinutes: Int
-    public var poseKey: String?
+struct SessionRecord: Identifiable, Codable, Hashable {
+    var id: UUID
+    var date: Date
+    var durationMinutes: Int
+    var poseKey: String?
     /// AI accuracy for the session, 0...1, when the camera coach was used.
-    public var accuracy: Double?
+    var accuracy: Double?
 
-    public init(id: UUID = UUID(), date: Date = Date(), durationMinutes: Int,
+    init(id: UUID = UUID(), date: Date = Date(), durationMinutes: Int,
                 poseKey: String? = nil, accuracy: Double? = nil) {
         self.id = id
         self.date = date
@@ -135,12 +135,12 @@ public struct SessionRecord: Identifiable, Codable, Hashable {
 
 // MARK: - Journal Entry (persisted)
 
-public struct JournalEntry: Identifiable, Codable, Hashable {
-    public var id: UUID
-    public var date: Date
-    public var text: String
+struct JournalEntry: Identifiable, Codable, Hashable {
+    var id: UUID
+    var date: Date
+    var text: String
 
-    public init(id: UUID = UUID(), date: Date = Date(), text: String) {
+    init(id: UUID = UUID(), date: Date = Date(), text: String) {
         self.id = id
         self.date = date
         self.text = text

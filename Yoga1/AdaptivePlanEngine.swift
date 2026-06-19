@@ -1,19 +1,19 @@
-import SwiftUI
+internal import SwiftUI
 import Foundation
 
 // MARK: - Intensity
 
 /// How demanding today's session should feel. Chosen automatically from the
 /// user's habits, but overridable on the Today screen.
-public enum PracticeIntensity: String, CaseIterable, Identifiable, Hashable {
+enum PracticeIntensity: String, CaseIterable, Identifiable, Hashable {
     case restore
     case balanced
     case energize
 
-    public var id: String { rawValue }
-    public var title: String { L("intensity.\(rawValue)") }
+    var id: String { rawValue }
+    var title: String { L("intensity.\(rawValue)") }
 
-    public var icon: String {
+    var icon: String {
         switch self {
         case .restore:  return "moon.stars.fill"
         case .balanced: return "circle.lefthalf.filled"
@@ -25,23 +25,23 @@ public enum PracticeIntensity: String, CaseIterable, Identifiable, Hashable {
 // MARK: - Daily plan
 
 /// A ready-to-practice session tailored to the user for a given day.
-public struct DailyPlan {
-    public let title: String
-    public let focusLabel: String
-    public let poses: [YogaPose]
-    public let breath: BreathPattern?
-    public let totalMinutes: Int
-    public let rationaleChips: [String]
-    public let isEaseBack: Bool
-    public let intensity: PracticeIntensity
-    public let gradient: [Color]
+struct DailyPlan {
+    let title: String
+    let focusLabel: String
+    let poses: [YogaPose]
+    let breath: BreathPattern?
+    let totalMinutes: Int
+    let rationaleChips: [String]
+    let isEaseBack: Bool
+    let intensity: PracticeIntensity
+    let gradient: [Color]
 }
 
 // MARK: - Engine
 
 /// Builds the adaptive "Today" plan. Pure, deterministic for a given day so the
 /// recommendation is stable within the day but rotates for variety day to day.
-public enum AdaptivePlanEngine {
+enum AdaptivePlanEngine {
 
     /// Maps a focus area / pain point to poses that address it.
     static let focusMap: [String: [String]] = [
@@ -55,7 +55,7 @@ public enum AdaptivePlanEngine {
 
     // MARK: Public entry point
 
-    public static func plan(for app: AppState,
+    static func plan(for app: AppState,
                             intensity override: PracticeIntensity? = nil,
                             date: Date = Date()) -> DailyPlan {
         let baseLevel = level(for: app.onboardingLevelKey)

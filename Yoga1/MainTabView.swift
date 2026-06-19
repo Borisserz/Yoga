@@ -1,11 +1,11 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct MainTabView: View {
+struct MainTabView: View {
     @Environment(AppState.self) private var app
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         @Bindable var app = app
         TabView(selection: $app.selectedTab) {
             TodayView()

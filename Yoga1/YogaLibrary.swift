@@ -1,7 +1,7 @@
-import SwiftUI
+internal import SwiftUI
 
-public enum YogaLibrary {
-    public static let poses: [YogaPose] = [
+enum YogaLibrary {
+    static let poses: [YogaPose] = [
         YogaPose(key: "balasana", sanskrit: "Balasana", level: 1, holdSeconds: 60, gradient: [.indigo, .cyan], category: .restorative),
         YogaPose(key: "bridge", sanskrit: "Setu Bandhasana", level: 1, holdSeconds: 30, gradient: [.indigo, .purple], category: .strength),
         YogaPose(key: "cat_cow", sanskrit: "Marjaryasana-Bitilasana", level: 1, holdSeconds: 30, gradient: [.mint, .green], category: .flexibility),
@@ -25,29 +25,29 @@ public enum YogaLibrary {
     ]
 
     /// Stable keys used to build the introductory "flow" course.
-    public static let starterFlow: [String] = ["downward_dog", "warrior_ii", "vrksasana", "balasana"]
+    static let starterFlow: [String] = ["downward_dog", "warrior_ii", "vrksasana", "balasana"]
 
-    public static let visionIdeaKeys: [String] = ["idea.1", "idea.2", "idea.3", "idea.4"]
+    static let visionIdeaKeys: [String] = ["idea.1", "idea.2", "idea.3", "idea.4"]
 
-    public static let breathPatterns: [BreathPattern] = [
+    static let breathPatterns: [BreathPattern] = [
         BreathPattern(titleKey: "breath.box",  inhale: 4, hold: 4, exhale: 4, rounds: 6,  color: .cyan),
         BreathPattern(titleKey: "breath.deep", inhale: 5, hold: 2, exhale: 7, rounds: 5,  color: .mint),
         BreathPattern(titleKey: "breath.fire", inhale: 2, hold: 0, exhale: 2, rounds: 14, color: .orange)
     ]
 
-    public static let quests: [ChallengeQuest] = [
+    static let quests: [ChallengeQuest] = [
         ChallengeQuest(keyPrefix: "quest.1", duration: 11, icon: "flame.fill", palette: [.orange, .pink]),
         ChallengeQuest(keyPrefix: "quest.2", duration: 10, icon: "wind",       palette: [.mint, .teal]),
         ChallengeQuest(keyPrefix: "quest.3", duration: 20, icon: "bolt.fill",  palette: [.purple, .blue])
     ]
 
     /// Poses suitable for a given onboarding experience level (1...3).
-    public static func poses(forLevel level: Int) -> [YogaPose] {
+    static func poses(forLevel level: Int) -> [YogaPose] {
         poses.filter { $0.level <= max(1, level) }
     }
 
     /// Convenience lookup used to localize a stored pose key for display.
-    public static func displayName(forKey key: String) -> String {
+    static func displayName(forKey key: String) -> String {
         poses.first(where: { $0.key == key })?.name ?? key
     }
 }

@@ -1,15 +1,15 @@
-import SwiftUI
+internal import SwiftUI
 
 /// A sheet that renders a shareable achievement card to an image and offers a
 /// native `ShareLink` so the user can post it to social apps, Messages, etc.
-public struct AchievementShareSheet: View {
+struct AchievementShareSheet: View {
     @Environment(AppState.self) private var app
     @Environment(\.dismiss) private var dismiss
 
     let achievementKey: String
     @State private var rendered: Image?
 
-    public init(achievementKey: String) {
+    init(achievementKey: String) {
         self.achievementKey = achievementKey
     }
 
@@ -23,7 +23,7 @@ public struct AchievementShareSheet: View {
         )
     }
 
-    public var body: some View {
+    var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
                 card

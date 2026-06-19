@@ -1,12 +1,12 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct ChallengeArenaView: View {
+struct ChallengeArenaView: View {
     @Environment(AppState.self) private var app
     @State private var completed: Set<UUID> = []
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         ScrollView {
             VStack(spacing: 14) {
                 ForEach(YogaLibrary.quests) { quest in

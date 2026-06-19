@@ -1,9 +1,9 @@
-import SwiftUI
+internal import SwiftUI
 
 /// Runs an adaptive `DailyPlan` as a guided, auto-advancing flow with a hold
 /// timer per pose, optional AI camera per pose, and a completion summary that
 /// logs the whole session at once.
-public struct GuidedSessionView: View {
+struct GuidedSessionView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(AppState.self) private var app
 
@@ -17,7 +17,7 @@ public struct GuidedSessionView: View {
     @State private var finished = false
     @State private var logged = false
 
-    public init(plan: DailyPlan) {
+    init(plan: DailyPlan) {
         self.plan = plan
     }
 
@@ -25,7 +25,7 @@ public struct GuidedSessionView: View {
         plan.poses.indices.contains(index) ? plan.poses[index] : nil
     }
 
-    public var body: some View {
+    var body: some View {
         ZStack {
             LinearGradient(colors: (current?.gradient ?? plan.gradient).map { $0.opacity(0.35) },
                            startPoint: .topLeading, endPoint: .bottomTrailing)

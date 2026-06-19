@@ -1,18 +1,18 @@
-import SwiftUI
+internal import SwiftUI
 import SwiftData
 
-public struct CourseDetailView: View {
+struct CourseDetailView: View {
     let course: YogaCourse
 
     private var sortedDays: [CourseDay] {
         course.days.sorted { $0.dayNumber < $1.dayNumber }
     }
 
-    public init(course: YogaCourse) {
+    init(course: YogaCourse) {
         self.course = course
     }
 
-    public var body: some View {
+    var body: some View {
         List {
             Section {
                 VStack(alignment: .leading, spacing: 8) {

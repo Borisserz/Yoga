@@ -1,16 +1,16 @@
-import SwiftUI
+internal import SwiftUI
 
 /// Community leaderboard backed by Firestore (with a sample fallback). Players
 /// compete on practice minutes, streak length or total XP, and a rotating
 /// community challenge highlights the current leader.
-public struct LeaderboardView: View {
+struct LeaderboardView: View {
     @Environment(AppState.self) private var app
 
     @State private var scope: LeaderboardScope = .minutes
     @State private var entries: [LeaderboardEntry] = []
     @State private var isLoading = true
 
-    public init() {}
+    init() {}
 
     private var me: LeaderboardEntry {
         LeaderboardEntry(
@@ -27,7 +27,7 @@ public struct LeaderboardView: View {
         entries.firstIndex { $0.id == app.currentUserId }.map { $0 + 1 }
     }
 
-    public var body: some View {
+    var body: some View {
         ScrollView {
             VStack(spacing: 16) {
                 Picker("Scope", selection: $scope) {
@@ -133,7 +133,7 @@ private struct LeaderboardRow: View {
         switch scope {
         case .minutes: return L("%lld min", entry.minutes)
         case .streak:  return L("%lld 🔥", entry.streak)
-        case .xp:      return L("%lld XP", entry.xp)
+        case .xp:      return L("xp.total", entry.xp)
         }
     }
 

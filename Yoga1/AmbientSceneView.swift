@@ -1,12 +1,12 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct AmbientSceneView: View {
+struct AmbientSceneView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var drift = false
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         ZStack {
             LinearGradient(colors: [.black, .indigo, .purple], startPoint: .top, endPoint: .bottom)
                 .ignoresSafeArea()

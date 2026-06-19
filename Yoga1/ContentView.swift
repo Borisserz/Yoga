@@ -1,11 +1,11 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct ContentView: View {
+struct ContentView: View {
     @Environment(AppState.self) private var app
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         ZStack {
             if !app.hasCompletedOnboarding {
                 OnboardingFlowView()

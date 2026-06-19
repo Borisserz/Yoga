@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 import SwiftData
 
 #if canImport(FirebaseCore)
@@ -8,24 +8,31 @@ import FirebaseCore
 final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        #if canImport(FirebaseCore)
-        FirebaseApp.configure()
-        #endif
         return true
     }
 }
 
 @main
-public struct YogaEpicApp: App {
+struct YogaEpicApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
 
-    @State private var app = AppState()
-    @State private var authManager = AuthManager()
+    @State private var app: AppState
+    @State private var authManager: AuthManager
     @Environment(\.scenePhase) private var scenePhase
 
-    public init() {}
+    init() {
+        #if canImport(FirebaseCore)
+        // Configure Firebase before any @State property that relies on it is initialized
+        if FirebaseApp.app() == nil {
+            FirebaseApp.configure()
+        }
+        #endif
+        
+        _app = State(wrappedValue: AppState())
+        _authManager = State(wrappedValue: AuthManager())
+    }
 
-    public var body: some Scene {
+    var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(app)
@@ -42,7 +49,7 @@ public struct YogaEpicApp: App {
                     app.currentUserId = newValue
                     AnalyticsManager.shared.setUser(id: newValue)
                 }
-                .onChange(of: scenePhase) { _, newPhase in
+                .onChange(of: scenePhase) { oldPhase, newPhase in
                     // Recompute smart reminders whenever the app becomes active so
                     // the streak nudge clears once the user has practised today.
                     if newPhase == .active {

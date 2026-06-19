@@ -1,13 +1,13 @@
 import Foundation
 import AVFoundation
 
-public final class AudioManager {
-    public static let shared = AudioManager()
+final class AudioManager {
+    static let shared = AudioManager()
     private var audioPlayer: AVAudioPlayer?
     
     private init() {}
     
-    public func toggleAmbientSound() -> Bool {
+    func toggleAmbientSound() -> Bool {
         if let player = audioPlayer, player.isPlaying {
             player.pause()
             return false
@@ -31,7 +31,7 @@ public final class AudioManager {
         return false
     }
     
-    public func stop() {
+    func stop() {
         audioPlayer?.stop()
     }
 }

@@ -1,14 +1,14 @@
-import SwiftUI
+internal import SwiftUI
 import SwiftData
 
-public struct ProgramsTabView: View {
+struct ProgramsTabView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppState.self) private var app
     @Query(sort: \YogaCourse.title) private var courses: [YogaCourse]
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         NavigationStack {
             Group {
                 if courses.isEmpty {

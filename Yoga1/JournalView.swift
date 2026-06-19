@@ -1,11 +1,11 @@
-import SwiftUI
+internal import SwiftUI
 import Charts
 
-public struct JournalView: View {
+struct JournalView: View {
     @Environment(AppState.self) private var app
     @State private var text = ""
 
-    public init() {}
+    init() {}
 
     private var entryDateFormatter: DateFormatter {
         let f = DateFormatter()
@@ -15,7 +15,7 @@ public struct JournalView: View {
         return f
     }
 
-    public var body: some View {
+    var body: some View {
         NavigationStack {
             List {
                 Section("Weekly activity") {

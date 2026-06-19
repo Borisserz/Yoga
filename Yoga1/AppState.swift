@@ -1,4 +1,4 @@
-import SwiftUI
+internal import SwiftUI
 import Foundation
 import Observation
 
@@ -8,53 +8,54 @@ import Observation
 /// and `AppStateManager` (an `@Observable`). All progress is now persisted, so
 /// streaks, minutes, journal entries and achievements survive app restarts.
 @Observable
-public final class AppState {
+final class AppState {
 
     // MARK: Persisted progress
-    public var hasCompletedOnboarding: Bool = false
-    public var isPremiumActivated: Bool = false
-    public var earnedAchievements: [String] = []          // achievement keys
-    public var completedMinutes: Int = 0
-    public var streakDays: Int = 0
-    public var lastSessionDate: Date?
-    public var moodKey: String = "mood.calm"
-    public var journalEntries: [JournalEntry] = []
-    public var sessions: [SessionRecord] = []
-    public var totalXP: Int = 0
-    public var lastSessionScore: Int = 0          // 0...100, from the most recent AI session
-    public var onboardingLevelKey: String = "onb.level.beginner"
-    public var onboardingGoalKey: String = "onb.goal.flexibility"
+    var hasCompletedOnboarding: Bool = false
+    var isPremiumActivated: Bool = false
+    var earnedAchievements: [String] = []          // achievement keys
+    var completedMinutes: Int = 0
+    var streakDays: Int = 0
+    var lastSessionDate: Date?
+    var moodKey: String = "mood.calm"
+    var journalEntries: [JournalEntry] = []
+    var sessions: [SessionRecord] = []
+    var totalXP: Int = 0
+    var lastSessionScore: Int = 0          // 0...100, from the most recent AI session
+    var onboardingLevelKey: String = "onb.level.beginner"
+    var onboardingGoalKey: String = "onb.goal.flexibility"
 
     // MARK: Personalization profile (captured during onboarding)
     /// Focus areas / pain points the user wants to work on (e.g. "onb.focus.back").
-    public var focusAreaKeys: [String] = []
+    var focusAreaKeys: [String] = []
     /// Target number of practice days per week.
-    public var weeklyTargetDays: Int = 3
+    var weeklyTargetDays: Int = 3
     /// Preferred time of day for practice (e.g. "onb.time.morning").
-    public var preferredTimeKey: String = "onb.time.morning"
+    var preferredTimeKey: String = "onb.time.morning"
     /// Preferred session length in minutes.
-    public var sessionLengthMinutes: Int = 10
+    var sessionLengthMinutes: Int = 10
 
     // MARK: Transient UI state (not persisted)
-    public var selectedTab: Int = 0
-    public var activePose: YogaPose?
-    public var pulseAnimation: Bool = false
+    var selectedTab: Int = 0
+    var activePose: YogaPose?
+    var pulseAnimation: Bool = false
 
     /// Set by `AuthManager` once Firebase resolves the user.
-    public var currentUserId: String = "local_user"
+    var currentUserId: String = "local_user"
+    var displayName: String = "Yogi"
 
     private let storageKey = "yoga_app_state_v2"
 
-    public init() {
+    init() {
         load()
     }
 
     // MARK: - Display helpers
 
-    public var mood: String { L(moodKey) }
+    var mood: String { L(moodKey) }
 
     /// Distinct days a session was logged in the current calendar week.
-    public var sessionsThisWeek: Int {
+    var sessionsThisWeek: Int {
         let cal = Calendar.current
         guard let week = cal.dateInterval(of: .weekOfYear, for: Date()) else { return 0 }
         let days = Set(sessions.filter { week.contains($0.date) }.map { cal.startOfDay(for: $0.date) })
@@ -62,18 +63,18 @@ public final class AppState {
     }
 
     /// 0...1 progress toward this week's practice-day goal.
-    public var weeklyGoalProgress: Double {
+    var weeklyGoalProgress: Double {
         weeklyTargetDays > 0 ? min(1, Double(sessionsThisWeek) / Double(weeklyTargetDays)) : 0
     }
 
     /// Whether a session has already been recorded today.
-    public var practicedToday: Bool {
+    var practicedToday: Bool {
         guard let last = lastSessionDate else { return false }
         return Calendar.current.isDate(last, inSameDayAs: Date())
     }
 
     /// Days since the last session (nil if the user has never practiced).
-    public var daysSinceLastSession: Int? {
+    var daysSinceLastSession: Int? {
         guard let last = lastSessionDate else { return nil }
         let cal = Calendar.current
         return cal.dateComponents([.day], from: cal.startOfDay(for: last),
@@ -83,7 +84,7 @@ public final class AppState {
     // MARK: - Level / XP
 
     /// Current level derived from total XP. Each level needs progressively more XP.
-    public var level: Int { max(1, Int((Double(totalXP) / 100.0).squareRoot()) + 1) }
+    var level: Int { max(1, Int((Double(totalXP) / 100.0).squareRoot()) + 1) }
 
     private func xpFloor(forLevel level: Int) -> Int {
         let n = max(0, level - 1)
@@ -91,18 +92,18 @@ public final class AppState {
     }
 
     /// XP accumulated within the current level.
-    public var xpIntoLevel: Int { totalXP - xpFloor(forLevel: level) }
+    var xpIntoLevel: Int { totalXP - xpFloor(forLevel: level) }
 
     /// XP span between the current level and the next one.
-    public var xpForNextLevel: Int { xpFloor(forLevel: level + 1) - xpFloor(forLevel: level) }
+    var xpForNextLevel: Int { xpFloor(forLevel: level + 1) - xpFloor(forLevel: level) }
 
     /// 0...1 progress towards the next level.
-    public var levelProgress: Double {
+    var levelProgress: Double {
         xpForNextLevel > 0 ? min(1, Double(xpIntoLevel) / Double(xpForNextLevel)) : 0
     }
 
     /// Minutes practiced per weekday for the last 7 days (oldest first).
-    public var weeklyActivity: [(label: String, minutes: Int)] {
+    var weeklyActivity: [(label: String, minutes: Int)] {
         let cal = Calendar.current
         let today = cal.startOfDay(for: Date())
         let fmt = DateFormatter()
@@ -119,7 +120,7 @@ public final class AppState {
 
     // MARK: - Mutations
 
-    public func completeOnboarding(levelKey: String? = nil,
+    func completeOnboarding(levelKey: String? = nil,
                                    goalKey: String? = nil,
                                    focusAreas: [String]? = nil,
                                    weeklyTarget: Int? = nil,
@@ -136,13 +137,13 @@ public final class AppState {
         persist()
     }
 
-    public func activatePremium() {
+    func activatePremium() {
         isPremiumActivated = true
         unlockAchievement("achievement.vip")
         persist()
     }
 
-    public func unlockAchievement(_ key: String) {
+    func unlockAchievement(_ key: String) {
         guard !earnedAchievements.contains(key) else { return }
         earnedAchievements.append(key)
         HapticsManager.shared.playSuccess()
@@ -151,7 +152,7 @@ public final class AppState {
     }
 
     /// Records a completed practice session and updates streak + totals.
-    public func completeSession(minutes: Int, poseKey: String? = nil, accuracy: Double? = nil) {
+    func completeSession(minutes: Int, poseKey: String? = nil, accuracy: Double? = nil) {
         completedMinutes += minutes
         sessions.append(SessionRecord(durationMinutes: minutes, poseKey: poseKey, accuracy: accuracy))
 
@@ -168,8 +169,11 @@ public final class AppState {
                                                  "pose": poseKey ?? "free",
                                                  "accuracy": Int((accuracy ?? 0) * 100)])
         FirebaseManager.shared.saveUserStats(userId: currentUserId,
+                                             name: displayName,
                                              minutes: completedMinutes,
-                                             streak: streakDays)
+                                             streak: streakDays,
+                                             xp: totalXP,
+                                             level: level)
         Task {
             let end = Date()
             let start = end.addingTimeInterval(TimeInterval(-minutes * 60))
@@ -200,14 +204,18 @@ public final class AppState {
         if streakDays >= 30 { unlockAchievement("achievement.streak_30") }
     }
 
-    public func addEntry(_ text: String) {
+    func addEntry(_ text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         journalEntries.insert(JournalEntry(text: trimmed), at: 0)
         persist()
     }
 
-    public func reset() {
+    func refreshReminders() {
+        NotificationManager.shared.refreshSchedules(sessions: sessions, streakDays: streakDays, practicedToday: practicedToday)
+    }
+
+    func reset() {
         hasCompletedOnboarding = false
         isPremiumActivated = false
         earnedAchievements = []

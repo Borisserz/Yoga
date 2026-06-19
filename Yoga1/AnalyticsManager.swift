@@ -12,11 +12,11 @@ import FirebaseCrashlytics
 /// Compiles whether or not the Firebase SDKs are linked yet: when they are
 /// absent, events are simply logged to the console (debug builds only), so the
 /// rest of the app can call `AnalyticsManager.shared.log(...)` unconditionally.
-public final class AnalyticsManager {
-    public static let shared = AnalyticsManager()
+final class AnalyticsManager {
+    static let shared = AnalyticsManager()
     private init() {}
 
-    public func log(event: String, parameters: [String: Any] = [:]) {
+    func log(event: String, parameters: [String: Any] = [:]) {
         #if canImport(FirebaseAnalytics)
         Analytics.logEvent(event, parameters: parameters)
         #else
@@ -26,7 +26,7 @@ public final class AnalyticsManager {
         #endif
     }
 
-    public func setUser(id: String) {
+    func setUser(id: String) {
         #if canImport(FirebaseAnalytics)
         Analytics.setUserID(id)
         #endif
@@ -35,7 +35,7 @@ public final class AnalyticsManager {
         #endif
     }
 
-    public func record(error: Error) {
+    func record(error: Error) {
         #if canImport(FirebaseCrashlytics)
         Crashlytics.crashlytics().record(error: error)
         #else

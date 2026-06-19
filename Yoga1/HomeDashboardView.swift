@@ -1,12 +1,12 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct HomeDashboardView: View {
+struct HomeDashboardView: View {
     @Environment(AppState.self) private var app
     @State private var animateBackground = false
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         NavigationStack {
             ZStack {
                 AnimatedGradientBackground(animate: $animateBackground)
@@ -134,14 +134,16 @@ struct QuickActionCard: View {
     let color: Color
 
     var body: some View {
-        HStack(spacing: 10) {
+        VStack(spacing: 8) {
             Image(systemName: systemImage)
-                .font(.title3)
+                .font(.title2)
             Text(title)
-                .font(.headline)
-            Spacer()
+                .font(.subheadline.bold())
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
         }
-        .padding()
+        .padding(.vertical, 14)
+        .padding(.horizontal, 4)
         .frame(maxWidth: .infinity)
         .background(color.opacity(0.2), in: RoundedRectangle(cornerRadius: 18))
     }

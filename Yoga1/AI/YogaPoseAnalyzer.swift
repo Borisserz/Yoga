@@ -4,7 +4,7 @@ import CoreGraphics
 
 // MARK: - Geometry Utils
 
-public extension CGPoint {
+extension CGPoint {
     func angle(to p2: CGPoint, p3: CGPoint) -> CGFloat {
         // Angle at vertex p2 formed by points self (p1) and p3.
         let vector1 = CGVector(dx: self.x - p2.x, dy: self.y - p2.y)
@@ -22,19 +22,19 @@ public extension CGPoint {
 
 // MARK: - Pose Analyzer Protocol
 
-public protocol YogaPoseAlgorithm {
+protocol YogaPoseAlgorithm {
     var targetPoseName: String { get }
     func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String)
 }
 
 // MARK: - Tree Pose (Врикшасана)
 
-public struct TreePoseAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "vrksasana"
+struct TreePoseAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "vrksasana"
     
-    public init() {}
+    init() {}
     
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let leftAnkle = joints[.leftAnkle],
               let rightAnkle = joints[.rightAnkle],
               let leftKnee = joints[.leftKnee],
@@ -80,12 +80,12 @@ public struct TreePoseAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Downward Dog (Адхо Мукха Шванасана)
 
-public struct DownwardDogAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "downward_dog"
+struct DownwardDogAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "downward_dog"
     
-    public init() {}
+    init() {}
     
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let leftWrist = joints[.leftWrist],
               let leftShoulder = joints[.leftShoulder],
               let leftHip = joints[.leftHip],
@@ -117,12 +117,12 @@ public struct DownwardDogAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Tadasana (Сила Гор 2)
 
-public struct TadasanaAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "tadasana"
+struct TadasanaAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "tadasana"
     
-    public init() {}
+    init() {}
     
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let leftAnkle = joints[.leftAnkle],
               let rightAnkle = joints[.rightAnkle],
               let leftKnee = joints[.leftKnee],
@@ -156,12 +156,12 @@ public struct TadasanaAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Utkatasana (Огненный шар 5)
 
-public struct UtkatasanaAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "utkatasana"
+struct UtkatasanaAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "utkatasana"
     
-    public init() {}
+    init() {}
     
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let leftAnkle = joints[.leftAnkle],
               let leftKnee = joints[.leftKnee],
               let leftHip = joints[.leftHip],
@@ -195,12 +195,12 @@ public struct UtkatasanaAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Virabhadrasana II (Поза Потока 1)
 
-public struct VirabhadrasanaIIAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "warrior_ii"
+struct VirabhadrasanaIIAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "warrior_ii"
     
-    public init() {}
+    init() {}
     
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let leftAnkle = joints[.leftAnkle],
               let rightAnkle = joints[.rightAnkle],
               let leftKnee = joints[.leftKnee],
@@ -251,12 +251,12 @@ public struct VirabhadrasanaIIAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Bakasana (Полет Дракона 3)
 
-public struct BakasanaAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "bakasana"
+struct BakasanaAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "bakasana"
     
-    public init() {}
+    init() {}
     
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let leftWrist = joints[.leftWrist],
               let leftElbow = joints[.leftElbow],
               let leftKnee = joints[.leftKnee],
@@ -283,12 +283,12 @@ public struct BakasanaAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Balasana (Тихий океан 4)
 
-public struct BalasanaAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "balasana"
+struct BalasanaAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "balasana"
     
-    public init() {}
+    init() {}
     
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let hip = joints[.leftHip] ?? joints[.rightHip],
               let shoulder = joints[.leftShoulder] ?? joints[.rightShoulder],
               let ankle = joints[.leftAnkle] ?? joints[.rightAnkle] else {
@@ -342,12 +342,12 @@ func bestSide(_ joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> Side
 
 // MARK: - Plank (Phalakasana)
 
-public struct PlankAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "plank"
+struct PlankAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "plank"
 
-    public init() {}
+    init() {}
 
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let s = bestSide(joints) else {
             return (false, String(localized: "Turn sideways so the camera sees your whole body"))
         }
@@ -381,12 +381,12 @@ public struct PlankAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Cobra (Bhujangasana)
 
-public struct CobraAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "cobra"
+struct CobraAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "cobra"
 
-    public init() {}
+    init() {}
 
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let s = bestSide(joints) else {
             return (false, String(localized: "Lie on your stomach, sideways to the camera"))
         }
@@ -414,12 +414,12 @@ public struct CobraAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Triangle (Trikonasana)
 
-public struct TriangleAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "triangle"
+struct TriangleAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "triangle"
 
-    public init() {}
+    init() {}
 
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let leftAnkle = joints[.leftAnkle],
               let rightAnkle = joints[.rightAnkle],
               let leftKnee = joints[.leftKnee],
@@ -456,12 +456,12 @@ public struct TriangleAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Boat (Navasana)
 
-public struct BoatAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "boat"
+struct BoatAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "boat"
 
-    public init() {}
+    init() {}
 
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let s = bestSide(joints) else {
             return (false, String(localized: "Sit sideways to the camera, in full view"))
         }
@@ -492,12 +492,12 @@ public struct BoatAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Warrior I (Virabhadrasana I)
 
-public struct WarriorIAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "warrior_i"
+struct WarriorIAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "warrior_i"
 
-    public init() {}
+    init() {}
 
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let leftAnkle = joints[.leftAnkle],
               let rightAnkle = joints[.rightAnkle],
               let leftKnee = joints[.leftKnee],
@@ -538,12 +538,12 @@ public struct WarriorIAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Half Moon (Ardha Chandrasana)
 
-public struct HalfMoonAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "half_moon"
+struct HalfMoonAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "half_moon"
 
-    public init() {}
+    init() {}
 
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let leftAnkle = joints[.leftAnkle],
               let rightAnkle = joints[.rightAnkle],
               let leftKnee = joints[.leftKnee],
@@ -582,12 +582,12 @@ public struct HalfMoonAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Camel (Ustrasana)
 
-public struct CamelAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "camel"
+struct CamelAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "camel"
 
-    public init() {}
+    init() {}
 
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let s = bestSide(joints) else {
             return (false, String(localized: "Kneel sideways to the camera"))
         }
@@ -614,12 +614,12 @@ public struct CamelAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Bridge (Setu Bandhasana)
 
-public struct BridgeAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "bridge"
+struct BridgeAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "bridge"
 
-    public init() {}
+    init() {}
 
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let s = bestSide(joints) else {
             return (false, String(localized: "Lie on your back, sideways to the camera"))
         }
@@ -647,12 +647,12 @@ public struct BridgeAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Seated Forward Bend (Paschimottanasana)
 
-public struct SeatedForwardBendAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "seated_forward_bend"
+struct SeatedForwardBendAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName = "seated_forward_bend"
 
-    public init() {}
+    init() {}
 
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         guard let s = bestSide(joints) else {
             return (false, String(localized: "Sit sideways to the camera, legs in view"))
         }
@@ -675,14 +675,14 @@ public struct SeatedForwardBendAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Generic Algorithm (Fallback)
 
-public struct GenericPoseAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName: String
+struct GenericPoseAlgorithm: YogaPoseAlgorithm {
+    let targetPoseName: String
     
-    public init(name: String) {
+    init(name: String) {
         self.targetPoseName = name
     }
     
-    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+    func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         if joints.isEmpty {
             return (false, String(localized: "Step into frame"))
         }
@@ -692,8 +692,8 @@ public struct GenericPoseAlgorithm: YogaPoseAlgorithm {
 
 // MARK: - Analyzer Factory
 
-public final class YogaPoseAnalyzer {
-    public static func getAlgorithm(for poseName: String) -> YogaPoseAlgorithm {
+final class YogaPoseAnalyzer {
+    static func getAlgorithm(for poseName: String) -> YogaPoseAlgorithm {
         switch poseName {
         case "warrior_ii":
             return VirabhadrasanaIIAlgorithm()

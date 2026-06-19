@@ -1,6 +1,6 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct OnboardingFlowView: View {
+struct OnboardingFlowView: View {
     @Environment(AppState.self) private var app
     @State private var step = 0
 
@@ -21,9 +21,9 @@ public struct OnboardingFlowView: View {
 
     private let lastStep = 7
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         VStack(spacing: 24) {
             ProgressView(value: Double(step), total: Double(lastStep))
                 .tint(.mint)

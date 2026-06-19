@@ -1,12 +1,12 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct PaywallView: View {
+struct PaywallView: View {
     @Environment(AppState.self) private var app
     @Environment(\.dismiss) private var dismiss
 
-    public init() {}
+    init() {}
 
-    public var body: some View {
+    var body: some View {
         VStack(spacing: 24) {
             Spacer()
 

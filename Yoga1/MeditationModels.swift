@@ -1,10 +1,10 @@
-import SwiftUI
+internal import SwiftUI
 
 // MARK: - Category
 
 /// Coarse grouping for the meditation library. `rawValue` is a stable,
 /// language-independent key; labels are localized.
-public enum MeditationCategory: String, CaseIterable, Identifiable, Hashable {
+enum MeditationCategory: String, CaseIterable, Identifiable, Hashable {
     case morning
     case focus
     case sleep
@@ -12,10 +12,10 @@ public enum MeditationCategory: String, CaseIterable, Identifiable, Hashable {
     case anxiety
     case gratitude
 
-    public var id: String { rawValue }
-    public var title: String { L("med.cat.\(rawValue)") }
+    var id: String { rawValue }
+    var title: String { L("med.cat.\(rawValue)") }
 
-    public var icon: String {
+    var icon: String {
         switch self {
         case .morning:   return "sunrise.fill"
         case .focus:     return "scope"
@@ -26,7 +26,7 @@ public enum MeditationCategory: String, CaseIterable, Identifiable, Hashable {
         }
     }
 
-    public var tint: Color {
+    var tint: Color {
         switch self {
         case .morning:   return .orange
         case .focus:     return .blue
@@ -41,33 +41,33 @@ public enum MeditationCategory: String, CaseIterable, Identifiable, Hashable {
 // MARK: - Segment
 
 /// A timed step in a guided meditation: a localized prompt held for `seconds`.
-public struct MeditationSegment: Identifiable, Hashable {
-    public let id = UUID()
-    public let textKey: String
-    public let seconds: Double
+struct MeditationSegment: Identifiable, Hashable {
+    let id = UUID()
+    let textKey: String
+    let seconds: Double
 
-    public init(_ textKey: String, _ seconds: Double) {
+    init(_ textKey: String, _ seconds: Double) {
         self.textKey = textKey
         self.seconds = seconds
     }
 
-    public var text: String { L(textKey) }
+    var text: String { L(textKey) }
 }
 
 // MARK: - Meditation
 
 /// A meditation. Guided meditations play through `segments`; open-timer ones
 /// let the user pick a length and run a calm timer with interval bells.
-public struct Meditation: Identifiable, Hashable {
-    public let id = UUID()
-    public let key: String
-    public let category: MeditationCategory
-    public let gradient: [Color]
-    public let guided: Bool
-    public let segments: [MeditationSegment]
-    public let durationOptions: [Int]   // minutes — used by open-timer meditations
+struct Meditation: Identifiable, Hashable {
+    let id = UUID()
+    let key: String
+    let category: MeditationCategory
+    let gradient: [Color]
+    let guided: Bool
+    let segments: [MeditationSegment]
+    let durationOptions: [Int]   // minutes — used by open-timer meditations
 
-    public init(key: String,
+    init(key: String,
                 category: MeditationCategory,
                 gradient: [Color],
                 guided: Bool,
@@ -81,15 +81,15 @@ public struct Meditation: Identifiable, Hashable {
         self.durationOptions = durationOptions
     }
 
-    public var title: String { L("med.\(key).title") }
-    public var subtitle: String { L("med.\(key).subtitle") }
+    var title: String { L("med.\(key).title") }
+    var subtitle: String { L("med.\(key).subtitle") }
 
     /// Total length of a guided script, in seconds.
-    public var scriptSeconds: Double { segments.reduce(0) { $0 + $1.seconds } }
+    var scriptSeconds: Double { segments.reduce(0) { $0 + $1.seconds } }
 
     /// Rounded minutes for a guided meditation (≥1).
-    public var guidedMinutes: Int { max(1, Int((scriptSeconds / 60).rounded())) }
+    var guidedMinutes: Int { max(1, Int((scriptSeconds / 60).rounded())) }
 
     /// Default minutes shown on cards.
-    public var displayMinutes: Int { guided ? guidedMinutes : (durationOptions.first ?? 10) }
+    var displayMinutes: Int { guided ? guidedMinutes : (durationOptions.first ?? 10) }
 }

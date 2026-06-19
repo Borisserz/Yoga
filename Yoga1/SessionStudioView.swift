@@ -1,6 +1,6 @@
-import SwiftUI
+internal import SwiftUI
 
-public struct SessionStudioView: View {
+struct SessionStudioView: View {
     @Environment(AppState.self) private var app
 
     @State private var selectedLevel = 1
@@ -9,7 +9,7 @@ public struct SessionStudioView: View {
     @State private var showAmbient = false
     @State private var showPaywall = false
 
-    public init() {}
+    init() {}
 
     /// Poses after applying level, category and search-text filters.
     var filteredPoses: [YogaPose] {
@@ -25,7 +25,7 @@ public struct SessionStudioView: View {
         }
     }
 
-    public var body: some View {
+    var body: some View {
         NavigationStack {
             VStack(spacing: 14) {
                 Picker("Level", selection: $selectedLevel) {

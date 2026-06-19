@@ -8,15 +8,15 @@ import FirebaseFirestore
 // MARK: - Leaderboard model
 
 /// A single ranked competitor on the community leaderboard.
-public struct LeaderboardEntry: Identifiable, Hashable, Sendable {
-    public let id: String          // user id
-    public let name: String
-    public let minutes: Int
-    public let streak: Int
-    public let xp: Int
-    public let level: Int
+struct LeaderboardEntry: Identifiable, Hashable, Sendable {
+    let id: String          // user id
+    let name: String
+    let minutes: Int
+    let streak: Int
+    let xp: Int
+    let level: Int
 
-    public init(id: String, name: String, minutes: Int, streak: Int, xp: Int, level: Int) {
+    init(id: String, name: String, minutes: Int, streak: Int, xp: Int, level: Int) {
         self.id = id
         self.name = name
         self.minutes = minutes
@@ -27,13 +27,13 @@ public struct LeaderboardEntry: Identifiable, Hashable, Sendable {
 }
 
 /// Scope of the leaderboard / challenge ranking.
-public enum LeaderboardScope: String, CaseIterable, Identifiable, Sendable {
+enum LeaderboardScope: String, CaseIterable, Identifiable, Sendable {
     case minutes
     case streak
     case xp
 
-    public var id: String { rawValue }
-    public var title: String { L("leaderboard.scope.\(rawValue)") }
+    var id: String { rawValue }
+    var title: String { L("leaderboard.scope.\(rawValue)") }
 
     /// Firestore field this scope orders by.
     var field: String {
@@ -46,15 +46,15 @@ public enum LeaderboardScope: String, CaseIterable, Identifiable, Sendable {
 }
 
 @Observable
-public final class FirebaseManager {
-    public static let shared = FirebaseManager()
+final class FirebaseManager {
+    static let shared = FirebaseManager()
 
-    public init() {}
+    init() {}
 
     // MARK: - Write
 
-    /// Upserts the player's public stats into the shared `leaderboard` collection.
-    public func saveUserStats(userId: String,
+    /// Upserts the player's stats into the shared `leaderboard` collection.
+    func saveUserStats(userId: String,
                               name: String,
                               minutes: Int,
                               streak: Int,
@@ -72,7 +72,7 @@ public final class FirebaseManager {
             "level": level,
             "lastUpdated": FieldValue.serverTimestamp()
         ]
-        // Mirror to the private user doc and the public leaderboard doc.
+        // Mirror to the private user doc and the leaderboard doc.
         db.collection("users").document(userId).setData(payload, merge: true)
         db.collection("leaderboard").document(userId).setData(payload, merge: true) { error in
             if let error = error {
@@ -90,7 +90,7 @@ public final class FirebaseManager {
 
     /// Fetches the top competitors for a scope. Falls back to sample data when
     /// Firestore is unavailable so the UI is always demonstrable.
-    public func fetchLeaderboard(scope: LeaderboardScope,
+    func fetchLeaderboard(scope: LeaderboardScope,
                                  limit: Int = 25,
                                  currentUser: LeaderboardEntry? = nil) async -> [LeaderboardEntry] {
         #if canImport(FirebaseFirestore)

@@ -1,5 +1,5 @@
 import Foundation
-import SwiftUI
+internal import SwiftUI
 import Observation
 
 #if canImport(FirebaseAuth)
@@ -7,12 +7,12 @@ import FirebaseAuth
 #endif
 
 @Observable
-public final class AuthManager {
-    public var isAnonymous: Bool = true
-    public var isAuthenticated: Bool = false
-    public var currentUserId: String = "Unknown"
+final class AuthManager {
+    var isAnonymous: Bool = true
+    var isAuthenticated: Bool = false
+    var currentUserId: String = "Unknown"
     
-    public init() {
+    init() {
         #if canImport(FirebaseAuth)
         Auth.auth().addStateDidChangeListener { [weak self] _, user in
             guard let self = self else { return }
@@ -28,7 +28,7 @@ public final class AuthManager {
         #endif
     }
     
-    public func signInAnonymously() {
+    func signInAnonymously() {
         #if canImport(FirebaseAuth)
         Auth.auth().signInAnonymously { result, error in
             if let error = error {
@@ -42,7 +42,7 @@ public final class AuthManager {
         #endif
     }
     
-    public func signOut() {
+    func signOut() {
         #if canImport(FirebaseAuth)
         do {
             try Auth.auth().signOut()

@@ -1,17 +1,17 @@
-import SwiftUI
+internal import SwiftUI
 import SwiftData
 
-public struct CourseDayDetailView: View {
+struct CourseDayDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
     @Bindable var day: CourseDay
 
-    public init(day: CourseDay) {
+    init(day: CourseDay) {
         self.day = day
     }
 
-    public var body: some View {
+    var body: some View {
         VStack(spacing: 24) {
             Spacer()
 
