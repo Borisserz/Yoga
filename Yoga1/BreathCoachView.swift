@@ -5,6 +5,7 @@ public struct BreathCoachView: View {
     @State private var phase = "Готов?"
     @State private var scale: CGFloat = 0.6
     @State private var running = false
+    @State private var breathingTask: Task<Void, Never>?
 
     public init() {}
 
@@ -19,6 +20,9 @@ public struct BreathCoachView: View {
             }
             .pickerStyle(.wheel)
             .frame(height: 120)
+            .onChange(of: selected) { _ in
+                reset()
+            }
 
             Circle()
                 .fill(selected.color.gradient)
@@ -39,39 +43,52 @@ public struct BreathCoachView: View {
             .buttonStyle(.borderedProminent)
         }
         .padding()
+        .onDisappear {
+            reset()
+        }
     }
 
     private func runPattern() {
+        breathingTask?.cancel()
         running = true
-        Task {
+        breathingTask = Task {
             for _ in 0..<selected.rounds {
+                if Task.isCancelled { break }
                 await MainActor.run {
                     phase = "Вдох"
                     withAnimation(.easeInOut(duration: selected.inhale)) { scale = 1.0 }
                 }
                 try? await Task.sleep(nanoseconds: UInt64(selected.inhale * 1_000_000_000))
 
+                if Task.isCancelled { break }
                 await MainActor.run {
                     phase = "Пауза"
                 }
                 try? await Task.sleep(nanoseconds: UInt64(selected.hold * 1_000_000_000))
 
+                if Task.isCancelled { break }
                 await MainActor.run {
                     phase = "Выдох"
                     withAnimation(.easeInOut(duration: selected.exhale)) { scale = 0.6 }
                 }
                 try? await Task.sleep(nanoseconds: UInt64(selected.exhale * 1_000_000_000))
             }
-            await MainActor.run {
-                phase = "Готово"
-                running = false
+            if !Task.isCancelled {
+                await MainActor.run {
+                    phase = "Готово"
+                    running = false
+                }
             }
         }
     }
 
     private func reset() {
+        breathingTask?.cancel()
+        breathingTask = nil
         running = false
-        phase = "Готов?"
-        scale = 0.6
+        withAnimation(.easeOut(duration: 0.5)) {
+            phase = "Готов?"
+            scale = 0.6
+        }
     }
 }
