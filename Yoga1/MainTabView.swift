@@ -8,8 +8,8 @@ public struct MainTabView: View {
     public var body: some View {
         @Bindable var app = app
         TabView(selection: $app.selectedTab) {
-            HomeDashboardView()
-                .tabItem { Label("Home", systemImage: "house.fill") }
+            TodayView()
+                .tabItem { Label("Today", systemImage: "sun.max.fill") }
                 .tag(0)
 
             ProgramsTabView()
