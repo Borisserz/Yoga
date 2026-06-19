@@ -4,20 +4,20 @@ import SwiftData
 public struct ProgramsTabView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \YogaCourse.title) private var courses: [YogaCourse]
-    
+
     public init() {}
-    
+
     public var body: some View {
         NavigationStack {
             Group {
                 if courses.isEmpty {
                     ContentUnavailableView {
-                        Label("Нет программ", systemImage: "tray")
+                        Label("No programs", systemImage: "tray")
                     } description: {
-                        Text("Сгенерируйте первую программу.")
+                        Text("Generate your first program.")
                     } actions: {
-                        Button("Сгенерировать") {
-                            generateMockCourse()
+                        Button("Generate") {
+                            generateStarterCourse()
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(.mint)
@@ -31,15 +31,15 @@ public struct ProgramsTabView: View {
                                 Text(course.desc)
                                     .font(.subheadline)
                                     .foregroundStyle(.secondary)
-                                
+
                                 let completed = course.days.filter { $0.isCompleted }.count
                                 let total = course.days.count
                                 let progress = total > 0 ? Double(completed) / Double(total) : 0.0
-                                
+
                                 ProgressView(value: progress)
                                     .tint(.mint)
-                                
-                                Text("Пройдено: \(completed) из \(total) дней")
+
+                                Text(L("Completed: %lld of %lld days", completed, total))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -51,37 +51,37 @@ public struct ProgramsTabView: View {
                     .listStyle(.plain)
                 }
             }
-            .navigationTitle("Курсы")
+            .navigationTitle("Programs")
             .onAppear {
                 if courses.isEmpty {
-                    generateMockCourse()
+                    generateStarterCourse()
                 }
             }
         }
     }
-    
-    private func generateMockCourse() {
+
+    private func generateStarterCourse() {
         let course = YogaCourse(
-            title: "30 дней гибкости",
-            desc: "Программа для развития гибкости всего тела шаг за шагом.",
+            title: L("course.starter.title"),
+            desc: L("course.starter.desc"),
             level: 1
         )
         modelContext.insert(course)
-        
-        let poses = ["Собака мордой вниз", "Поза воина I", "Поза дерева", "Поза лотоса"]
-        
+
+        let flow = YogaLibrary.starterFlow
+
         for i in 1...30 {
-            let poseName = poses[i % poses.count]
+            let poseKey = flow[i % flow.count]
             let day = CourseDay(
                 dayNumber: i,
                 isCompleted: false,
-                poseName: poseName,
-                durationMinutes: 10 + (i / 5) // Duration increases slightly over time
+                poseName: poseKey,
+                durationMinutes: 10 + (i / 5)
             )
             modelContext.insert(day)
             course.days.append(day)
         }
-        
+
         try? modelContext.save()
     }
 }

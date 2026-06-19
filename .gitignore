@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xcscmblueprint
+*.moved-aside
+xcuserdata/
+*.xccheckout
+*.xcworkspace/xcuserdata/
+Yoga1.xcodeproj/project.xcworkspace/xcuserdata/
+Yoga1.xcodeproj/xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# CocoaPods / Carthage (if added later)
+Pods/
+Carthage/Build/
+
+# Secrets — DO NOT COMMIT
+GoogleService-Info.plist
+*.p8
+*.p12
+*.mobileprovision
+.env
+
+# Misc
+*.log
+*.tmp

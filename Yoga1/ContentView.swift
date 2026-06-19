@@ -1,13 +1,13 @@
 import SwiftUI
 
 public struct ContentView: View {
-    @Environment(AppStateManager.self) private var appState
+    @Environment(AppState.self) private var app
 
     public init() {}
 
     public var body: some View {
         ZStack {
-            if !appState.hasCompletedOnboarding {
+            if !app.hasCompletedOnboarding {
                 OnboardingFlowView()
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             } else {
@@ -15,6 +15,6 @@ public struct ContentView: View {
                     .transition(.opacity)
             }
         }
-        .animation(.default, value: appState.hasCompletedOnboarding)
+        .animation(.default, value: app.hasCompletedOnboarding)
     }
 }

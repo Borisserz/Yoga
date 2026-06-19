@@ -1,41 +1,41 @@
 import SwiftUI
 
 public struct MoreTabView: View {
-    @Environment(AppStateManager.self) private var appState
-    
+    @Environment(AppState.self) private var app
+
     public init() {}
-    
+
     public var body: some View {
         NavigationStack {
             List {
-                Section("Аккаунт") {
+                Section("Account") {
                     HStack {
                         Image(systemName: "person.crop.circle")
                             .font(.largeTitle)
                             .foregroundStyle(.mint)
                         VStack(alignment: .leading) {
-                            Text("Пользователь")
+                            Text("User")
                                 .font(.headline)
-                            Text(appState.isPremiumActivated ? "Premium План 👑" : "Свободный план")
+                            Text(app.isPremiumActivated ? "Premium Plan 👑" : "Free plan")
                                 .font(.caption)
-                                .foregroundStyle(appState.isPremiumActivated ? .yellow : .secondary)
+                                .foregroundStyle(app.isPremiumActivated ? .yellow : .secondary)
                         }
                     }
                     .padding(.vertical, 8)
                 }
-                
-                if !appState.earnedAchievements.isEmpty {
-                    Section("Достижения") {
+
+                if !app.earnedAchievements.isEmpty {
+                    Section("Achievements") {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 16) {
-                                ForEach(appState.earnedAchievements, id: \.self) { badge in
+                                ForEach(app.earnedAchievements, id: \.self) { badge in
                                     VStack {
                                         Image(systemName: "medal.fill")
                                             .font(.title)
                                             .foregroundStyle(.yellow)
                                             .padding()
                                             .background(Color.mint.opacity(0.2), in: Circle())
-                                        Text(badge)
+                                        Text(L(badge))
                                             .font(.caption)
                                             .bold()
                                     }
@@ -45,30 +45,30 @@ public struct MoreTabView: View {
                         }
                     }
                 }
-                
-                Section("Настройки") {
-                    NavigationLink("Уведомления") {
-                        Text("Настройки уведомлений")
+
+                Section("Settings") {
+                    NavigationLink("Notifications") {
+                        Text("Notification settings")
                     }
                     NavigationLink("Apple Health") {
-                        Text("Синхронизация с HealthKit")
+                        Text("HealthKit synchronization")
                     }
                 }
-                
-                Section("Информация") {
-                    Link("Поддержка", destination: URL(string: "https://example.com/support")!)
-                    Link("Политика конфиденциальности", destination: URL(string: "https://example.com/privacy")!)
+
+                Section("Information") {
+                    Link("Support", destination: URL(string: "https://example.com/support")!)
+                    Link("Privacy Policy", destination: URL(string: "https://example.com/privacy")!)
                 }
-                
+
                 Section {
-                    Button(role: .destructive, action: {
-                        appState.reset()
-                    }) {
-                        Text("Выйти из аккаунта")
+                    Button(role: .destructive) {
+                        app.reset()
+                    } label: {
+                        Text("Sign out")
                     }
                 }
             }
-            .navigationTitle("Профиль")
+            .navigationTitle("Profile")
         }
     }
 }

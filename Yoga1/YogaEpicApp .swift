@@ -1,6 +1,3 @@
-
-
-
 import SwiftUI
 import SwiftData
 
@@ -8,9 +5,9 @@ import SwiftData
 import FirebaseCore
 #endif
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         #if canImport(FirebaseCore)
         FirebaseApp.configure()
         #endif
@@ -21,9 +18,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 public struct YogaEpicApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    
-    @StateObject private var state = YogaAppState()
-    @State private var appState = AppStateManager()
+
+    @State private var app = AppState()
     @State private var authManager = AuthManager()
 
     public init() {}
@@ -31,14 +27,18 @@ public struct YogaEpicApp: App {
     public var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(state)
-                .environment(appState)
+                .environment(app)
                 .environment(authManager)
                 .preferredColorScheme(.dark)
                 .onAppear {
-                    if appState.hasCompletedOnboarding == false {
+                    if !app.hasCompletedOnboarding {
                         authManager.signInAnonymously()
                     }
+                    NotificationManager.shared.requestAuthorization()
+                }
+                .onChange(of: authManager.currentUserId) { _, newValue in
+                    app.currentUserId = newValue
+                    AnalyticsManager.shared.setUser(id: newValue)
                 }
         }
         .modelContainer(for: [YogaCourse.self, CourseDay.self])

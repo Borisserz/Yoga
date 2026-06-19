@@ -6,9 +6,7 @@ import CoreGraphics
 
 public extension CGPoint {
     func angle(to p2: CGPoint, p3: CGPoint) -> CGFloat {
-        let v1 = CGVector(dx: p1.x - self.x, dy: p1.y - self.y)
-        let v2 = CGVector(dx: p3.x - p2.x, dy: p3.y - p2.y)
-        // Actually, angle between 3 points: self is point 1, p2 is vertex, p3 is point 3.
+        // Angle at vertex p2 formed by points self (p1) and p3.
         let vector1 = CGVector(dx: self.x - p2.x, dy: self.y - p2.y)
         let vector2 = CGVector(dx: p3.x - p2.x, dy: p3.y - p2.y)
         
@@ -32,7 +30,7 @@ public protocol YogaPoseAlgorithm {
 // MARK: - Tree Pose (Врикшасана)
 
 public struct TreePoseAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "Поза дерева"
+    public let targetPoseName = "vrksasana"
     
     public init() {}
     
@@ -43,7 +41,7 @@ public struct TreePoseAlgorithm: YogaPoseAlgorithm {
               let rightKnee = joints[.rightKnee],
               let leftHip = joints[.leftHip],
               let rightHip = joints[.rightHip] else {
-            return (false, "Встаньте полностью в кадр")
+            return (false, String(localized: "Step fully into the frame"))
         }
         
         // Tree pose: One foot is lifted and placed on the inner thigh of the other leg.
@@ -54,7 +52,7 @@ public struct TreePoseAlgorithm: YogaPoseAlgorithm {
         let rightIsLifted = rightAnkle.y < leftKnee.y
         
         if !leftIsLifted && !rightIsLifted {
-            return (false, "Поднимите одну ногу и поставьте её на внутреннюю часть бедра")
+            return (false, String(localized: "Lift one leg and place the foot on your inner thigh"))
         }
         
         // Check knee angle for the lifted leg
@@ -64,7 +62,7 @@ public struct TreePoseAlgorithm: YogaPoseAlgorithm {
         
         // Lifted knee should be bent sharply
         if liftedKneeAngle > 90 {
-            return (false, "Согните поднятую ногу сильнее")
+            return (false, String(localized: "Bend your lifted leg more"))
         }
         
         // Check standing leg straightness
@@ -73,17 +71,17 @@ public struct TreePoseAlgorithm: YogaPoseAlgorithm {
             leftHip.angle(to: leftKnee, p3: leftAnkle)
             
         if standingKneeAngle < 160 {
-            return (false, "Выпрямите опорную ногу")
+            return (false, String(localized: "Straighten your standing leg"))
         }
         
-        return (true, "Отлично! Держите баланс.")
+        return (true, String(localized: "Great! Hold your balance."))
     }
 }
 
 // MARK: - Downward Dog (Адхо Мукха Шванасана)
 
 public struct DownwardDogAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "Собака мордой вниз"
+    public let targetPoseName = "downward_dog"
     
     public init() {}
     
@@ -92,7 +90,7 @@ public struct DownwardDogAlgorithm: YogaPoseAlgorithm {
               let leftShoulder = joints[.leftShoulder],
               let leftHip = joints[.leftHip],
               let leftAnkle = joints[.leftAnkle] else {
-            return (false, "Встаньте боком к камере")
+            return (false, String(localized: "Turn sideways to the camera"))
         }
         
         // Downward dog forms a triangle (hands, hips, feet)
@@ -100,27 +98,27 @@ public struct DownwardDogAlgorithm: YogaPoseAlgorithm {
         let hipAngle = leftShoulder.angle(to: leftHip, p3: leftAnkle)
         
         if hipAngle > 110 {
-            return (false, "Поднимите таз выше, сделайте угол острее")
+            return (false, String(localized: "Lift your hips higher to sharpen the angle"))
         }
         
         if hipAngle < 45 {
-            return (false, "Разойдитесь шире, угол слишком острый")
+            return (false, String(localized: "Widen your stance, the angle is too sharp"))
         }
         
         // Check arms straightness
         let armAngle = leftWrist.angle(to: leftShoulder, p3: leftHip)
         if armAngle < 150 {
-            return (false, "Выпрямите руки и вытяните спину")
+            return (false, String(localized: "Straighten your arms and lengthen your back"))
         }
         
-        return (true, "Идеальная собака мордой вниз!")
+        return (true, String(localized: "Perfect downward dog!"))
     }
 }
 
 // MARK: - Tadasana (Сила Гор 2)
 
 public struct TadasanaAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "Сила Гор 2"
+    public let targetPoseName = "tadasana"
     
     public init() {}
     
@@ -130,36 +128,36 @@ public struct TadasanaAlgorithm: YogaPoseAlgorithm {
               let leftKnee = joints[.leftKnee],
               let leftHip = joints[.leftHip],
               let leftShoulder = joints[.leftShoulder] else {
-            return (false, "Встаньте полностью в кадр")
+            return (false, String(localized: "Step fully into the frame"))
         }
         
         // Tadasana: Standing perfectly straight.
         // Check if knees are straight
         let kneeAngle = leftHip.angle(to: leftKnee, p3: leftAnkle)
         if kneeAngle < 165 {
-            return (false, "Выпрямите колени")
+            return (false, String(localized: "Straighten your knees"))
         }
         
         // Check if feet are somewhat close to each other
         let feetDistance = abs(leftAnkle.x - rightAnkle.x)
         if feetDistance > 0.2 { // normalized distance
-            return (false, "Сведите стопы ближе")
+            return (false, String(localized: "Bring your feet closer together"))
         }
         
         // Check if shoulders are above hips (standing straight)
         let spineAngle = leftKnee.angle(to: leftHip, p3: leftShoulder)
         if spineAngle < 165 {
-            return (false, "Выпрямите спину и расправьте плечи")
+            return (false, String(localized: "Straighten your back and open your shoulders"))
         }
         
-        return (true, "Отлично, держите позу горы!")
+        return (true, String(localized: "Great, hold mountain pose!"))
     }
 }
 
 // MARK: - Utkatasana (Огненный шар 5)
 
 public struct UtkatasanaAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "Огненный шар 5"
+    public let targetPoseName = "utkatasana"
     
     public init() {}
     
@@ -169,36 +167,36 @@ public struct UtkatasanaAlgorithm: YogaPoseAlgorithm {
               let leftHip = joints[.leftHip],
               let leftShoulder = joints[.leftShoulder],
               let leftWrist = joints[.leftWrist] else {
-            return (false, "Встаньте боком к камере")
+            return (false, String(localized: "Turn sideways to the camera"))
         }
         
         // Chair pose: Knees bent, hips low, arms raised.
         let kneeAngle = leftHip.angle(to: leftKnee, p3: leftAnkle)
         if kneeAngle > 140 {
-            return (false, "Присядьте ниже, согните колени")
+            return (false, String(localized: "Sit lower, bend your knees"))
         }
         if kneeAngle < 70 {
-            return (false, "Не приседайте так глубоко")
+            return (false, String(localized: "Don't squat so deep"))
         }
         
         let hipAngle = leftKnee.angle(to: leftHip, p3: leftShoulder)
         if hipAngle < 90 {
-            return (false, "Поднимите грудь, не наклоняйтесь слишком сильно")
+            return (false, String(localized: "Lift your chest, don't lean too far forward"))
         }
         
         // Arms should be raised (wrist higher than shoulder) -> y is 0 at top, 1 at bottom
         if leftWrist.y > leftShoulder.y {
-            return (false, "Поднимите руки вверх")
+            return (false, String(localized: "Raise your arms overhead"))
         }
         
-        return (true, "Мощная поза! Держим!")
+        return (true, String(localized: "Powerful pose! Hold it!"))
     }
 }
 
 // MARK: - Virabhadrasana II (Поза Потока 1)
 
 public struct VirabhadrasanaIIAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "Поза Потока 1"
+    public let targetPoseName = "warrior_ii"
     
     public init() {}
     
@@ -211,13 +209,13 @@ public struct VirabhadrasanaIIAlgorithm: YogaPoseAlgorithm {
               let rightHip = joints[.rightHip],
               let leftWrist = joints[.leftWrist],
               let rightWrist = joints[.rightWrist] else {
-            return (false, "Встаньте полностью в кадр боком")
+            return (false, String(localized: "Step fully into the frame, sideways"))
         }
         
         // Stance width
         let stanceWidth = abs(leftAnkle.x - rightAnkle.x)
         if stanceWidth < 0.3 {
-            return (false, "Расставьте ноги шире")
+            return (false, String(localized: "Step your feet wider apart"))
         }
         
         // Find which leg is forward (bent). Let's assume the one with lower Y (higher up in normalized) or simply the one with knee angle closest to 90.
@@ -229,32 +227,32 @@ public struct VirabhadrasanaIIAlgorithm: YogaPoseAlgorithm {
         let straightKneeAngle = isLeftForward ? rightKneeAngle : leftKneeAngle
         
         if straightKneeAngle < 150 {
-            return (false, "Выпрямите заднюю ногу")
+            return (false, String(localized: "Straighten your back leg"))
         }
         
         if bentKneeAngle > 130 {
-            return (false, "Согните переднее колено сильнее")
+            return (false, String(localized: "Bend your front knee more"))
         }
         
         if bentKneeAngle < 70 {
-            return (false, "Угол переднего колена слишком острый")
+            return (false, String(localized: "Your front knee angle is too sharp"))
         }
         
         // Check arms (horizontal)
         // Y coordinate difference between wrists should be small
         let armSlope = abs(leftWrist.y - rightWrist.y)
         if armSlope > 0.15 {
-            return (false, "Держите руки параллельно полу")
+            return (false, String(localized: "Keep your arms parallel to the floor"))
         }
         
-        return (true, "Прекрасный Воин II!")
+        return (true, String(localized: "Beautiful Warrior II!"))
     }
 }
 
 // MARK: - Bakasana (Полет Дракона 3)
 
 public struct BakasanaAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "Полет Дракона 3"
+    public let targetPoseName = "bakasana"
     
     public init() {}
     
@@ -263,30 +261,30 @@ public struct BakasanaAlgorithm: YogaPoseAlgorithm {
               let leftElbow = joints[.leftElbow],
               let leftKnee = joints[.leftKnee],
               let leftAnkle = joints[.leftAnkle] else {
-            return (false, "Камера должна видеть вас сбоку целиком")
+            return (false, String(localized: "The camera must see your full body from the side"))
         }
         
         // Crow pose: Weight on hands, knees on elbows, feet off the ground.
         // Wrists are at the bottom (y close to 1)
         // Ankles must be higher than wrists (lower Y value)
         if leftAnkle.y > leftWrist.y - 0.05 {
-            return (false, "Оторвите стопы от пола")
+            return (false, String(localized: "Lift your feet off the floor"))
         }
         
         // Knees must be close to elbows
         let kneeElbowDist = hypot(leftKnee.x - leftElbow.x, leftKnee.y - leftElbow.y)
         if kneeElbowDist > 0.2 {
-            return (false, "Подтяните колени выше к подмышкам")
+            return (false, String(localized: "Draw your knees higher toward your armpits"))
         }
         
-        return (true, "Отличный баланс! Вы летите!")
+        return (true, String(localized: "Great balance! You're flying!"))
     }
 }
 
 // MARK: - Balasana (Тихий океан 4)
 
 public struct BalasanaAlgorithm: YogaPoseAlgorithm {
-    public let targetPoseName = "Тихий океан 4"
+    public let targetPoseName = "balasana"
     
     public init() {}
     
@@ -294,21 +292,21 @@ public struct BalasanaAlgorithm: YogaPoseAlgorithm {
         guard let hip = joints[.leftHip] ?? joints[.rightHip],
               let shoulder = joints[.leftShoulder] ?? joints[.rightShoulder],
               let ankle = joints[.leftAnkle] ?? joints[.rightAnkle] else {
-            return (false, "Опуститесь на коврик боком к камере")
+            return (false, String(localized: "Lie down on the mat, sideways to the camera"))
         }
         
         // Child's pose: Hips are very close to ankles. Shoulders are low to the ground.
         let hipAnkleDist = hypot(hip.x - ankle.x, hip.y - ankle.y)
         if hipAnkleDist > 0.2 {
-            return (false, "Опустите таз на пятки")
+            return (false, String(localized: "Lower your hips onto your heels"))
         }
         
         // Shoulders should be low (Y value close to ankles/hips)
         if shoulder.y < hip.y - 0.2 { // Assuming y=0 is top, y=1 is bottom
-            return (false, "Опустите грудь и лоб на коврик")
+            return (false, String(localized: "Bring your chest and forehead to the mat"))
         }
         
-        return (true, "Дышите глубоко. Вы спокойны.")
+        return (true, String(localized: "Breathe deeply. You are calm."))
     }
 }
 
@@ -323,9 +321,9 @@ public struct GenericPoseAlgorithm: YogaPoseAlgorithm {
     
     public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
         if joints.isEmpty {
-            return (false, "Встаньте в кадр")
+            return (false, String(localized: "Step into frame"))
         }
-        return (true, "Следим за позой...")
+        return (true, String(localized: "Tracking your pose..."))
     }
 }
 
@@ -334,19 +332,19 @@ public struct GenericPoseAlgorithm: YogaPoseAlgorithm {
 public final class YogaPoseAnalyzer {
     public static func getAlgorithm(for poseName: String) -> YogaPoseAlgorithm {
         switch poseName {
-        case "Поза Потока 1":
+        case "warrior_ii":
             return VirabhadrasanaIIAlgorithm()
-        case "Сила Гор 2":
+        case "tadasana":
             return TadasanaAlgorithm()
-        case "Полет Дракона 3":
+        case "bakasana":
             return BakasanaAlgorithm()
-        case "Тихий океан 4":
+        case "balasana":
             return BalasanaAlgorithm()
-        case "Огненный шар 5":
+        case "utkatasana":
             return UtkatasanaAlgorithm()
-        case "Дерево Жизни 6":
+        case "vrksasana":
             return TreePoseAlgorithm()
-        case "Собака мордой вниз 7":
+        case "downward_dog":
             return DownwardDogAlgorithm()
         default:
             return GenericPoseAlgorithm(name: poseName)
