@@ -1,24 +1,32 @@
-//
-//  ContentView.swift
-//  Yoga1
-//
-//  Created by Илья Каждан on 23.04.26.
-//
-
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
-}
+public struct ContentView: View {
+    @EnvironmentObject private var state: YogaAppState
 
-#Preview {
-    ContentView()
+    public init() {}
+
+    public var body: some View {
+        TabView(selection: $state.selectedTab) {
+            HomeDashboardView()
+                .tabItem { Label("Дом", systemImage: "house.fill") }
+                .tag(0)
+
+            SessionStudioView()
+                .tabItem { Label("Практика", systemImage: "figure.yoga") }
+                .tag(1)
+
+            BreathCoachView()
+                .tabItem { Label("Дыхание", systemImage: "wind") }
+                .tag(2)
+
+            ChallengeArenaView()
+                .tabItem { Label("Квесты", systemImage: "flame.fill") }
+                .tag(3)
+
+            JournalView()
+                .tabItem { Label("Дневник", systemImage: "book.fill") }
+                .tag(4)
+        }
+        .accentColor(.mint)
+    }
 }
