@@ -37,14 +37,28 @@ public struct BreathCoachView: View {
                 .font(.headline)
                 .foregroundStyle(.white.opacity(0.75))
 
-            Button(running ? "Сброс" : "Старт дыхания") {
-                running ? reset() : runPattern()
+            HStack(spacing: 20) {
+                Button(running ? "Сброс" : "Старт дыхания") {
+                    running ? reset() : runPattern()
+                }
+                .buttonStyle(.borderedProminent)
+                
+                Button {
+                    let isPlaying = AudioManager.shared.toggleAmbientSound()
+                    if isPlaying {
+                        HapticsManager.shared.playLightImpact()
+                    }
+                } label: {
+                    Image(systemName: "speaker.wave.3.fill")
+                        .padding(12)
+                        .background(.white.opacity(0.2), in: Circle())
+                }
             }
-            .buttonStyle(.borderedProminent)
         }
         .padding()
         .onDisappear {
             reset()
+            AudioManager.shared.stop()
         }
     }
 

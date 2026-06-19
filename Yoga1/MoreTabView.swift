@@ -16,12 +16,34 @@ public struct MoreTabView: View {
                         VStack(alignment: .leading) {
                             Text("Пользователь")
                                 .font(.headline)
-                            Text("Свободный план")
+                            Text(appState.isPremiumActivated ? "Premium План 👑" : "Свободный план")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(appState.isPremiumActivated ? .yellow : .secondary)
                         }
                     }
                     .padding(.vertical, 8)
+                }
+                
+                if !appState.earnedAchievements.isEmpty {
+                    Section("Достижения") {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 16) {
+                                ForEach(appState.earnedAchievements, id: \.self) { badge in
+                                    VStack {
+                                        Image(systemName: "medal.fill")
+                                            .font(.title)
+                                            .foregroundStyle(.yellow)
+                                            .padding()
+                                            .background(Color.mint.opacity(0.2), in: Circle())
+                                        Text(badge)
+                                            .font(.caption)
+                                            .bold()
+                                    }
+                                }
+                            }
+                            .padding(.vertical, 8)
+                        }
+                    }
                 }
                 
                 Section("Настройки") {
