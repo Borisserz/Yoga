@@ -5,7 +5,7 @@ import Observation
 public final class AppStateManager {
     public var selectedTab: Int = 0
     public var hasCompletedOnboarding: Bool = false
-    public var isPremiumActivated: Bool = true
+    public var isPremiumActivated: Bool = false
     
     public init() {
         self.hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")

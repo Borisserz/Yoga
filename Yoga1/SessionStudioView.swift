@@ -2,8 +2,11 @@ import SwiftUI
 
 public struct SessionStudioView: View {
     @EnvironmentObject private var state: YogaAppState
+    @Environment(AppStateManager.self) private var appState
+    
     @State private var selectedLevel = 1
     @State private var showAmbient = false
+    @State private var showPaywall = false
 
     public init() {}
 
@@ -22,13 +25,24 @@ public struct SessionStudioView: View {
                 .pickerStyle(.segmented)
 
                 Button {
-                    showAmbient.toggle()
+                    if appState.isPremiumActivated {
+                        showAmbient.toggle()
+                    } else {
+                        showPaywall.toggle()
+                        HapticsManager.shared.playWarning()
+                    }
                 } label: {
-                    Label("Открыть Ambient-сцену", systemImage: "sparkles.tv")
-                        .font(.headline)
-                        .padding(12)
-                        .frame(maxWidth: .infinity)
-                        .background(.mint.opacity(0.2), in: RoundedRectangle(cornerRadius: 14))
+                    HStack {
+                        Label("Открыть Ambient-сцену", systemImage: "sparkles.tv")
+                        if !appState.isPremiumActivated {
+                            Spacer()
+                            Image(systemName: "crown.fill").foregroundStyle(.yellow)
+                        }
+                    }
+                    .font(.headline)
+                    .padding(12)
+                    .frame(maxWidth: .infinity)
+                    .background(.mint.opacity(0.2), in: RoundedRectangle(cornerRadius: 14))
                 }
 
                 List(filteredPoses) { pose in
@@ -58,6 +72,9 @@ public struct SessionStudioView: View {
         }
         .sheet(isPresented: $showAmbient) {
             AmbientSceneView()
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView()
         }
     }
 }

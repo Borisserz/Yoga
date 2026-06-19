@@ -56,6 +56,7 @@ public struct BreathCoachView: View {
                 if Task.isCancelled { break }
                 await MainActor.run {
                     phase = "Вдох"
+                    HapticsManager.shared.playLightImpact()
                     withAnimation(.easeInOut(duration: selected.inhale)) { scale = 1.0 }
                 }
                 try? await Task.sleep(nanoseconds: UInt64(selected.inhale * 1_000_000_000))
@@ -69,6 +70,7 @@ public struct BreathCoachView: View {
                 if Task.isCancelled { break }
                 await MainActor.run {
                     phase = "Выдох"
+                    HapticsManager.shared.playMediumImpact()
                     withAnimation(.easeInOut(duration: selected.exhale)) { scale = 0.6 }
                 }
                 try? await Task.sleep(nanoseconds: UInt64(selected.exhale * 1_000_000_000))
@@ -76,6 +78,7 @@ public struct BreathCoachView: View {
             if !Task.isCancelled {
                 await MainActor.run {
                     phase = "Готово"
+                    HapticsManager.shared.playSuccess()
                     running = false
                 }
             }
