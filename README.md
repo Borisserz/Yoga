@@ -4,10 +4,13 @@ An iOS yoga companion built with **SwiftUI**, **SwiftData** and on-device **Visi
 
 ## Features
 
-- 🧘 **AI pose coach** — real-time skeleton tracking with `VNHumanBodyPoseObservation`, per-pose joint-angle analysis, spoken feedback and a hold timer.
+- 🧘 **AI pose coach** — real-time skeleton tracking with `VNHumanBodyPoseObservation`, per-pose joint-angle analysis, spoken feedback and a hold timer. Dedicated algorithms now cover **Plank, Cobra, Triangle, Boat, Warrior I, Half Moon, Camel, Bridge and Seated Forward Bend** in addition to the original set (Tree, Warrior II, Downward Dog, Chair, Mountain, Crow, Child's pose).
+- 🔎 **Practice filters & search** — filter the pose library by category (Strength / Flexibility / Balance / Restorative) and search by name, focus or Sanskrit on the Practice screen.
+- 🏆 **Community** — a Firestore-backed leaderboard with rotating challenges (minutes, streak, XP) and a shareable achievement card rendered straight from SwiftUI.
 - 📚 **Programs & courses** — multi-day flows persisted with SwiftData.
 - 🌬️ **Breathing coach** — guided box / deep / fire breathing with haptics and ambient audio.
 - 🔥 **Quests & achievements** — streaks, badges and challenges.
+- 🔔 **Smart reminders** — a daily nudge scheduled at the hour you usually practice, plus an evening "don't lose your streak" reminder that clears itself once you've practiced today.
 - 📈 **Progress** — persisted history, streaks and a weekly activity chart.
 - ❤️ **HealthKit** — mindful minutes and yoga workouts.
 - 🌍 **Localization** — English (base) and Russian via a String Catalog.
