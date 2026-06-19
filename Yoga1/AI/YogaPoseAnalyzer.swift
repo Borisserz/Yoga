@@ -195,6 +195,123 @@ public struct UtkatasanaAlgorithm: YogaPoseAlgorithm {
     }
 }
 
+// MARK: - Virabhadrasana II (Поза Потока 1)
+
+public struct VirabhadrasanaIIAlgorithm: YogaPoseAlgorithm {
+    public let targetPoseName = "Поза Потока 1"
+    
+    public init() {}
+    
+    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+        guard let leftAnkle = joints[.leftAnkle],
+              let rightAnkle = joints[.rightAnkle],
+              let leftKnee = joints[.leftKnee],
+              let rightKnee = joints[.rightKnee],
+              let leftHip = joints[.leftHip],
+              let rightHip = joints[.rightHip],
+              let leftWrist = joints[.leftWrist],
+              let rightWrist = joints[.rightWrist] else {
+            return (false, "Встаньте полностью в кадр боком")
+        }
+        
+        // Stance width
+        let stanceWidth = abs(leftAnkle.x - rightAnkle.x)
+        if stanceWidth < 0.3 {
+            return (false, "Расставьте ноги шире")
+        }
+        
+        // Find which leg is forward (bent). Let's assume the one with lower Y (higher up in normalized) or simply the one with knee angle closest to 90.
+        let leftKneeAngle = leftHip.angle(to: leftKnee, p3: leftAnkle)
+        let rightKneeAngle = rightHip.angle(to: rightKnee, p3: rightAnkle)
+        
+        let isLeftForward = leftKneeAngle < rightKneeAngle
+        let bentKneeAngle = isLeftForward ? leftKneeAngle : rightKneeAngle
+        let straightKneeAngle = isLeftForward ? rightKneeAngle : leftKneeAngle
+        
+        if straightKneeAngle < 150 {
+            return (false, "Выпрямите заднюю ногу")
+        }
+        
+        if bentKneeAngle > 130 {
+            return (false, "Согните переднее колено сильнее")
+        }
+        
+        if bentKneeAngle < 70 {
+            return (false, "Угол переднего колена слишком острый")
+        }
+        
+        // Check arms (horizontal)
+        // Y coordinate difference between wrists should be small
+        let armSlope = abs(leftWrist.y - rightWrist.y)
+        if armSlope > 0.15 {
+            return (false, "Держите руки параллельно полу")
+        }
+        
+        return (true, "Прекрасный Воин II!")
+    }
+}
+
+// MARK: - Bakasana (Полет Дракона 3)
+
+public struct BakasanaAlgorithm: YogaPoseAlgorithm {
+    public let targetPoseName = "Полет Дракона 3"
+    
+    public init() {}
+    
+    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+        guard let leftWrist = joints[.leftWrist],
+              let leftElbow = joints[.leftElbow],
+              let leftKnee = joints[.leftKnee],
+              let leftAnkle = joints[.leftAnkle] else {
+            return (false, "Камера должна видеть вас сбоку целиком")
+        }
+        
+        // Crow pose: Weight on hands, knees on elbows, feet off the ground.
+        // Wrists are at the bottom (y close to 1)
+        // Ankles must be higher than wrists (lower Y value)
+        if leftAnkle.y > leftWrist.y - 0.05 {
+            return (false, "Оторвите стопы от пола")
+        }
+        
+        // Knees must be close to elbows
+        let kneeElbowDist = hypot(leftKnee.x - leftElbow.x, leftKnee.y - leftElbow.y)
+        if kneeElbowDist > 0.2 {
+            return (false, "Подтяните колени выше к подмышкам")
+        }
+        
+        return (true, "Отличный баланс! Вы летите!")
+    }
+}
+
+// MARK: - Balasana (Тихий океан 4)
+
+public struct BalasanaAlgorithm: YogaPoseAlgorithm {
+    public let targetPoseName = "Тихий океан 4"
+    
+    public init() {}
+    
+    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+        guard let hip = joints[.leftHip] ?? joints[.rightHip],
+              let shoulder = joints[.leftShoulder] ?? joints[.rightShoulder],
+              let ankle = joints[.leftAnkle] ?? joints[.rightAnkle] else {
+            return (false, "Опуститесь на коврик боком к камере")
+        }
+        
+        // Child's pose: Hips are very close to ankles. Shoulders are low to the ground.
+        let hipAnkleDist = hypot(hip.x - ankle.x, hip.y - ankle.y)
+        if hipAnkleDist > 0.2 {
+            return (false, "Опустите таз на пятки")
+        }
+        
+        // Shoulders should be low (Y value close to ankles/hips)
+        if shoulder.y < hip.y - 0.2 { // Assuming y=0 is top, y=1 is bottom
+            return (false, "Опустите грудь и лоб на коврик")
+        }
+        
+        return (true, "Дышите глубоко. Вы спокойны.")
+    }
+}
+
 // MARK: - Generic Algorithm (Fallback)
 
 public struct GenericPoseAlgorithm: YogaPoseAlgorithm {
@@ -217,14 +334,20 @@ public struct GenericPoseAlgorithm: YogaPoseAlgorithm {
 public final class YogaPoseAnalyzer {
     public static func getAlgorithm(for poseName: String) -> YogaPoseAlgorithm {
         switch poseName {
-        case "Поза дерева":
-            return TreePoseAlgorithm()
-        case "Собака мордой вниз":
-            return DownwardDogAlgorithm()
+        case "Поза Потока 1":
+            return VirabhadrasanaIIAlgorithm()
         case "Сила Гор 2":
             return TadasanaAlgorithm()
+        case "Полет Дракона 3":
+            return BakasanaAlgorithm()
+        case "Тихий океан 4":
+            return BalasanaAlgorithm()
         case "Огненный шар 5":
             return UtkatasanaAlgorithm()
+        case "Дерево Жизни 6":
+            return TreePoseAlgorithm()
+        case "Собака мордой вниз 7":
+            return DownwardDogAlgorithm()
         default:
             return GenericPoseAlgorithm(name: poseName)
         }
