@@ -24,6 +24,8 @@ public final class AppState {
     public var lastSessionScore: Int = 0          // 0...100, from the most recent AI session
     public var onboardingLevelKey: String = "onb.level.beginner"
     public var onboardingGoalKey: String = "onb.goal.flexibility"
+    /// Public name shown on the community leaderboard and shared achievement cards.
+    public var displayName: String = "Yogi"
 
     // MARK: Transient UI state (not persisted)
     public var selectedTab: Int = 0
@@ -42,6 +44,24 @@ public final class AppState {
     // MARK: - Display helpers
 
     public var mood: String { L(moodKey) }
+
+    /// Whether a practice session has already been recorded today.
+    public var practicedToday: Bool {
+        guard let last = lastSessionDate else { return false }
+        return Calendar.current.isDate(last, inSameDayAs: Date())
+    }
+
+    // MARK: - Notifications
+
+    /// Recomputes notifications: a daily reminder at the user's habitual hour
+    /// plus an evening "don't lose your streak" nudge when one is at risk.
+    public func refreshReminders() {
+        NotificationManager.shared.refreshSchedules(
+            sessions: sessions,
+            streakDays: streakDays,
+            practicedToday: practicedToday
+        )
+    }
 
     // MARK: - Level / XP
 
@@ -122,14 +142,20 @@ public final class AppState {
                                                  "pose": poseKey ?? "free",
                                                  "accuracy": Int((accuracy ?? 0) * 100)])
         FirebaseManager.shared.saveUserStats(userId: currentUserId,
+                                             name: displayName,
                                              minutes: completedMinutes,
-                                             streak: streakDays)
+                                             streak: streakDays,
+                                             xp: totalXP,
+                                             level: level)
         Task {
             let end = Date()
             let start = end.addingTimeInterval(TimeInterval(-minutes * 60))
             await HealthKitManager.shared.saveMindfulMinutes(minutes: minutes, startDate: start, endDate: end)
         }
         persist()
+        // Practising today removes any pending streak-protection nudge and keeps
+        // the habitual reminder time up to date.
+        refreshReminders()
     }
 
     private func updateStreak() {
@@ -194,6 +220,7 @@ public final class AppState {
         var lastSessionScore: Int
         var onboardingLevelKey: String
         var onboardingGoalKey: String
+        var displayName: String?
     }
 
     private func persist() {
@@ -210,7 +237,8 @@ public final class AppState {
             totalXP: totalXP,
             lastSessionScore: lastSessionScore,
             onboardingLevelKey: onboardingLevelKey,
-            onboardingGoalKey: onboardingGoalKey
+            onboardingGoalKey: onboardingGoalKey,
+            displayName: displayName
         )
         if let data = try? JSONEncoder().encode(snapshot) {
             UserDefaults.standard.set(data, forKey: storageKey)
@@ -237,5 +265,6 @@ public final class AppState {
         lastSessionScore = snapshot.lastSessionScore
         onboardingLevelKey = snapshot.onboardingLevelKey
         onboardingGoalKey = snapshot.onboardingGoalKey
+        displayName = snapshot.displayName ?? "Yogi"
     }
 }

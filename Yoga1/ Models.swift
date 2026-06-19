@@ -1,6 +1,42 @@
 import SwiftUI
 import Foundation
 
+// MARK: - Pose Category
+
+/// A coarse grouping used to filter poses on the Practice screen. `rawValue` is
+/// a stable, language-independent key; the user-facing label is localized.
+public enum PoseCategory: String, CaseIterable, Identifiable, Hashable {
+    case strength
+    case flexibility
+    case balance
+    case restorative
+
+    public var id: String { rawValue }
+
+    /// Localized display name, e.g. "Strength" / "Сила".
+    public var title: String { L("category.\(rawValue)") }
+
+    /// SF Symbol shown on the filter chip.
+    public var icon: String {
+        switch self {
+        case .strength:    return "bolt.fill"
+        case .flexibility: return "figure.cooldown"
+        case .balance:     return "scalemass.fill"
+        case .restorative: return "moon.stars.fill"
+        }
+    }
+
+    /// Accent color for the filter chip.
+    public var tint: Color {
+        switch self {
+        case .strength:    return .orange
+        case .flexibility: return .mint
+        case .balance:     return .purple
+        case .restorative: return .indigo
+        }
+    }
+}
+
 // MARK: - Yoga Pose
 
 /// A yoga pose. `key` is a stable, language-independent identifier used both by
@@ -14,14 +50,16 @@ public struct YogaPose: Identifiable, Hashable {
     public let holdSeconds: Int
     public let gradient: [Color]
     public let stepCount: Int
+    public let category: PoseCategory
 
     public init(key: String, sanskrit: String, level: Int, holdSeconds: Int,
-                gradient: [Color], stepCount: Int = 5) {
+                gradient: [Color], category: PoseCategory = .flexibility, stepCount: Int = 5) {
         self.key = key
         self.sanskrit = sanskrit
         self.level = level
         self.holdSeconds = holdSeconds
         self.gradient = gradient
+        self.category = category
         self.stepCount = stepCount
     }
 

@@ -21,6 +21,7 @@ public struct YogaEpicApp: App {
 
     @State private var app = AppState()
     @State private var authManager = AuthManager()
+    @Environment(\.scenePhase) private var scenePhase
 
     public init() {}
 
@@ -35,10 +36,18 @@ public struct YogaEpicApp: App {
                         authManager.signInAnonymously()
                     }
                     NotificationManager.shared.requestAuthorization()
+                    app.refreshReminders()
                 }
                 .onChange(of: authManager.currentUserId) { _, newValue in
                     app.currentUserId = newValue
                     AnalyticsManager.shared.setUser(id: newValue)
+                }
+                .onChange(of: scenePhase) { _, newPhase in
+                    // Recompute smart reminders whenever the app becomes active so
+                    // the streak nudge clears once the user has practised today.
+                    if newPhase == .active {
+                        app.refreshReminders()
+                    }
                 }
         }
         .modelContainer(for: [YogaCourse.self, CourseDay.self])
