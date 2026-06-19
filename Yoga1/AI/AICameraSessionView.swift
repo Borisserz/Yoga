@@ -109,6 +109,14 @@ public struct AICameraSessionView: View {
     private func startAnalysisLoop() {
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
             let result = algorithm.analyze(joints: cameraManager.joints)
+            
+            // Speak feedback if it changed or it's correct
+            if result.feedback != feedbackText {
+                VoiceCoach.shared.speak(result.feedback)
+            } else if result.isCorrect && correctTime == 0.0 {
+                VoiceCoach.shared.speak(result.feedback)
+            }
+            
             withAnimation {
                 feedbackText = result.feedback
                 isCorrect = result.isCorrect
@@ -122,6 +130,7 @@ public struct AICameraSessionView: View {
                         HapticsManager.shared.playSuccess()
                         timer?.invalidate()
                         feedbackText = "Отлично! Вы продержали позу."
+                        VoiceCoach.shared.speak("Отлично! Вы продержали позу.", force: true)
                     }
                 } else {
                     correctTime = max(0, correctTime - 0.25) // penalty for breaking pose

@@ -80,9 +80,29 @@ final class CameraManager: ObservableObject {
 
         session.addInput(videoInput)
 
+        // EMA Smoothing setup
+        var smoothedJoints: [VNHumanBodyPoseObservation.JointName: CGPoint] = [:]
+        let alpha: CGFloat = 0.3 // Smoothing factor (0.0 = completely smooth but slow, 1.0 = raw input)
+
         let delegate = CameraDelegate(
             onUpdate: { [weak self] newJoints in
-                Task { @MainActor in self?.joints = newJoints }
+                Task { @MainActor in
+                    for (key, newPoint) in newJoints {
+                        if let existing = smoothedJoints[key] {
+                            let smoothedPoint = CGPoint(
+                                x: existing.x + alpha * (newPoint.x - existing.x),
+                                y: existing.y + alpha * (newPoint.y - existing.y)
+                            )
+                            smoothedJoints[key] = smoothedPoint
+                        } else {
+                            smoothedJoints[key] = newPoint
+                        }
+                    }
+                    // Remove keys that are no longer detected (to avoid sticky joints)
+                    smoothedJoints = smoothedJoints.filter { newJoints.keys.contains($0.key) }
+                    
+                    self?.joints = smoothedJoints
+                }
             },
             onBodyPoseUpdate: { [weak self] newBodyPose in
                 Task { @MainActor in self?.bodyPose = newBodyPose }
@@ -284,14 +304,16 @@ struct PoseOverlayView: View {
                         }
                     }
                 }
-                .stroke(Color.green.opacity(0.8),
-                        style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+                .stroke(Color.mint.opacity(0.9),
+                        style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+                .shadow(color: .mint, radius: 4)
 
                 ForEach(Array(joints.keys), id: \.self) { key in
                     if let point = joints[key] {
                         Circle()
-                            .fill(Color.red)
-                            .frame(width: 8, height: 8)
+                            .fill(Color.white)
+                            .frame(width: 12, height: 12)
+                            .shadow(color: .mint, radius: 6)
                             .position(x: point.x * geometry.size.width,
                                       y: point.y * geometry.size.height)
                     }

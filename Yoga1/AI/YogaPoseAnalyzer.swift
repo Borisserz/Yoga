@@ -117,6 +117,84 @@ public struct DownwardDogAlgorithm: YogaPoseAlgorithm {
     }
 }
 
+// MARK: - Tadasana (Сила Гор 2)
+
+public struct TadasanaAlgorithm: YogaPoseAlgorithm {
+    public let targetPoseName = "Сила Гор 2"
+    
+    public init() {}
+    
+    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+        guard let leftAnkle = joints[.leftAnkle],
+              let rightAnkle = joints[.rightAnkle],
+              let leftKnee = joints[.leftKnee],
+              let leftHip = joints[.leftHip],
+              let leftShoulder = joints[.leftShoulder] else {
+            return (false, "Встаньте полностью в кадр")
+        }
+        
+        // Tadasana: Standing perfectly straight.
+        // Check if knees are straight
+        let kneeAngle = leftHip.angle(to: leftKnee, p3: leftAnkle)
+        if kneeAngle < 165 {
+            return (false, "Выпрямите колени")
+        }
+        
+        // Check if feet are somewhat close to each other
+        let feetDistance = abs(leftAnkle.x - rightAnkle.x)
+        if feetDistance > 0.2 { // normalized distance
+            return (false, "Сведите стопы ближе")
+        }
+        
+        // Check if shoulders are above hips (standing straight)
+        let spineAngle = leftKnee.angle(to: leftHip, p3: leftShoulder)
+        if spineAngle < 165 {
+            return (false, "Выпрямите спину и расправьте плечи")
+        }
+        
+        return (true, "Отлично, держите позу горы!")
+    }
+}
+
+// MARK: - Utkatasana (Огненный шар 5)
+
+public struct UtkatasanaAlgorithm: YogaPoseAlgorithm {
+    public let targetPoseName = "Огненный шар 5"
+    
+    public init() {}
+    
+    public func analyze(joints: [VNHumanBodyPoseObservation.JointName: CGPoint]) -> (isCorrect: Bool, feedback: String) {
+        guard let leftAnkle = joints[.leftAnkle],
+              let leftKnee = joints[.leftKnee],
+              let leftHip = joints[.leftHip],
+              let leftShoulder = joints[.leftShoulder],
+              let leftWrist = joints[.leftWrist] else {
+            return (false, "Встаньте боком к камере")
+        }
+        
+        // Chair pose: Knees bent, hips low, arms raised.
+        let kneeAngle = leftHip.angle(to: leftKnee, p3: leftAnkle)
+        if kneeAngle > 140 {
+            return (false, "Присядьте ниже, согните колени")
+        }
+        if kneeAngle < 70 {
+            return (false, "Не приседайте так глубоко")
+        }
+        
+        let hipAngle = leftKnee.angle(to: leftHip, p3: leftShoulder)
+        if hipAngle < 90 {
+            return (false, "Поднимите грудь, не наклоняйтесь слишком сильно")
+        }
+        
+        // Arms should be raised (wrist higher than shoulder) -> y is 0 at top, 1 at bottom
+        if leftWrist.y > leftShoulder.y {
+            return (false, "Поднимите руки вверх")
+        }
+        
+        return (true, "Мощная поза! Держим!")
+    }
+}
+
 // MARK: - Generic Algorithm (Fallback)
 
 public struct GenericPoseAlgorithm: YogaPoseAlgorithm {
@@ -143,6 +221,10 @@ public final class YogaPoseAnalyzer {
             return TreePoseAlgorithm()
         case "Собака мордой вниз":
             return DownwardDogAlgorithm()
+        case "Сила Гор 2":
+            return TadasanaAlgorithm()
+        case "Огненный шар 5":
+            return UtkatasanaAlgorithm()
         default:
             return GenericPoseAlgorithm(name: poseName)
         }
