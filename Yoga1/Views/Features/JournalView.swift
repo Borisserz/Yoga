@@ -9,6 +9,10 @@ struct JournalView: View {
     @State private var editorPulse = false
     @State private var timelineNodePulse = false
     @State private var isChartAnimated = false
+    
+    private var isRussian: Bool {
+        Locale.current.language.languageCode?.identifier == "ru"
+    }
 
     init() {}
 
@@ -100,6 +104,110 @@ struct JournalView: View {
                         )
                         .shadow(color: .black.opacity(0.15), radius: 10, y: 5)
                         .card3DTilt(maxTilt: 10.0, cornerRadius: 28.0)
+
+                        // --- POSE MASTERY TRACKER ---
+                        let masteredPoses = Set(app.sessions.compactMap { $0.poseKey })
+                        let masteredCount = masteredPoses.count
+                        let totalPoses = YogaLibrary.poses.count
+                        
+                        VStack(alignment: .leading, spacing: 18) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(isRussian ? "Мастерство поз" : "Pose Mastery")
+                                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                                        .foregroundStyle(.white)
+                                    Text(isRussian ? "Практикуйте позы, чтобы разблокировать их" : "Practice poses to unlock them all")
+                                        .font(.system(size: 11))
+                                        .foregroundStyle(.white.opacity(0.5))
+                                }
+                                Spacer()
+                                
+                                Text("\(masteredCount) / \(totalPoses)")
+                                    .font(.system(size: 13, weight: .bold, design: .rounded).monospacedDigit())
+                                    .foregroundStyle(.mint)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 5)
+                                    .background(Color.mint.opacity(0.08), in: Capsule())
+                            }
+                            
+                            // Progress bar
+                            GeometryReader { geo in
+                                ZStack(alignment: .leading) {
+                                    Capsule()
+                                        .fill(Color.white.opacity(0.05))
+                                        .frame(height: 6)
+                                    
+                                    Capsule()
+                                        .fill(
+                                            LinearGradient(colors: [.mint, .teal], startPoint: .leading, endPoint: .trailing)
+                                        )
+                                        .frame(width: max(6, geo.size.width * CGFloat(Double(masteredCount) / Double(totalPoses))), height: 6)
+                                        .shadow(color: .mint.opacity(0.4), radius: 4)
+                                }
+                            }
+                            .frame(height: 6)
+                            .padding(.bottom, 6)
+                            
+                            // Grid of poses
+                            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4), spacing: 14) {
+                                ForEach(YogaLibrary.poses) { pose in
+                                    let isMastered = masteredPoses.contains(pose.key)
+                                    
+                                    VStack(spacing: 6) {
+                                        ZStack {
+                                            Circle()
+                                                .fill(
+                                                    isMastered
+                                                    ? AnyShapeStyle(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                                                    : AnyShapeStyle(Color.white.opacity(0.03))
+                                                )
+                                                .frame(width: 46, height: 46)
+                                                .shadow(color: isMastered ? pose.gradient.first?.opacity(0.3) ?? .clear : .clear, radius: 4, y: 2)
+                                                .overlay(
+                                                    Circle()
+                                                        .strokeBorder(isMastered ? Color.white.opacity(0.15) : Color.white.opacity(0.06), lineWidth: 1)
+                                                )
+                                            
+                                            if isMastered {
+                                                Image(systemName: "figure.yoga")
+                                                    .font(.system(size: 18))
+                                                    .foregroundStyle(.white)
+                                                    .shadow(color: .black.opacity(0.2), radius: 2)
+                                            } else {
+                                                Image(systemName: "lock.fill")
+                                                    .font(.system(size: 12))
+                                                    .foregroundStyle(.white.opacity(0.15))
+                                            }
+                                        }
+                                        
+                                        Text(pose.name)
+                                            .font(.system(size: 9, weight: .bold, design: .rounded))
+                                            .foregroundStyle(isMastered ? .white : .white.opacity(0.35))
+                                            .lineLimit(1)
+                                            .multilineTextAlignment(.center)
+                                    }
+                                    .padding(.vertical, 6)
+                                    .padding(.horizontal, 4)
+                                    .background(isMastered ? Color.white.opacity(0.01) : Color.clear)
+                                    .cornerRadius(12)
+                                }
+                            }
+                        }
+                        .padding(20)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 28))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 28)
+                                .strokeBorder(
+                                    LinearGradient(
+                                        colors: [.white.opacity(0.18), .white.opacity(0.03)],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 1.2
+                                )
+                        )
+                        .shadow(color: .black.opacity(0.15), radius: 10, y: 5)
+                        .card3DTilt(maxTilt: 6.0, cornerRadius: 28.0)
 
                         // New entry card (Pulsing border editor)
                         VStack(alignment: .leading, spacing: 14) {

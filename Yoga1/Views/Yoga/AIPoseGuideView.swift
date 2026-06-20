@@ -4,6 +4,7 @@ struct AIPoseGuideView: View {
     @Environment(\.dismiss) private var dismiss
     let pose: YogaPose
     var onStartCamera: (() -> Void)? = nil
+    var onStartPractice: (() -> Void)? = nil
     
     @State private var scanAnimation = false
     @State private var rotateScanner = false
@@ -186,6 +187,141 @@ struct AIPoseGuideView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
+                    // --- POSE INSTRUCTIONS (STEPS) ---
+                    VStack(alignment: .leading, spacing: 12) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "list.number")
+                                .font(.system(size: 16))
+                                .foregroundStyle(pose.gradient.first ?? .mint)
+                            Text(isRussian ? "Инструкция к позе" : "Practice Steps")
+                                .font(.system(size: 16, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white)
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 10) {
+                            ForEach(Array(pose.instructions.enumerated()), id: \.offset) { index, step in
+                                HStack(alignment: .top, spacing: 10) {
+                                    Text("\(index + 1)")
+                                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                                        .foregroundStyle(pose.gradient.first ?? .mint)
+                                        .frame(width: 20, height: 20)
+                                        .background(pose.gradient.first?.opacity(0.12) ?? .clear, in: Circle())
+                                    
+                                    Text(step)
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundStyle(.white.opacity(0.8))
+                                        .lineSpacing(3)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
+                        }
+                    }
+                    .padding(18)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color.white.opacity(0.02))
+                    .cornerRadius(24)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
+                    )
+                    
+                    // --- CATEGORY ANALYSIS CARD ---
+                    let categoryData = YogaPoseAIContent.getCategoryAnalysis(for: pose.category)
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundStyle(pose.category.tint)
+                            
+                            Text(isRussian 
+                                 ? "ИИ-АНАЛИЗ КАТЕГОРИИ: \(pose.category.title.uppercased())" 
+                                 : "AI CATEGORY ANALYSIS: \(pose.category.title.uppercased())")
+                                .font(.system(size: 10, weight: .black, design: .rounded))
+                                .foregroundStyle(.white.opacity(0.7))
+                                .tracking(1.5)
+                            
+                            Spacer()
+                            
+                            HStack(spacing: 4) {
+                                Circle()
+                                    .fill(pose.category.tint)
+                                    .frame(width: 5, height: 5)
+                                Text(isRussian ? "АКТИВЕН" : "ACTIVE")
+                                    .font(.system(size: 8, weight: .bold, design: .rounded))
+                                    .foregroundStyle(pose.category.tint)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(pose.category.tint.opacity(0.08), in: Capsule())
+                            .overlay(Capsule().strokeBorder(pose.category.tint.opacity(0.2), lineWidth: 1))
+                        }
+                        
+                        VStack(alignment: .leading, spacing: 12) {
+                            // Category Overview
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(isRussian ? "Описание направления" : "Category Overview")
+                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.white.opacity(0.55))
+                                
+                                Text(categoryData.description)
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.85))
+                                    .lineSpacing(3)
+                            }
+                            
+                            Divider()
+                                .background(Color.white.opacity(0.06))
+                            
+                            // AI Technique Guide
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(isRussian ? "Техника ИИ" : "AI Technique Guide")
+                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.white.opacity(0.55))
+                                
+                                Text(categoryData.technique)
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundStyle(pose.category.tint.opacity(0.9))
+                                    .lineSpacing(3)
+                            }
+                            
+                            Divider()
+                                .background(Color.white.opacity(0.06))
+                            
+                            // Target Poses Overview
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(isRussian ? "Состав комплекса поз" : "Target Poses Overview")
+                                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.white.opacity(0.55))
+                                
+                                Text(categoryData.posesOverview)
+                                    .font(.system(size: 12, weight: .medium).italic())
+                                    .foregroundStyle(.white.opacity(0.7))
+                                    .lineSpacing(3)
+                            }
+                        }
+                    }
+                    .padding(18)
+                    .background(
+                        LinearGradient(
+                            colors: [pose.category.tint.opacity(0.04), Color.clear],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .background(Color.white.opacity(0.02))
+                    .cornerRadius(24)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .strokeBorder(
+                                LinearGradient(
+                                    colors: [pose.category.tint.opacity(0.25), .clear],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 1.2
+                            )
+                    )
+                    
                     // --- AI TECHNIQUE REVIEW ---
                     VStack(alignment: .leading, spacing: 12) {
                         HStack(spacing: 8) {
@@ -330,36 +466,61 @@ struct AIPoseGuideView: View {
                     )
                     
                     // --- LAUNCH AI COACH BUTTON ---
-                    if let onStartCamera {
-                        Button {
-                            HapticsManager.shared.playSuccess()
-                            dismiss()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                onStartCamera()
+                    VStack(spacing: 12) {
+                        if let onStartCamera {
+                            Button {
+                                HapticsManager.shared.playSuccess()
+                                dismiss()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    onStartCamera()
+                                }
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "camera.viewfinder")
+                                        .font(.system(size: 16, weight: .bold))
+                                    Text(isRussian ? "Начать с ИИ-тренером" : "Practice with AI Coach")
+                                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                                }
+                                .foregroundStyle(.black)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(
+                                    LinearGradient(colors: pose.gradient, startPoint: .leading, endPoint: .trailing)
+                                )
+                                .clipShape(Capsule())
+                                .shadow(color: pose.gradient.first?.opacity(0.4) ?? .clear, radius: 10, y: 4)
                             }
-                        } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: "camera.viewfinder")
-                                    .font(.system(size: 16, weight: .bold))
-                                Text(isRussian ? "Начать с ИИ-тренером" : "Practice with AI Coach")
-                                    .font(.system(size: 15, weight: .bold, design: .rounded))
-                            }
-                            .foregroundStyle(.black)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 16)
-                            .background(
-                                LinearGradient(colors: pose.gradient, startPoint: .leading, endPoint: .trailing)
-                            )
-                            .clipShape(Capsule())
-                            .shadow(color: pose.gradient.first?.opacity(0.4) ?? .clear, radius: 10, y: 4)
+                            .buttonStyle(.tactile)
                         }
-                        .buttonStyle(.tactile)
-                        .padding(.top, 8)
-                        .padding(.bottom, 24)
-                    } else {
-                        Spacer()
-                            .frame(height: 24)
+                        
+                        if let onStartPractice {
+                            Button {
+                                HapticsManager.shared.playLightImpact()
+                                dismiss()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                    onStartPractice()
+                                }
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "play.fill")
+                                        .font(.system(size: 14))
+                                    Text(isRussian ? "Стандартная практика" : "Start Standard Practice")
+                                        .font(.system(size: 15, weight: .bold, design: .rounded))
+                                }
+                                .foregroundStyle(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(Color.white.opacity(0.08))
+                                .clipShape(Capsule())
+                                .overlay(
+                                    Capsule().strokeBorder(Color.white.opacity(0.15), lineWidth: 1.2)
+                                )
+                            }
+                            .buttonStyle(.tactile)
+                        }
                     }
+                    .padding(.top, 8)
+                    .padding(.bottom, 24)
                 }
                 .padding(.horizontal)
             }
@@ -382,6 +543,7 @@ struct AIPoseGuideView: View {
 #Preview {
     AIPoseGuideView(
         pose: YogaLibrary.poses[0],
-        onStartCamera: {}
+        onStartCamera: {},
+        onStartPractice: {}
     )
 }

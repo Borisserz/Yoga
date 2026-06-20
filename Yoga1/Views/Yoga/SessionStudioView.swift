@@ -11,6 +11,7 @@ struct SessionStudioView: View {
     @State private var animateBackground = false
     @State private var selectedAIPose: YogaPose? = nil
     @State private var activeCameraPose: YogaPose? = nil
+    @State private var navigatingPose: YogaPose? = nil
 
     init() {}
 
@@ -32,24 +33,22 @@ struct SessionStudioView: View {
                 AnimatedGradientBackground(animate: $animateBackground)
                 
                 ScrollView {
-                    VStack(spacing: 24) {
-                        // Cosmic Yoga 3D Hero Banner with Parallax Tilt
-                        VStack(alignment: .leading, spacing: 14) {
-                            Text("PRACTICE STUDIO")
-                                .font(.system(size: 10, weight: .black, design: .rounded))
-                                .foregroundStyle(.mint)
-                                .tracking(2.0)
+                    VStack(spacing: 16) {
+                        // Compact Cosmic Yoga 3D Hero Banner with Parallax Tilt
+                        HStack(spacing: 16) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("PRACTICE STUDIO")
+                                    .font(.system(size: 10, weight: .black, design: .rounded))
+                                    .foregroundStyle(.mint)
+                                    .tracking(2.0)
+                                
+                                Text("Space of Flow")
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.white)
+                                    .shadow(color: .black.opacity(0.5), radius: 4, y: 2)
+                            }
                             
-                            Text("Enter the Space of Flow")
-                                .font(.system(size: 26, weight: .bold, design: .rounded))
-                                .foregroundStyle(.white)
-                                .shadow(color: .black.opacity(0.5), radius: 4, y: 2)
-                            
-                            Text("Engage with daily guided poses and visual breath-work.")
-                                .font(.system(size: 13, weight: .medium))
-                                .foregroundStyle(.white.opacity(0.75))
-                                .lineLimit(2)
-                                .padding(.bottom, 8)
+                            Spacer()
                             
                             // Ambient realm entry button inside hero
                             Button {
@@ -61,63 +60,56 @@ struct SessionStudioView: View {
                                     HapticsManager.shared.playWarning()
                                 }
                             } label: {
-                                HStack {
-                                    Label("Ambient Yoga Realm", systemImage: "sparkles.tv")
-                                        .font(.system(size: 13, weight: .bold, design: .rounded))
-                                    Spacer()
+                                HStack(spacing: 6) {
+                                    Image(systemName: "sparkles.tv")
+                                        .font(.system(size: 12, weight: .bold))
+                                    Text(app.isPremiumActivated ? "Ambient" : "Unlock")
+                                        .font(.system(size: 12, weight: .bold, design: .rounded))
                                     if !app.isPremiumActivated {
                                         Image(systemName: "crown.fill")
-                                            .font(.caption2)
+                                            .font(.system(size: 10))
                                             .foregroundStyle(.yellow)
-                                            .padding(6)
-                                            .background(.white.opacity(0.15), in: Circle())
-                                    } else {
-                                        Image(systemName: "chevron.right")
-                                            .font(.system(size: 12, weight: .bold))
-                                            .foregroundStyle(.black.opacity(0.6))
-                                            .padding(6)
-                                            .background(.black.opacity(0.08), in: Circle())
                                     }
                                 }
                                 .foregroundStyle(.black)
-                                .padding(.horizontal, 18)
-                                .padding(.vertical, 12)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 8)
                                 .background(Color.white, in: Capsule())
-                                .shadow(color: .white.opacity(0.25), radius: 10, y: 4)
+                                .shadow(color: .white.opacity(0.15), radius: 6, y: 2)
                             }
                             .buttonStyle(.tactile)
                         }
-                        .padding(24)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 16)
                         .background(
                             ZStack {
                                 Image("studio_hero")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(height: 230)
+                                    .frame(height: 75)
                                     .clipped()
                                 
                                 LinearGradient(
-                                    colors: [.black.opacity(0.85), .black.opacity(0.3), .black.opacity(0.75)],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
+                                    colors: [.black.opacity(0.75), .black.opacity(0.45)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
                                 )
                             }
                         )
-                        .clipShape(RoundedRectangle(cornerRadius: 32))
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
                         .overlay(
-                            RoundedRectangle(cornerRadius: 32)
+                            RoundedRectangle(cornerRadius: 24)
                                 .strokeBorder(
                                     LinearGradient(
-                                        colors: [.white.opacity(0.28), .clear, .white.opacity(0.08)],
+                                        colors: [.white.opacity(0.2), .clear, .white.opacity(0.08)],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     ),
                                     lineWidth: 1.2
                                 )
                         )
-                        .shadow(color: .black.opacity(0.35), radius: 18, y: 10)
-                        .card3DTilt(maxTilt: 10.0, cornerRadius: 32.0)
+                        .shadow(color: .black.opacity(0.2), radius: 10, y: 4)
+                        .card3DTilt(maxTilt: 6.0, cornerRadius: 24.0)
                         .padding(.top, 8)
 
                         // Premium Sliding Segmented Control
@@ -125,30 +117,20 @@ struct SessionStudioView: View {
 
                         // Category Filter row using custom 3D illustration assets
                         CategoryFilterRow(selection: $selectedCategory)
-                        
-                        if let category = selectedCategory {
-                            AICategoryInsightCard(category: category)
-                                .transition(.asymmetric(
-                                    insertion: .opacity.combined(with: .scale(scale: 0.95)),
-                                    removal: .opacity
-                                ))
-                        }
 
                         if filteredPoses.isEmpty {
                             ContentUnavailableView.search(text: searchText)
                                 .padding(.top, 40)
                                 .transition(.opacity)
                         } else {
-                            LazyVStack(spacing: 14) {
+                            LazyVStack(spacing: 12) {
                                 ForEach(filteredPoses) { pose in
-                                    NavigationLink {
-                                        PoseDetailView(pose: pose)
-                                    } label: {
-                                        PoseRow(pose: pose) {
+                                    PoseRow(pose: pose)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            HapticsManager.shared.playLightImpact()
                                             selectedAIPose = pose
                                         }
-                                    }
-                                    .buttonStyle(.plain)
                                 }
                             }
                             .animation(.spring(response: 0.45, dampingFraction: 0.78), value: filteredPoses)
@@ -168,12 +150,17 @@ struct SessionStudioView: View {
             PaywallView()
         }
         .sheet(item: $selectedAIPose) { pose in
-            AIPoseGuideView(pose: pose) {
+            AIPoseGuideView(pose: pose, onStartCamera: {
                 activeCameraPose = pose
-            }
+            }, onStartPractice: {
+                navigatingPose = pose
+            })
         }
         .fullScreenCover(item: $activeCameraPose) { pose in
             AICameraSessionView(poseKey: pose.key)
+        }
+        .navigationDestination(item: $navigatingPose) { pose in
+            PoseDetailView(pose: pose)
         }
     }
 }
@@ -318,7 +305,6 @@ private struct FilterChip: View {
 
 private struct PoseRow: View {
     let pose: YogaPose
-    var onAIClick: (() -> Void)? = nil
 
     var body: some View {
         HStack(spacing: 16) {
@@ -361,26 +347,6 @@ private struct PoseRow: View {
             }
             Spacer()
             
-            if let onAIClick {
-                Button {
-                    onAIClick()
-                } label: {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(.white)
-                        .padding(9)
-                        .background(
-                            LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing),
-                            in: Circle()
-                        )
-                        .shadow(color: pose.gradient.first?.opacity(0.4) ?? .clear, radius: 4)
-                }
-                .buttonStyle(.plain)
-                .highPriorityGesture(TapGesture().onEnded {
-                    onAIClick()
-                })
-            }
-            
             Image(systemName: "chevron.right")
                 .font(.system(size: 12, weight: .bold))
                 .foregroundStyle(.white.opacity(0.4))
@@ -410,115 +376,4 @@ private struct PoseRow: View {
     }
 }
 
-private struct AICategoryInsightCard: View {
-    let category: PoseCategory
-    
-    private var isRussian: Bool {
-        Locale.current.language.languageCode?.identifier == "ru"
-    }
-    
-    private var categoryData: AICategoryAnalysisData {
-        YogaPoseAIContent.getCategoryAnalysis(for: category)
-    }
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            
-            // Header
-            HStack(spacing: 8) {
-                Image(systemName: "sparkles")
-                    .font(.system(size: 15, weight: .bold))
-                    .foregroundStyle(category.tint)
-                
-                Text(isRussian ? "ИИ-АНАЛИЗ КАТЕГОРИИ: \(category.title.uppercased())" : "AI CATEGORY ANALYSIS: \(category.title.uppercased())")
-                    .font(.system(size: 10, weight: .black, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.7))
-                    .tracking(1.5)
-                
-                Spacer()
-                
-                // Glowing radar scanner dot
-                HStack(spacing: 4) {
-                    Circle()
-                        .fill(category.tint)
-                        .frame(width: 5, height: 5)
-                    Text(isRussian ? "АКТИВЕН" : "ACTIVE")
-                        .font(.system(size: 8, weight: .bold, design: .rounded))
-                        .foregroundStyle(category.tint)
-                }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(category.tint.opacity(0.08), in: Capsule())
-                .overlay(Capsule().strokeBorder(category.tint.opacity(0.2), lineWidth: 1))
-            }
-            
-            VStack(alignment: .leading, spacing: 10) {
-                // Description Section
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(isRussian ? "Описание направления" : "Category Overview")
-                        .font(.system(size: 11, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.55))
-                    
-                    Text(categoryData.description)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.85))
-                        .lineSpacing(3)
-                }
-                
-                Divider()
-                    .background(Color.white.opacity(0.06))
-                    .padding(.vertical, 2)
-                
-                // Technique Section
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(isRussian ? "Техника ИИ" : "AI Technique Guide")
-                        .font(.system(size: 11, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.55))
-                    
-                    Text(categoryData.technique)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(category.tint.opacity(0.9))
-                        .lineSpacing(3)
-                }
-                
-                Divider()
-                    .background(Color.white.opacity(0.06))
-                    .padding(.vertical, 2)
-                
-                // Poses Summary Section
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(isRussian ? "Состав комплекса поз" : "Target Poses Overview")
-                        .font(.system(size: 11, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white.opacity(0.55))
-                    
-                    Text(categoryData.posesOverview)
-                        .font(.system(size: 12, weight: .medium).italic())
-                        .foregroundStyle(.white.opacity(0.7))
-                        .lineSpacing(3)
-                }
-            }
-        }
-        .padding(18)
-        .background(
-            LinearGradient(
-                colors: [category.tint.opacity(0.04), Color.clear],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-        )
-        .background(Color.white.opacity(0.02))
-        .cornerRadius(24)
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .strokeBorder(
-                    LinearGradient(
-                        colors: [category.tint.opacity(0.25), .clear],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: 1.2
-                )
-        )
-        .shadow(color: .black.opacity(0.15), radius: 10, y: 5)
-    }
-}
+

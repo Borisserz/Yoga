@@ -9,8 +9,11 @@ struct MoreTabView: View {
     @Environment(AppState.self) private var app
     @State private var shareAchievement: ShareableAchievement?
     @State private var animateBackground = false
-    @State private var pulseAvatar = false
     @State private var showEditProfile = false
+    @State private var pulseAvatar = false
+    @State private var showStreakDetail = false
+    @State private var showAIDetail = false
+    @State private var showMinutesDetail = false
     
     private var isRussian: Bool {
         Locale.current.language.languageCode?.identifier == "ru"
@@ -204,6 +207,11 @@ struct MoreTabView: View {
                             RoundedRectangle(cornerRadius: 28)
                                 .strokeBorder(Color.white.opacity(0.08), lineWidth: 1.2)
                         )
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            HapticsManager.shared.playLightImpact()
+                            showStreakDetail = true
+                        }
                         
                         // --- REDESIGNED STATS 2X2 DASHBOARD GRID ---
                         LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
@@ -265,6 +273,11 @@ struct MoreTabView: View {
                             .background(Color.white.opacity(0.03))
                             .cornerRadius(22)
                             .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                HapticsManager.shared.playLightImpact()
+                                showMinutesDetail = true
+                            }
                             
                             // Last AI Score Card
                             VStack(alignment: .leading, spacing: 12) {
@@ -303,6 +316,11 @@ struct MoreTabView: View {
                             .background(Color.white.opacity(0.03))
                             .cornerRadius(22)
                             .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                HapticsManager.shared.playLightImpact()
+                                showAIDetail = true
+                            }
                             
                             // Daily Streaks Card
                             VStack(alignment: .leading, spacing: 12) {
@@ -335,6 +353,11 @@ struct MoreTabView: View {
                             .background(Color.white.opacity(0.03))
                             .cornerRadius(22)
                             .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                HapticsManager.shared.playLightImpact()
+                                showStreakDetail = true
+                            }
                         }
                         .card3DTilt(maxTilt: 6.0, cornerRadius: 22.0)
                         
@@ -530,6 +553,15 @@ struct MoreTabView: View {
         }
         .sheet(isPresented: $showEditProfile) {
             EditProfileSheet(app: app)
+        }
+        .sheet(isPresented: $showStreakDetail) {
+            StreakDetailView()
+        }
+        .sheet(isPresented: $showAIDetail) {
+            AIDetailView()
+        }
+        .sheet(isPresented: $showMinutesDetail) {
+            MinutesStatsDetailView()
         }
     }
     
