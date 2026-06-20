@@ -244,9 +244,9 @@ struct PoseDetailView: View {
             AICameraSessionView(poseKey: pose.key)
         }
         .sheet(isPresented: $showAIGuide) {
-            AIPoseGuideView(pose: pose) {
+            AIPoseGuideView(pose: pose, onStartCamera: {
                 showAICamera = true
-            }
+            })
         }
         .onAppear {
             animateBackground = true

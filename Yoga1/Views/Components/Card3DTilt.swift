@@ -43,7 +43,7 @@ internal struct Card3DTiltModifier: ViewModifier {
             )
             // Touch gesture to track displacement
             .gesture(
-                DragGesture(minimumDistance: 0)
+                DragGesture(minimumDistance: 10)
                     .onChanged { value in
                         let width = value.translation.width
                         let height = value.translation.height
@@ -62,7 +62,7 @@ internal struct Card3DTiltModifier: ViewModifier {
 }
 
 internal extension View {
-    internal func card3DTilt(maxTilt: Double = 12.0, cornerRadius: CGFloat = 24.0) -> some View {
+    func card3DTilt(maxTilt: Double = 12.0, cornerRadius: CGFloat = 24.0) -> some View {
         self.modifier(Card3DTiltModifier(maxTilt: maxTilt, cornerRadius: cornerRadius))
     }
 }

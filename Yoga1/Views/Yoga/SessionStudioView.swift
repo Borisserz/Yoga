@@ -27,6 +27,10 @@ struct SessionStudioView: View {
         }
     }
 
+    private var isRussian: Bool {
+        Locale.current.language.languageCode?.identifier == "ru"
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -36,16 +40,20 @@ struct SessionStudioView: View {
                     VStack(spacing: 16) {
                         // Compact Cosmic Yoga 3D Hero Banner with Parallax Tilt
                         HStack(spacing: 16) {
-                            VStack(alignment: .leading, spacing: 4) {
+                            VStack(alignment: .leading, spacing: 6) {
                                 Text("PRACTICE STUDIO")
-                                    .font(.system(size: 10, weight: .black, design: .rounded))
+                                    .font(.system(size: 11, weight: .black, design: .rounded))
                                     .foregroundStyle(.mint)
-                                    .tracking(2.0)
+                                    .tracking(2.5)
                                 
                                 Text("Space of Flow")
-                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .font(.system(size: 26, weight: .bold, design: .rounded))
                                     .foregroundStyle(.white)
                                     .shadow(color: .black.opacity(0.5), radius: 4, y: 2)
+                                
+                                Text(isRussian ? "Найдите баланс тела и разума" : "Find balance for your body & mind")
+                                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                                    .foregroundStyle(.white.opacity(0.75))
                             }
                             
                             Spacer()
@@ -62,31 +70,31 @@ struct SessionStudioView: View {
                             } label: {
                                 HStack(spacing: 6) {
                                     Image(systemName: "sparkles.tv")
-                                        .font(.system(size: 12, weight: .bold))
+                                        .font(.system(size: 14, weight: .bold))
                                     Text(app.isPremiumActivated ? "Ambient" : "Unlock")
-                                        .font(.system(size: 12, weight: .bold, design: .rounded))
+                                        .font(.system(size: 14, weight: .bold, design: .rounded))
                                     if !app.isPremiumActivated {
                                         Image(systemName: "crown.fill")
-                                            .font(.system(size: 10))
+                                            .font(.system(size: 12))
                                             .foregroundStyle(.yellow)
                                     }
                                 }
                                 .foregroundStyle(.black)
-                                .padding(.horizontal, 14)
-                                .padding(.vertical, 8)
+                                .padding(.horizontal, 18)
+                                .padding(.vertical, 11)
                                 .background(Color.white, in: Capsule())
                                 .shadow(color: .white.opacity(0.15), radius: 6, y: 2)
                             }
                             .buttonStyle(.tactile)
                         }
                         .padding(.horizontal, 20)
-                        .padding(.vertical, 16)
+                        .padding(.vertical, 24)
                         .background(
                             ZStack {
                                 Image("studio_hero")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(height: 75)
+                                    .frame(height: 120)
                                     .clipped()
                                 
                                 LinearGradient(
