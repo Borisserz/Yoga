@@ -41,6 +41,60 @@ struct OnboardingFlowView: View {
         }
     }
 
+    private func iconForCadence(_ n: Int) -> String {
+        switch n {
+        case 2: return "leaf.fill"
+        case 3: return "bolt.fill"
+        case 5: return "flame.fill"
+        default: return "sparkles"
+        }
+    }
+
+    private func titleForCadence(_ n: Int) -> String {
+        switch n {
+        case 2: return L("Gentle Start")
+        case 3: return L("Consistent Flow")
+        case 5: return L("Active Practice")
+        default: return L("Daily Devotion")
+        }
+    }
+
+    private func descriptionForCadence(_ n: Int) -> String {
+        switch n {
+        case 2: return L("Easy entry to build healthy habits")
+        case 3: return L("Optimal balance for habit building")
+        case 5: return L("Deepen strength and flexibility")
+        default: return L("Deep cosmos of daily practice")
+        }
+    }
+
+    private func iconForLength(_ mins: Int) -> String {
+        switch mins {
+        case 5: return "wind"
+        case 10: return "figure.yoga"
+        case 15: return "sparkles"
+        default: return "brain.headset"
+        }
+    }
+
+    private func titleForLength(_ mins: Int) -> String {
+        switch mins {
+        case 5: return L("Quick Release")
+        case 10: return L("Standard Flow")
+        case 15: return L("Deep Stretch")
+        default: return L("Complete Arc")
+        }
+    }
+
+    private func descriptionForLength(_ mins: Int) -> String {
+        switch mins {
+        case 5: return L("Perfect for busy, demanding days")
+        case 10: return L("Your daily focus and body refresh")
+        case 15: return L("Excellent muscle relief and calm")
+        default: return L("Full session from start to finish")
+        }
+    }
+
     var body: some View {
         ZStack {
             AnimatedGradientBackground(animate: $animateBackground)
@@ -217,38 +271,51 @@ struct OnboardingFlowView: View {
 
     private var cadenceStep: some View {
         StepScaffold(title: "How many days a week?", headerIcon: AnyView(CadenceIndicatorView())) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(targets, id: \.self) { n in
-                        Button {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                weeklyTarget = n
-                            }
-                            HapticsManager.shared.playLightImpact()
-                        } label: {
-                            VStack(spacing: 8) {
-                                Text("\(n)")
-                                    .font(.system(.title2, design: .rounded).bold().monospacedDigit())
-                                Text(n == 7 ? L("Every day") : L("days"))
-                                    .font(.caption2.bold())
-                                    .foregroundStyle(.white.opacity(0.6))
-                            }
-                            .frame(width: 80, height: 80)
-                            .background(weeklyTarget == n ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
-                                        in: RoundedRectangle(cornerRadius: 20))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .strokeBorder(weeklyTarget == n ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
-                            )
-                            .shadow(color: weeklyTarget == n ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
-                            .foregroundStyle(weeklyTarget == n ? .black : .white)
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
+                ForEach(targets, id: \.self) { n in
+                    let isActive = (weeklyTarget == n)
+                    Button {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.65)) {
+                            weeklyTarget = n
                         }
-                        .buttonStyle(.tactile)
+                        HapticsManager.shared.playLightImpact()
+                    } label: {
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Image(systemName: iconForCadence(n))
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(isActive ? Color.black : Color.mint)
+                                Spacer()
+                                Text("\(n)")
+                                    .font(.system(.title3, design: .rounded).bold().monospacedDigit())
+                            }
+                            
+                            Text(titleForCadence(n))
+                                .font(.system(size: 13, weight: .bold))
+                                .lineLimit(1)
+                            
+                            Text(descriptionForCadence(n))
+                                .font(.system(size: 10))
+                                .foregroundStyle(isActive ? Color.black.opacity(0.7) : Color.white.opacity(0.5))
+                                .lineLimit(2)
+                                .multilineTextAlignment(.leading)
+                        }
+                        .padding(14)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(height: 104)
+                        .background(isActive ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
+                                    in: RoundedRectangle(cornerRadius: 20))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .strokeBorder(isActive ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
+                        )
+                        .shadow(color: isActive ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
+                        .foregroundStyle(isActive ? .black : .white)
                     }
+                    .buttonStyle(.tactile)
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 8)
             }
+            .padding(.horizontal, 4)
         }
     }
 
@@ -266,38 +333,51 @@ struct OnboardingFlowView: View {
 
     private var lengthStep: some View {
         StepScaffold(title: "Session length?", headerIcon: AnyView(LengthIndicatorView())) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(lengths, id: \.self) { mins in
-                        Button {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                sessionLength = mins
-                            }
-                            HapticsManager.shared.playLightImpact()
-                        } label: {
-                            VStack(spacing: 8) {
-                                Text("\(mins)")
-                                    .font(.system(.title2, design: .rounded).bold().monospacedDigit())
-                                Text("min")
-                                    .font(.caption2.bold())
-                                    .foregroundStyle(.white.opacity(0.6))
-                            }
-                            .frame(width: 80, height: 80)
-                            .background(sessionLength == mins ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
-                                        in: RoundedRectangle(cornerRadius: 20))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .strokeBorder(sessionLength == mins ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
-                            )
-                            .shadow(color: sessionLength == mins ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
-                            .foregroundStyle(sessionLength == mins ? .black : .white)
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
+                ForEach(lengths, id: \.self) { mins in
+                    let isActive = (sessionLength == mins)
+                    Button {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.65)) {
+                            sessionLength = mins
                         }
-                        .buttonStyle(.tactile)
+                        HapticsManager.shared.playLightImpact()
+                    } label: {
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack {
+                                Image(systemName: iconForLength(mins))
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(isActive ? Color.black : Color.mint)
+                                Spacer()
+                                Text("\(mins)")
+                                    .font(.system(.title3, design: .rounded).bold().monospacedDigit())
+                            }
+                            
+                            Text(titleForLength(mins))
+                                .font(.system(size: 13, weight: .bold))
+                                .lineLimit(1)
+                            
+                            Text(descriptionForLength(mins))
+                                .font(.system(size: 10))
+                                .foregroundStyle(isActive ? Color.black.opacity(0.7) : Color.white.opacity(0.5))
+                                .lineLimit(2)
+                                .multilineTextAlignment(.leading)
+                        }
+                        .padding(14)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(height: 104)
+                        .background(isActive ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
+                                    in: RoundedRectangle(cornerRadius: 20))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .strokeBorder(isActive ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
+                        )
+                        .shadow(color: isActive ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
+                        .foregroundStyle(isActive ? .black : .white)
                     }
+                    .buttonStyle(.tactile)
                 }
-                .padding(.horizontal, 10)
-                .padding(.vertical, 8)
             }
+            .padding(.horizontal, 4)
         }
     }
 

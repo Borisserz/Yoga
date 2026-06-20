@@ -24,6 +24,7 @@ struct TodayView: View {
                     VStack(spacing: 24) {
                         greeting
                         TodayPlanCard3D(plan: plan, onStart: { showSession = true }, expandedWhy: $showWhy)
+                        BentoQuickActionsRow()
                         IntensitySelector3D(selection: $intensityOverride)
                         ProgressHub3D(
                             weeklyDone: app.sessionsThisWeek,
@@ -35,7 +36,6 @@ struct TodayView: View {
                             xpNext: app.xpForNextLevel
                         )
                         BentoStatsCard(minutes: app.completedMinutes, streak: app.streakDays, mood: app.mood)
-                        BentoQuickActionsRow()
                     }
                     .padding()
                 }
@@ -527,21 +527,36 @@ private struct BentoStatPill: View {
 
 private struct BentoQuickActionsRow: View {
     var body: some View {
-        HStack(spacing: 12) {
+        VStack(spacing: 12) {
             NavigationLink {
                 MeditationLibraryView()
             } label: {
-                BentoQuickActionCard(title: "Meditate", systemImage: "moon.stars.fill", color: .indigo)
+                BentoQuickActionCard(
+                    title: "Meditate",
+                    description: "Find calm and clarity with mindful practices",
+                    systemImage: "moon.stars.fill",
+                    color: .indigo
+                )
             }
             NavigationLink {
                 BreathCoachView()
             } label: {
-                BentoQuickActionCard(title: "Breathing", systemImage: "wind", color: .teal)
+                BentoQuickActionCard(
+                    title: "Breathing",
+                    description: "Relieve stress and increase immediate focus",
+                    systemImage: "wind",
+                    color: .teal
+                )
             }
             NavigationLink {
                 ChallengeArenaView()
             } label: {
-                BentoQuickActionCard(title: "Quests", systemImage: "flame.fill", color: .orange)
+                BentoQuickActionCard(
+                    title: "Quests",
+                    description: "Join active goals and collect achievements",
+                    systemImage: "flame.fill",
+                    color: .orange
+                )
             }
         }
         .buttonStyle(.tactile)
@@ -550,11 +565,13 @@ private struct BentoQuickActionsRow: View {
 
 private struct BentoQuickActionCard: View {
     let title: LocalizedStringKey
+    let description: LocalizedStringKey
     let systemImage: String
     let color: Color
 
     var body: some View {
-        VStack(spacing: 10) {
+        HStack(spacing: 16) {
+            // Left: Glowing circular icon
             ZStack {
                 Circle()
                     .fill(color.opacity(0.25))
@@ -564,12 +581,29 @@ private struct BentoQuickActionCard: View {
                     .font(.title3)
                     .foregroundStyle(color)
             }
-            Text(title)
-                .font(.system(size: 13, weight: .bold))
-                .foregroundStyle(.white)
+            
+            // Middle: Title & Description
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                Text(description)
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.6))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+            }
+            
+            Spacer()
+            
+            // Right: Chevron
+            Image(systemName: "chevron.right")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(color)
+                .opacity(0.8)
         }
         .padding(.vertical, 16)
-        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 20)
         .background(
             RoundedRectangle(cornerRadius: 22)
                 .fill(LinearGradient(colors: [color.opacity(0.18), color.opacity(0.04)], startPoint: .topLeading, endPoint: .bottomTrailing))
