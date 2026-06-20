@@ -458,7 +458,7 @@ struct MoreTabView: View {
                                                             .background(Circle().fill(.black))
                                                     }
                                                     
-                                                    Text(L(badge))
+                                                    Text(AchievementDefinition.resolvedTitle(forKey: badge))
                                                         .font(.system(size: 11, weight: .bold, design: .rounded))
                                                         .foregroundStyle(.white.opacity(0.85))
                                                         .lineLimit(1)

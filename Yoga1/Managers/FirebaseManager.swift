@@ -33,7 +33,15 @@ enum LeaderboardScope: String, CaseIterable, Identifiable, Sendable {
     case xp
 
     var id: String { rawValue }
-    var title: String { L("leaderboard.scope.\(rawValue)") }
+    
+    var title: String {
+        let isRussian = Locale.current.language.languageCode?.identifier == "ru"
+        switch self {
+        case .minutes: return isRussian ? "Минуты" : "Minutes"
+        case .streak:  return isRussian ? "Серия" : "Streak"
+        case .xp:      return isRussian ? "Очки XP" : "XP Points"
+        }
+    }
 
     /// Firestore field this scope orders by.
     var field: String {

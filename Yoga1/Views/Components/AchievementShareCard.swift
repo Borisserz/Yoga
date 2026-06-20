@@ -15,7 +15,7 @@ struct AchievementShareSheet: View {
 
     private var card: AchievementCard {
         AchievementCard(
-            achievementTitle: L(achievementKey),
+            achievementTitle: AchievementDefinition.resolvedTitle(forKey: achievementKey),
             userName: app.displayName,
             level: app.level,
             streak: app.streakDays,
@@ -144,4 +144,116 @@ private struct CardStat: View {
         .padding(.vertical, 10)
         .background(.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
     }
+}
+
+struct AchievementDefinition: Identifiable, Hashable, Sendable {
+    let id: String
+    let titleEN: String
+    let titleRU: String
+    let descEN: String
+    let descRU: String
+    let icon: String
+    let gradient: [Color]
+    
+    var title: String {
+        let isRussian = Locale.current.language.languageCode?.identifier == "ru"
+        return isRussian ? titleRU : titleEN
+    }
+    
+    var description: String {
+        let isRussian = Locale.current.language.languageCode?.identifier == "ru"
+        return isRussian ? descRU : descEN
+    }
+    
+    static func resolvedTitle(forKey key: String) -> String {
+        allAchievements.first(where: { $0.id == key })?.title ?? key
+    }
+    
+    static func resolvedDesc(forKey key: String) -> String {
+        allAchievements.first(where: { $0.id == key })?.description ?? ""
+    }
+    
+    static let allAchievements: [AchievementDefinition] = [
+        AchievementDefinition(
+            id: "achievement.first_step",
+            titleEN: "First Step",
+            titleRU: "Первый шаг",
+            descEN: "Complete your first pose practice",
+            descRU: "Выполните вашу первую практику позы",
+            icon: "figure.yoga",
+            gradient: [.indigo, .cyan]
+        ),
+        AchievementDefinition(
+            id: "achievement.streak_7",
+            titleEN: "7-Day Streak",
+            titleRU: "Серия 7 дней",
+            descEN: "Practice for 7 consecutive days",
+            descRU: "Занимайтесь 7 дней подряд",
+            icon: "flame.fill",
+            gradient: [.orange, .pink]
+        ),
+        AchievementDefinition(
+            id: "achievement.streak_30",
+            titleEN: "30-Day Streak",
+            titleRU: "Серия 30 дней",
+            descEN: "Practice for 30 consecutive days",
+            descRU: "Занимайтесь 30 дней подряд",
+            icon: "bolt.fill",
+            gradient: [.purple, .indigo]
+        ),
+        AchievementDefinition(
+            id: "achievement.zen",
+            titleEN: "Inner Peace",
+            titleRU: "Внутренний покой",
+            descEN: "Complete your first meditation session",
+            descRU: "Завершите ваш первый сеанс медитации",
+            icon: "heart.fill",
+            gradient: [.mint, .green]
+        ),
+        AchievementDefinition(
+            id: "achievement.vip",
+            titleEN: "VIP Yogi",
+            titleRU: "VIP Йог",
+            descEN: "Unlock premium yoga access",
+            descRU: "Разблокируйте премиум-доступ",
+            icon: "crown.fill",
+            gradient: [.yellow, .orange]
+        ),
+        AchievementDefinition(
+            id: "achievement.mastery_5",
+            titleEN: "Pose Master",
+            titleRU: "Мастер Поз",
+            descEN: "Practice 5 different yoga poses",
+            descRU: "Выполните 5 различных асан",
+            icon: "checkmark.seal.fill",
+            gradient: [.teal, .blue]
+        ),
+        AchievementDefinition(
+            id: "achievement.breath_guru",
+            titleEN: "Pranayama Guru",
+            titleRU: "Гуру Дыхания",
+            descEN: "Complete a breathing exercise",
+            descRU: "Завершите дыхательную практику",
+            icon: "wind",
+            gradient: [.cyan, .blue]
+        ),
+        AchievementDefinition(
+            id: "achievement.early_yogi",
+            titleEN: "Sunrise Yogi",
+            titleRU: "Рассветный Йог",
+            descEN: "Complete a practice before 9:00 AM",
+            descRU: "Завершите практику до 9:00 утра",
+            icon: "sunrise.fill",
+            gradient: [.orange, .yellow]
+        ),
+        AchievementDefinition(
+            id: "achievement.journal_entry",
+            titleEN: "Reflective Mind",
+            titleRU: "Осознанность",
+            descEN: "Write your first journal entry",
+            descRU: "Сделайте первую запись в дневнике",
+            icon: "doc.plaintext.fill",
+            gradient: [.pink, .purple]
+        )
+    ]
 }

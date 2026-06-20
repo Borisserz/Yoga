@@ -1,6 +1,7 @@
 internal import SwiftUI
 
 struct BreathCoachView: View {
+    @Environment(AppState.self) private var app
     @State private var selected: BreathPattern = YogaLibrary.breathPatterns.first
         ?? BreathPattern(titleKey: "breath.box", inhale: 4, hold: 4, exhale: 4, rounds: 6, color: .cyan)
     @State private var phase = L("phase.ready")
@@ -250,6 +251,7 @@ struct BreathCoachView: View {
                 await MainActor.run {
                     phase = L("phase.done")
                     HapticsManager.shared.playSuccess()
+                    app.unlockAchievement("achievement.breath_guru")
                     running = false
                 }
             }

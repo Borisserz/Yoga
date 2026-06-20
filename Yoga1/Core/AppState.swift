@@ -168,6 +168,18 @@ final class AppState {
         updateStreak()
         pulseAnimation.toggle()
 
+        // 1. Mastery of 5 poses:
+        let uniquePoses = Set(sessions.compactMap { $0.poseKey })
+        if uniquePoses.count >= 5 {
+            unlockAchievement("achievement.mastery_5")
+        }
+
+        // 2. Early morning yogi:
+        let hour = Calendar.current.component(.hour, from: Date())
+        if hour < 9 {
+            unlockAchievement("achievement.early_yogi")
+        }
+
         AnalyticsManager.shared.log(event: "session_complete",
                                     parameters: ["minutes": minutes,
                                                  "pose": poseKey ?? "free",
@@ -219,6 +231,7 @@ final class AppState {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
         journalEntries.insert(JournalEntry(text: trimmed), at: 0)
+        unlockAchievement("achievement.journal_entry")
         persist()
     }
 
