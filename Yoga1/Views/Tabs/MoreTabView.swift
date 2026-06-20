@@ -431,26 +431,33 @@ struct MoreTabView: View {
                                             } label: {
                                                 VStack(spacing: 8) {
                                                     ZStack(alignment: .bottomTrailing) {
-                                                        // Medal icon with backing radial gradient glow
-                                                        Circle()
-                                                            .fill(
-                                                                RadialGradient(
-                                                                    colors: [.orange.opacity(0.25), .clear],
-                                                                    center: .center,
-                                                                    startRadius: 0,
-                                                                    endRadius: 28
+                                                        if UIImage(named: badge) != nil {
+                                                            Image(badge)
+                                                                .resizable()
+                                                                .aspectRatio(contentMode: .fit)
+                                                                .frame(width: 58, height: 58)
+                                                                .shadow(color: .black.opacity(0.25), radius: 4)
+                                                        } else {
+                                                            Circle()
+                                                                .fill(
+                                                                    RadialGradient(
+                                                                        colors: [.orange.opacity(0.25), .clear],
+                                                                        center: .center,
+                                                                        startRadius: 0,
+                                                                        endRadius: 28
+                                                                    )
                                                                 )
-                                                            )
-                                                            .frame(width: 58, height: 58)
-                                                        
-                                                        Image(systemName: "medal.fill")
-                                                            .font(.system(size: 24))
-                                                            .foregroundStyle(
-                                                                LinearGradient(colors: [.yellow, .orange], startPoint: .top, endPoint: .bottom)
-                                                            )
-                                                            .padding(14)
-                                                            .background(Color.white.opacity(0.06), in: Circle())
-                                                            .overlay(Circle().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
+                                                                .frame(width: 58, height: 58)
+                                                            
+                                                            Image(systemName: "medal.fill")
+                                                                .font(.system(size: 24))
+                                                                .foregroundStyle(
+                                                                    LinearGradient(colors: [.yellow, .orange], startPoint: .top, endPoint: .bottom)
+                                                                )
+                                                                .padding(14)
+                                                                .background(Color.white.opacity(0.06), in: Circle())
+                                                                .overlay(Circle().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
+                                                        }
                                                         
                                                         Image(systemName: "square.and.arrow.up.circle.fill")
                                                             .font(.system(size: 15))

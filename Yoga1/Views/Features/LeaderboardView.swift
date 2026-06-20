@@ -186,14 +186,23 @@ struct LeaderboardView: View {
             } label: {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(alignment: .top) {
-                        ZStack {
-                            Circle()
-                                .fill(isUnlocked ? LinearGradient(colors: def.gradient.map { $0.opacity(0.2) }, startPoint: .top, endPoint: .bottom) : LinearGradient(colors: [Color.white.opacity(0.04)], startPoint: .top, endPoint: .bottom))
+                        if UIImage(named: def.id) != nil {
+                            Image(def.id)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
                                 .frame(width: 36, height: 36)
-                            
-                            Image(systemName: def.icon)
-                                .font(.system(size: 16, weight: .bold))
-                                .foregroundStyle(isUnlocked ? LinearGradient(colors: def.gradient, startPoint: .top, endPoint: .bottom) : LinearGradient(colors: [.white.opacity(0.25)], startPoint: .top, endPoint: .bottom))
+                                .saturation(isUnlocked ? 1.0 : 0.0)
+                                .opacity(isUnlocked ? 1.0 : 0.4)
+                        } else {
+                            ZStack {
+                                Circle()
+                                    .fill(isUnlocked ? LinearGradient(colors: def.gradient.map { $0.opacity(0.2) }, startPoint: .top, endPoint: .bottom) : LinearGradient(colors: [Color.white.opacity(0.04)], startPoint: .top, endPoint: .bottom))
+                                    .frame(width: 36, height: 36)
+                                
+                                Image(systemName: def.icon)
+                                    .font(.system(size: 16, weight: .bold))
+                                    .foregroundStyle(isUnlocked ? LinearGradient(colors: def.gradient, startPoint: .top, endPoint: .bottom) : LinearGradient(colors: [.white.opacity(0.25)], startPoint: .top, endPoint: .bottom))
+                            }
                         }
                         
                         Spacer()
@@ -466,36 +475,46 @@ private struct AchievementDetailSheet: View {
                 Spacer(minLength: 0)
 
                 // Large Glowing Icon
-                ZStack {
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: achievement.gradient.map { $0.opacity(isUnlocked ? 0.25 : 0.04) },
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
+                if UIImage(named: achievement.id) != nil {
+                    Image(achievement.id)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 120, height: 120)
+                        .saturation(isUnlocked ? 1.0 : 0.0)
+                        .opacity(isUnlocked ? 1.0 : 0.35)
+                        .shadow(color: isUnlocked ? achievement.gradient.first?.opacity(0.5) ?? .clear : .clear, radius: 20)
+                } else {
+                    ZStack {
+                        Circle()
+                            .fill(
+                                LinearGradient(
+                                    colors: achievement.gradient.map { $0.opacity(isUnlocked ? 0.25 : 0.04) },
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
                             )
-                        )
-                        .frame(width: 120, height: 120)
-                        .shadow(color: isUnlocked ? achievement.gradient.first?.opacity(0.4) ?? .clear : .clear, radius: 24)
-                    
-                    Circle()
-                        .stroke(
-                            LinearGradient(
-                                colors: achievement.gradient.map { $0.opacity(isUnlocked ? 0.5 : 0.12) },
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            ),
-                            lineWidth: 2
-                        )
-                        .frame(width: 120, height: 120)
+                            .frame(width: 120, height: 120)
+                            .shadow(color: isUnlocked ? achievement.gradient.first?.opacity(0.4) ?? .clear : .clear, radius: 24)
+                        
+                        Circle()
+                            .stroke(
+                                LinearGradient(
+                                    colors: achievement.gradient.map { $0.opacity(isUnlocked ? 0.5 : 0.12) },
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                ),
+                                lineWidth: 2
+                            )
+                            .frame(width: 120, height: 120)
 
-                    Image(systemName: achievement.icon)
-                        .font(.system(size: 46, weight: .bold))
-                        .foregroundStyle(
-                            isUnlocked ?
-                            AnyShapeStyle(LinearGradient(colors: achievement.gradient, startPoint: .top, endPoint: .bottom)) :
-                            AnyShapeStyle(LinearGradient(colors: [.white.opacity(0.2), .white.opacity(0.2)], startPoint: .top, endPoint: .bottom))
-                        )
+                        Image(systemName: achievement.icon)
+                            .font(.system(size: 46, weight: .bold))
+                            .foregroundStyle(
+                                isUnlocked ?
+                                AnyShapeStyle(LinearGradient(colors: achievement.gradient, startPoint: .top, endPoint: .bottom)) :
+                                AnyShapeStyle(LinearGradient(colors: [.white.opacity(0.2), .white.opacity(0.2)], startPoint: .top, endPoint: .bottom))
+                            )
+                    }
                 }
 
                 // Info text

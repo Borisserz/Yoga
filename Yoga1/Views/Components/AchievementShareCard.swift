@@ -15,6 +15,7 @@ struct AchievementShareSheet: View {
 
     private var card: AchievementCard {
         AchievementCard(
+            achievementKey: achievementKey,
             achievementTitle: AchievementDefinition.resolvedTitle(forKey: achievementKey),
             userName: app.displayName,
             level: app.level,
@@ -72,6 +73,7 @@ struct AchievementShareSheet: View {
 // MARK: - The card
 
 struct AchievementCard: View {
+    let achievementKey: String
     let achievementTitle: String
     let userName: String
     let level: Int
@@ -88,11 +90,20 @@ struct AchievementCard: View {
             }
             .foregroundStyle(.white.opacity(0.9))
 
-            Image(systemName: "medal.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(.yellow)
-                .shadow(color: .black.opacity(0.2), radius: 6, y: 3)
-                .padding(.top, 4)
+            if UIImage(named: achievementKey) != nil {
+                Image(achievementKey)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 120, height: 120)
+                    .shadow(color: .black.opacity(0.3), radius: 8)
+                    .padding(.top, 4)
+            } else {
+                Image(systemName: "medal.fill")
+                    .font(.system(size: 64))
+                    .foregroundStyle(.yellow)
+                    .shadow(color: .black.opacity(0.2), radius: 6, y: 3)
+                    .padding(.top, 4)
+            }
 
             VStack(spacing: 6) {
                 Text("Achievement unlocked")
