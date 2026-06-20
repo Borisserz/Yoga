@@ -8,6 +8,9 @@ struct TodayView: View {
     @State private var intensityOverride: PracticeIntensity?
     @State private var showSession = false
     @State private var showWhy = false
+    @State private var showingMinutesDetail = false
+    @State private var showingStreakDetail = false
+    @State private var showingMoodCheckIn = false
 
     init() {}
 
@@ -35,7 +38,14 @@ struct TodayView: View {
                             xpInto: app.xpIntoLevel,
                             xpNext: app.xpForNextLevel
                         )
-                        BentoStatsCard(minutes: app.completedMinutes, streak: app.streakDays, mood: app.mood)
+                        BentoStatsCard(
+                            minutes: app.completedMinutes,
+                            streak: app.streakDays,
+                            mood: app.mood,
+                            onTapMinutes: { showingMinutesDetail = true },
+                            onTapStreak: { showingStreakDetail = true },
+                            onTapMood: { showingMoodCheckIn = true }
+                        )
                     }
                     .padding()
                 }
@@ -45,6 +55,15 @@ struct TodayView: View {
         .onAppear { animateBackground = true }
         .fullScreenCover(isPresented: $showSession) {
             GuidedSessionView(plan: self.plan)
+        }
+        .sheet(isPresented: $showingMinutesDetail) {
+            MinutesStatsDetailView()
+        }
+        .sheet(isPresented: $showingStreakDetail) {
+            StreakDetailView()
+        }
+        .sheet(isPresented: $showingMoodCheckIn) {
+            MoodCheckInView()
         }
     }
 
@@ -270,71 +289,61 @@ private struct IntensitySelector3D: View {
     private let options: [PracticeIntensity?] = [nil, PracticeIntensity.restore, PracticeIntensity.balanced, PracticeIntensity.energize]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("Tune today's energy")
                 .font(.subheadline.weight(.bold))
                 .foregroundStyle(.white.opacity(0.8))
             
-            // Slider Track
-            GeometryReader { geo in
-                let trackWidth = geo.size.width
-                let itemWidth = trackWidth / CGFloat(options.count)
-                let selectedIndex = options.firstIndex(of: selection) ?? 0
-                
-                ZStack(alignment: .leading) {
-                    // Deep Recessed Slot
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.black.opacity(0.55))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 20)
-                                .strokeBorder(Color.white.opacity(0.06), lineWidth: 1.5)
-                        )
+            HStack(spacing: 8) {
+                ForEach(options, id: \.self) { opt in
+                    let isActive = (selection == opt)
+                    let activeGradient = gradientFor(opt)
+                    let glowColor = glowColorFor(opt)
+                    let iconColor = iconColorFor(opt)
                     
-                    // Sliding 3D Glass Capsule
-                    RoundedRectangle(cornerRadius: 18)
-                        .fill(Color.mint)
+                    Button {
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                            selection = opt
+                        }
+                        HapticsManager.shared.playLightImpact()
+                    } label: {
+                        VStack(spacing: 6) {
+                            Image(systemName: iconFor(opt))
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundStyle(isActive ? .black : iconColor)
+                            Text(titleFor(opt))
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(isActive ? .black : .white.opacity(0.8))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(
+                            Group {
+                                if isActive {
+                                    activeGradient
+                                } else {
+                                    Color.white.opacity(0.04)
+                                }
+                            }
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 18))
                         .overlay(
                             RoundedRectangle(cornerRadius: 18)
                                 .strokeBorder(
-                                    LinearGradient(
-                                        colors: [.white.opacity(0.5), .clear],
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    ),
-                                    lineWidth: 1.2
+                                    isActive ?
+                                    LinearGradient(colors: [.white.opacity(0.4), .clear], startPoint: .top, endPoint: .bottom) :
+                                    LinearGradient(colors: [Color.white.opacity(0.08), Color.white.opacity(0.02)], startPoint: .top, endPoint: .bottom),
+                                    lineWidth: isActive ? 1.5 : 1.0
                                 )
                         )
-                        .shadow(color: .mint.opacity(0.45), radius: 10, y: 3)
-                        .frame(width: itemWidth - 6, height: 42)
-                        .offset(x: CGFloat(selectedIndex) * itemWidth + 3)
-                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: selectedIndex)
-                    
-                    // Text Labels / Icons Overlay
-                    HStack(spacing: 0) {
-                        ForEach(0..<options.count, id: \.self) { idx in
-                            let opt = options[idx]
-                            let isActive = (selection == opt)
-                            Button {
-                                withAnimation {
-                                    selection = opt
-                                }
-                                HapticsManager.shared.playLightImpact()
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Image(systemName: iconFor(opt))
-                                        .font(.caption2.bold())
-                                    Text(titleFor(opt))
-                                        .font(.caption2.weight(.bold))
-                                }
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .foregroundStyle(isActive ? Color.black : Color.white.opacity(0.8))
-                            }
-                            .buttonStyle(.plain)
-                        }
+                        .shadow(color: isActive ? glowColor.opacity(0.35) : .clear, radius: 10, x: 0, y: 4)
+                        .scaleEffect(isActive ? 1.05 : 1.0)
                     }
+                    .buttonStyle(.tactile)
                 }
             }
-            .frame(height: 48)
         }
     }
     
@@ -346,6 +355,38 @@ private struct IntensitySelector3D: View {
     private func titleFor(_ intensity: PracticeIntensity?) -> String {
         guard let intensity else { return L("intensity.auto") }
         return intensity.title
+    }
+    
+    private func gradientFor(_ intensity: PracticeIntensity?) -> LinearGradient {
+        guard let intensity else {
+            return LinearGradient(colors: [Color.cyan, Color.blue], startPoint: .topLeading, endPoint: .bottomTrailing)
+        }
+        switch intensity {
+        case .restore:
+            return LinearGradient(colors: [Color.mint, Color.teal], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .balanced:
+            return LinearGradient(colors: [Color.orange, Color.red], startPoint: .topLeading, endPoint: .bottomTrailing)
+        case .energize:
+            return LinearGradient(colors: [Color.purple, Color.indigo], startPoint: .topLeading, endPoint: .bottomTrailing)
+        }
+    }
+    
+    private func glowColorFor(_ intensity: PracticeIntensity?) -> Color {
+        guard let intensity else { return Color.blue }
+        switch intensity {
+        case .restore:  return Color.mint
+        case .balanced: return Color.orange
+        case .energize: return Color.purple
+        }
+    }
+    
+    private func iconColorFor(_ intensity: PracticeIntensity?) -> Color {
+        guard let intensity else { return Color.cyan }
+        switch intensity {
+        case .restore:  return Color.mint
+        case .balanced: return Color.orange
+        case .energize: return Color.purple
+        }
     }
 }
 
@@ -478,13 +519,23 @@ private struct BentoStatsCard: View {
     let minutes: Int
     let streak: Int
     let mood: String
+    let onTapMinutes: () -> Void
+    let onTapStreak: () -> Void
+    let onTapMood: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
-            BentoStatPill(title: "Minutes", value: "\(minutes)", icon: "clock.fill", color: .mint)
-            BentoStatPill(title: "Streak", value: "\(streak)", icon: "flame.fill", color: .orange)
-            BentoStatPill(title: "Mood", value: mood, icon: "heart.fill", color: .pink)
+            Button(action: onTapMinutes) {
+                BentoStatPill(title: "Minutes", value: "\(minutes)", icon: "clock.fill", color: .mint)
+            }
+            Button(action: onTapStreak) {
+                BentoStatPill(title: "Streak", value: "\(streak)", icon: "flame.fill", color: .orange)
+            }
+            Button(action: onTapMood) {
+                BentoStatPill(title: "Mood", value: mood, icon: "heart.fill", color: .pink)
+            }
         }
+        .buttonStyle(.tactile)
         .frame(maxWidth: .infinity)
     }
 }

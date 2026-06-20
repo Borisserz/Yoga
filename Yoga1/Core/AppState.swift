@@ -211,6 +211,11 @@ final class AppState {
         persist()
     }
 
+    func updateMoodKey(_ newKey: String) {
+        moodKey = newKey
+        persist()
+    }
+
     func refreshReminders() {
         NotificationManager.shared.refreshSchedules(sessions: sessions, streakDays: streakDays, practicedToday: practicedToday)
     }

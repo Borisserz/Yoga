@@ -1,5 +1,5 @@
 internal import SwiftUI
-import Charts
+internal import Charts
 
 struct JournalView: View {
     @Environment(AppState.self) private var app

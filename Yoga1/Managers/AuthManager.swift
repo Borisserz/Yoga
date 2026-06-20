@@ -14,7 +14,7 @@ final class AuthManager {
     
     init() {
         #if canImport(FirebaseAuth)
-        Auth.auth().addStateDidChangeListener { [weak self] _, user in
+        _ = Auth.auth().addStateDidChangeListener { [weak self] _, user in
             guard let self = self else { return }
             self.isAnonymous = user?.isAnonymous ?? true
             self.isAuthenticated = user != nil && !(user?.isAnonymous ?? true)
