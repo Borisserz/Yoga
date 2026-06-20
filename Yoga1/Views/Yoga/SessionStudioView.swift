@@ -9,6 +9,8 @@ struct SessionStudioView: View {
     @State private var showAmbient = false
     @State private var showPaywall = false
     @State private var animateBackground = false
+    @State private var selectedAIPose: YogaPose? = nil
+    @State private var activeCameraPose: YogaPose? = nil
 
     init() {}
 
@@ -123,6 +125,14 @@ struct SessionStudioView: View {
 
                         // Category Filter row using custom 3D illustration assets
                         CategoryFilterRow(selection: $selectedCategory)
+                        
+                        if let category = selectedCategory {
+                            AICategoryInsightCard(category: category)
+                                .transition(.asymmetric(
+                                    insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                                    removal: .opacity
+                                ))
+                        }
 
                         if filteredPoses.isEmpty {
                             ContentUnavailableView.search(text: searchText)
@@ -134,7 +144,9 @@ struct SessionStudioView: View {
                                     NavigationLink {
                                         PoseDetailView(pose: pose)
                                     } label: {
-                                        PoseRow(pose: pose)
+                                        PoseRow(pose: pose) {
+                                            selectedAIPose = pose
+                                        }
                                     }
                                     .buttonStyle(.plain)
                                 }
@@ -154,6 +166,14 @@ struct SessionStudioView: View {
         }
         .sheet(isPresented: $showPaywall) {
             PaywallView()
+        }
+        .sheet(item: $selectedAIPose) { pose in
+            AIPoseGuideView(pose: pose) {
+                activeCameraPose = pose
+            }
+        }
+        .fullScreenCover(item: $activeCameraPose) { pose in
+            AICameraSessionView(poseKey: pose.key)
         }
     }
 }
@@ -209,11 +229,15 @@ private struct CustomSegmentedPicker: View {
 
 private struct CategoryFilterRow: View {
     @Binding var selection: PoseCategory?
+    
+    private var isRussian: Bool {
+        Locale.current.language.languageCode?.identifier == "ru"
+    }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
-                FilterChip(title: L("category.all"),
+                FilterChip(title: isRussian ? "Все" : "All",
                            category: nil,
                            tint: .mint,
                            isSelected: selection == nil) {
@@ -221,6 +245,13 @@ private struct CategoryFilterRow: View {
                         selection = nil
                     }
                 }
+                
+                // Beautiful separator line
+                RoundedRectangle(cornerRadius: 1)
+                    .fill(Color.white.opacity(0.12))
+                    .frame(width: 1.5, height: 22)
+                    .padding(.horizontal, 4)
+                
                 ForEach(PoseCategory.allCases) { category in
                     FilterChip(title: category.title,
                                category: category,
@@ -287,6 +318,7 @@ private struct FilterChip: View {
 
 private struct PoseRow: View {
     let pose: YogaPose
+    var onAIClick: (() -> Void)? = nil
 
     var body: some View {
         HStack(spacing: 16) {
@@ -329,6 +361,26 @@ private struct PoseRow: View {
             }
             Spacer()
             
+            if let onAIClick {
+                Button {
+                    onAIClick()
+                } label: {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(.white)
+                        .padding(9)
+                        .background(
+                            LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing),
+                            in: Circle()
+                        )
+                        .shadow(color: pose.gradient.first?.opacity(0.4) ?? .clear, radius: 4)
+                }
+                .buttonStyle(.plain)
+                .highPriorityGesture(TapGesture().onEnded {
+                    onAIClick()
+                })
+            }
+            
             Image(systemName: "chevron.right")
                 .font(.system(size: 12, weight: .bold))
                 .foregroundStyle(.white.opacity(0.4))
@@ -355,5 +407,118 @@ private struct PoseRow: View {
         )
         .shadow(color: .black.opacity(0.12), radius: 10, y: 5)
         .card3DTilt(maxTilt: 8.0, cornerRadius: 24.0)
+    }
+}
+
+private struct AICategoryInsightCard: View {
+    let category: PoseCategory
+    
+    private var isRussian: Bool {
+        Locale.current.language.languageCode?.identifier == "ru"
+    }
+    
+    private var categoryData: AICategoryAnalysisData {
+        YogaPoseAIContent.getCategoryAnalysis(for: category)
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            
+            // Header
+            HStack(spacing: 8) {
+                Image(systemName: "sparkles")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(category.tint)
+                
+                Text(isRussian ? "ИИ-АНАЛИЗ КАТЕГОРИИ: \(category.title.uppercased())" : "AI CATEGORY ANALYSIS: \(category.title.uppercased())")
+                    .font(.system(size: 10, weight: .black, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.7))
+                    .tracking(1.5)
+                
+                Spacer()
+                
+                // Glowing radar scanner dot
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(category.tint)
+                        .frame(width: 5, height: 5)
+                    Text(isRussian ? "АКТИВЕН" : "ACTIVE")
+                        .font(.system(size: 8, weight: .bold, design: .rounded))
+                        .foregroundStyle(category.tint)
+                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(category.tint.opacity(0.08), in: Capsule())
+                .overlay(Capsule().strokeBorder(category.tint.opacity(0.2), lineWidth: 1))
+            }
+            
+            VStack(alignment: .leading, spacing: 10) {
+                // Description Section
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(isRussian ? "Описание направления" : "Category Overview")
+                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.55))
+                    
+                    Text(categoryData.description)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.white.opacity(0.85))
+                        .lineSpacing(3)
+                }
+                
+                Divider()
+                    .background(Color.white.opacity(0.06))
+                    .padding(.vertical, 2)
+                
+                // Technique Section
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(isRussian ? "Техника ИИ" : "AI Technique Guide")
+                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.55))
+                    
+                    Text(categoryData.technique)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(category.tint.opacity(0.9))
+                        .lineSpacing(3)
+                }
+                
+                Divider()
+                    .background(Color.white.opacity(0.06))
+                    .padding(.vertical, 2)
+                
+                // Poses Summary Section
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(isRussian ? "Состав комплекса поз" : "Target Poses Overview")
+                        .font(.system(size: 11, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white.opacity(0.55))
+                    
+                    Text(categoryData.posesOverview)
+                        .font(.system(size: 12, weight: .medium).italic())
+                        .foregroundStyle(.white.opacity(0.7))
+                        .lineSpacing(3)
+                }
+            }
+        }
+        .padding(18)
+        .background(
+            LinearGradient(
+                colors: [category.tint.opacity(0.04), Color.clear],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .background(Color.white.opacity(0.02))
+        .cornerRadius(24)
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                .strokeBorder(
+                    LinearGradient(
+                        colors: [category.tint.opacity(0.25), .clear],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1.2
+                )
+        )
+        .shadow(color: .black.opacity(0.15), radius: 10, y: 5)
     }
 }

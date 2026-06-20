@@ -13,8 +13,15 @@ enum PoseCategory: String, CaseIterable, Identifiable, Hashable {
 
     var id: String { rawValue }
 
-    /// Localized display name, e.g. "Strength" / "Сила".
-    var title: String { L("category.\(rawValue)") }
+    var title: String {
+        let isRussian = Locale.current.language.languageCode?.identifier == "ru"
+        switch self {
+        case .strength:    return isRussian ? "Сила" : "Strength"
+        case .flexibility: return isRussian ? "Гибкость" : "Flexibility"
+        case .balance:     return isRussian ? "Баланс" : "Balance"
+        case .restorative: return isRussian ? "Восстановление" : "Restorative"
+        }
+    }
 
     /// SF Symbol shown on the filter chip.
     var icon: String {

@@ -43,6 +43,10 @@ final class AppState {
     /// Set by `AuthManager` once Firebase resolves the user.
     var currentUserId: String = "local_user"
     var displayName: String = "Yogi"
+    
+    // MARK: Avatar properties
+    var avatarData: Data? = nil
+    var avatarPresetIndex: Int = 0
 
     private let storageKey = "yoga_app_state_v2"
 
@@ -203,6 +207,13 @@ final class AppState {
         if streakDays >= 7 { unlockAchievement("achievement.streak_7") }
         if streakDays >= 30 { unlockAchievement("achievement.streak_30") }
     }
+    
+    func updateProfile(name: String, avatarData: Data?, avatarPresetIndex: Int) {
+        self.displayName = name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Yogi" : name.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.avatarData = avatarData
+        self.avatarPresetIndex = avatarPresetIndex
+        persist()
+    }
 
     func addEntry(_ text: String) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -238,6 +249,8 @@ final class AppState {
         preferredTimeKey = "onb.time.morning"
         sessionLengthMinutes = 10
         selectedTab = 0
+        avatarData = nil
+        avatarPresetIndex = 0
         UserDefaults.standard.removeObject(forKey: storageKey)
     }
 
@@ -261,6 +274,8 @@ final class AppState {
         var weeklyTargetDays: Int?
         var preferredTimeKey: String?
         var sessionLengthMinutes: Int?
+        var avatarData: Data?
+        var avatarPresetIndex: Int?
     }
 
     private func persist() {
@@ -281,7 +296,9 @@ final class AppState {
             focusAreaKeys: focusAreaKeys,
             weeklyTargetDays: weeklyTargetDays,
             preferredTimeKey: preferredTimeKey,
-            sessionLengthMinutes: sessionLengthMinutes
+            sessionLengthMinutes: sessionLengthMinutes,
+            avatarData: avatarData,
+            avatarPresetIndex: avatarPresetIndex
         )
         if let data = try? JSONEncoder().encode(snapshot) {
             UserDefaults.standard.set(data, forKey: storageKey)
@@ -312,5 +329,7 @@ final class AppState {
         weeklyTargetDays = snapshot.weeklyTargetDays ?? 3
         preferredTimeKey = snapshot.preferredTimeKey ?? "onb.time.morning"
         sessionLengthMinutes = snapshot.sessionLengthMinutes ?? 10
+        avatarData = snapshot.avatarData
+        avatarPresetIndex = snapshot.avatarPresetIndex ?? 0
     }
 }

@@ -9,9 +9,14 @@ struct PoseDetailView: View {
     @State private var showAICamera = false
     @State private var pulseOrb = false
     @State private var animateBackground = false
+    @State private var showAIGuide = false
 
     init(pose: YogaPose) {
         self.pose = pose
+    }
+
+    private var isRussian: Bool {
+        Locale.current.language.languageCode?.identifier == "ru"
     }
 
     var body: some View {
@@ -147,6 +152,44 @@ struct PoseDetailView: View {
                     }
                     .padding(.horizontal)
 
+                    // AI Technique & Benefits button
+                    Button {
+                        HapticsManager.shared.playLightImpact()
+                        showAIGuide = true
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: "sparkles")
+                                .font(.system(size: 16, weight: .bold))
+                                .foregroundStyle(pose.gradient.first ?? .mint)
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(isRussian ? "Инструкция ИИ и Плюсы/Минусы" : "AI Technique & Benefits")
+                                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.white)
+                                Text(isRussian ? "Подробный разбор выполнения от тренера" : "Detailed breakdown and precautions")
+                                    .font(.system(size: 11, weight: .medium))
+                                    .foregroundStyle(.white.opacity(0.5))
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 12, weight: .bold))
+                                .foregroundStyle(.white.opacity(0.4))
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 14)
+                        .background(Color.white.opacity(0.04))
+                        .cornerRadius(20)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .strokeBorder(
+                                    LinearGradient(colors: pose.gradient.map { $0.opacity(0.3) }, startPoint: .topLeading, endPoint: .bottomTrailing),
+                                    lineWidth: 1.2
+                                )
+                        )
+                    }
+                    .buttonStyle(.tactile)
+                    .padding(.horizontal)
+
                     // Control Buttons
                     HStack(spacing: 16) {
                         Button {
@@ -199,6 +242,11 @@ struct PoseDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(isPresented: $showAICamera) {
             AICameraSessionView(poseKey: pose.key)
+        }
+        .sheet(isPresented: $showAIGuide) {
+            AIPoseGuideView(pose: pose) {
+                showAICamera = true
+            }
         }
         .onAppear {
             animateBackground = true
