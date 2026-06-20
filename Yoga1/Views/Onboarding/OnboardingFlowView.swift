@@ -11,6 +11,13 @@ struct OnboardingFlowView: View {
     @State private var preferredTime = "onb.time.morning"
     @State private var sessionLength = 10
 
+    // New profile initialization states
+    @State private var nameInput = ""
+    @State private var selectedAvatarIndex = 0
+    @State private var generatingProgress = 0.0
+    @State private var generatingStatusIndex = 0
+    @State private var timer: Timer? = nil
+
     private let levels = ["onb.level.beginner", "onb.level.intermediate", "onb.level.advanced"]
     private let goals = ["onb.goal.flexibility", "onb.goal.strength", "onb.goal.calm"]
     private let focusOptions = ["onb.focus.back", "onb.focus.hips", "onb.focus.shoulders",
@@ -19,9 +26,14 @@ struct OnboardingFlowView: View {
     private let lengths = [5, 10, 15, 20]
     private let targets = [2, 3, 5, 7]
 
-    private let lastStep = 7
+    // 0: Welcome, 1: Level, 2: Goal, 3: Focus, 4: Cadence, 5: Time, 6: Length, 7: Profile, 8: Generating, 9: Summary
+    private let lastStep = 9
 
     @State private var animateBackground = false
+
+    private var isRussian: Bool {
+        Locale.current.language.languageCode?.identifier == "ru"
+    }
 
     init() {}
 
@@ -95,6 +107,39 @@ struct OnboardingFlowView: View {
         }
     }
 
+    private func iconForFocus(_ focus: String) -> String {
+        switch focus {
+        case "onb.focus.back": return "figure.walk"
+        case "onb.focus.hips": return "figure.cooldown"
+        case "onb.focus.shoulders": return "figure.arms.open"
+        case "onb.focus.stress": return "brain"
+        case "onb.focus.sleep": return "moon.stars.fill"
+        default: return "scalemass.fill"
+        }
+    }
+
+    private var generatingStatuses: [String] {
+        if isRussian {
+            return [
+                "Анализируем уровень подготовки...",
+                "Настраиваем целевые зоны...",
+                "Создаем персональные советы ИИ...",
+                "Синхронизируем график тренировок...",
+                "Настраиваем ментальные цели...",
+                "Завершаем создание плана!"
+            ]
+        } else {
+            return [
+                "Analyzing experience level...",
+                "Targeting core focus areas...",
+                "Building tailored AI techniques...",
+                "Integrating daily schedules...",
+                "Customizing mindfulness goals...",
+                "Finalizing your Space of Flow!"
+            ]
+        }
+    }
+
     var body: some View {
         ZStack {
             AnimatedGradientBackground(animate: $animateBackground)
@@ -128,6 +173,8 @@ struct OnboardingFlowView: View {
                         case 4: cadenceStep
                         case 5: timeStep
                         case 6: lengthStep
+                        case 7: profileStep
+                        case 8: generatingStep
                         default: summary
                         }
                     }
@@ -164,33 +211,48 @@ struct OnboardingFlowView: View {
                 Spacer()
 
                 // Control Button
-                Button {
-                    withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
-                        if step < lastStep {
-                            step += 1
-                        } else {
-                            app.completeOnboarding(
-                                levelKey: experienceLevel,
-                                goalKey: mainGoal,
-                                focusAreas: Array(focusAreas),
-                                weeklyTarget: weeklyTarget,
-                                preferredTime: preferredTime,
-                                sessionLength: sessionLength
-                            )
+                if step != 8 {
+                    Button {
+                        HapticsManager.shared.playLightImpact()
+                        withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+                            if step == 7 {
+                                // Save profile details to state/app before generation
+                                let finalName = nameInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? (isRussian ? "Йог" : "Yogi") : nameInput
+                                app.updateProfile(name: finalName, avatarData: nil, avatarPresetIndex: selectedAvatarIndex)
+                                
+                                step += 1
+                                startPlanGeneration()
+                            } else if step < lastStep {
+                                step += 1
+                            } else {
+                                app.completeOnboarding(
+                                    levelKey: experienceLevel,
+                                    goalKey: mainGoal,
+                                    focusAreas: Array(focusAreas),
+                                    weeklyTarget: weeklyTarget,
+                                    preferredTime: preferredTime,
+                                    sessionLength: sessionLength
+                                )
+                            }
                         }
+                    } label: {
+                        Text(step == lastStep ? (isRussian ? "Начать" : "Begin") : (isRussian ? "Далее" : "Next"))
+                            .font(.headline.bold())
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(Color.mint, in: Capsule())
+                            .foregroundStyle(.black)
+                            .shadow(color: Color.mint.opacity(0.3), radius: 10, y: 5)
                     }
-                } label: {
-                    Text(step == lastStep ? "Begin" : "Next")
-                        .font(.headline.bold())
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(Color.mint, in: Capsule())
-                        .foregroundStyle(.black)
-                        .shadow(color: Color.mint.opacity(0.3), radius: 10, y: 5)
+                    .buttonStyle(.tactile)
+                    .padding(.horizontal)
+                    .padding(.bottom, 30)
+                } else {
+                    // Empty bottom padding during loading animation to keep layout stable
+                    Color.clear
+                        .frame(height: 78)
+                        .padding(.bottom, 30)
                 }
-                .buttonStyle(.tactile)
-                .padding(.horizontal)
-                .padding(.bottom, 30)
             }
         }
         .onAppear {
@@ -220,12 +282,13 @@ struct OnboardingFlowView: View {
             }
             .padding(.bottom, 10)
             
-            Text("Welcome to Yoga Epic")
+            Text(isRussian ? "Добро пожаловать в Yoga Epic" : "Welcome to Yoga Epic")
                 .font(.system(.largeTitle, design: .rounded).bold())
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.85)
             
-            Text("Let's tailor a practice that fits you.")
+            Text(isRussian ? "Создадим практику под ваши цели." : "Let's tailor a practice that fits you.")
                 .font(.headline)
                 .foregroundStyle(.white.opacity(0.6))
                 .multilineTextAlignment(.center)
@@ -233,7 +296,7 @@ struct OnboardingFlowView: View {
     }
 
     private var levelStep: some View {
-        StepScaffold(title: "Your level?", headerIcon: AnyView(LevelIndicatorView())) {
+        StepScaffold(title: isRussian ? "Ваш уровень?" : "Your level?", headerIcon: AnyView(LevelIndicatorView())) {
             VStack(spacing: 12) {
                 ForEach(levels, id: \.self) { level in
                     SelectRow(title: L(level), icon: iconForLevel(level), selected: experienceLevel == level) {
@@ -245,7 +308,7 @@ struct OnboardingFlowView: View {
     }
 
     private var goalStep: some View {
-        StepScaffold(title: "Main goal?", headerIcon: AnyView(GoalIndicatorView())) {
+        StepScaffold(title: isRussian ? "Главная цель?" : "Main goal?", headerIcon: AnyView(GoalIndicatorView())) {
             VStack(spacing: 12) {
                 ForEach(goals, id: \.self) { goal in
                     SelectRow(title: L(goal), icon: iconForGoal(goal), selected: mainGoal == goal) {
@@ -257,10 +320,10 @@ struct OnboardingFlowView: View {
     }
 
     private var focusStep: some View {
-        StepScaffold(title: "What needs love?", subtitle: "Pick any — or none.", headerIcon: AnyView(FocusIndicatorView())) {
+        StepScaffold(title: isRussian ? "Что прорабатываем?" : "What needs love?", subtitle: isRussian ? "Выберите любое или пропустите" : "Pick any — or none.", headerIcon: AnyView(FocusIndicatorView())) {
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                 ForEach(focusOptions, id: \.self) { focus in
-                    SelectChip(title: L(focus), selected: focusAreas.contains(focus)) {
+                    SelectChip(title: L(focus), icon: iconForFocus(focus), selected: focusAreas.contains(focus)) {
                         if focusAreas.contains(focus) { focusAreas.remove(focus) }
                         else { focusAreas.insert(focus) }
                     }
@@ -270,7 +333,7 @@ struct OnboardingFlowView: View {
     }
 
     private var cadenceStep: some View {
-        StepScaffold(title: "How many days a week?", headerIcon: AnyView(CadenceIndicatorView())) {
+        StepScaffold(title: isRussian ? "Сколько дней в неделю?" : "How many days a week?", headerIcon: AnyView(CadenceIndicatorView())) {
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
                 ForEach(targets, id: \.self) { n in
                     let isActive = (weeklyTarget == n)
@@ -320,7 +383,7 @@ struct OnboardingFlowView: View {
     }
 
     private var timeStep: some View {
-        StepScaffold(title: "When do you practice?", headerIcon: AnyView(TimeIndicatorView())) {
+        StepScaffold(title: isRussian ? "Время для практик?" : "When do you practice?", headerIcon: AnyView(TimeIndicatorView())) {
             VStack(spacing: 12) {
                 ForEach(times, id: \.self) { time in
                     SelectRow(title: L(time), selected: preferredTime == time) {
@@ -332,7 +395,7 @@ struct OnboardingFlowView: View {
     }
 
     private var lengthStep: some View {
-        StepScaffold(title: "Session length?", headerIcon: AnyView(LengthIndicatorView())) {
+        StepScaffold(title: isRussian ? "Длительность сессии?" : "Session length?", headerIcon: AnyView(LengthIndicatorView())) {
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
                 ForEach(lengths, id: \.self) { mins in
                     let isActive = (sessionLength == mins)
@@ -381,6 +444,120 @@ struct OnboardingFlowView: View {
         }
     }
 
+    private var profileStep: some View {
+        StepScaffold(
+            title: isRussian ? "Как вас зовут?" : "What should we call you?",
+            subtitle: isRussian ? "Это имя увидят другие йоги" : "This name will represent you in the League",
+            headerIcon: AnyView(ProfileIndicatorView(avatarIndex: selectedAvatarIndex))
+        ) {
+            VStack(spacing: 20) {
+                // Name textfield
+                TextField(isRussian ? "Имя профиля" : "Your name", text: $nameInput)
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 14)
+                    .background(Color.white.opacity(0.06))
+                    .cornerRadius(16)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .strokeBorder(Color.white.opacity(0.12), lineWidth: 1.2)
+                    )
+                    .tint(.mint)
+                
+                // Avatar Picker Header
+                Text(isRussian ? "Выберите аватар" : "Pick an avatar")
+                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.4))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 4)
+                
+                // Horizontal list of avatars
+                HStack(spacing: 12) {
+                    ForEach(avatarPresets) { preset in
+                        let isSelected = (selectedAvatarIndex == preset.id)
+                        Button {
+                            HapticsManager.shared.playLightImpact()
+                            selectedAvatarIndex = preset.id
+                        } label: {
+                            ZStack {
+                                Circle()
+                                    .fill(LinearGradient(colors: preset.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                                    .frame(width: 42, height: 42)
+                                    .shadow(color: isSelected ? preset.gradient.first?.opacity(0.4) ?? .clear : .clear, radius: 6)
+                                
+                                Image(systemName: preset.iconName)
+                                    .font(.system(size: 15, weight: .bold))
+                                    .foregroundStyle(.white)
+                            }
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(Color.white, lineWidth: isSelected ? 2.5 : 0)
+                            )
+                            .scaleEffect(isSelected ? 1.15 : 1.0)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+        }
+    }
+
+    private var generatingStep: some View {
+        StepScaffold(
+            title: isRussian ? "Создаем ваш план..." : "Generating your plan...",
+            subtitle: isRussian ? "Настраиваем умные рекомендации" : "Tailoring custom recommendations",
+            headerIcon: AnyView(GeneratingIndicatorView(progress: generatingProgress))
+        ) {
+            VStack(spacing: 16) {
+                // Progress Bar
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.white.opacity(0.08))
+                        .frame(height: 8)
+                    Capsule()
+                        .fill(LinearGradient(colors: [.mint, .teal], startPoint: .leading, endPoint: .trailing))
+                        .frame(width: 250 * CGFloat(generatingProgress), height: 8)
+                        .shadow(color: .mint.opacity(0.4), radius: 4)
+                }
+                .frame(width: 250)
+                
+                // Status Logs
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(0..<generatingStatuses.count, id: \.self) { idx in
+                        let isDone = (generatingStatusIndex > idx)
+                        let isCurrent = (generatingStatusIndex == idx)
+                        
+                        HStack(spacing: 10) {
+                            if isDone {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(.green)
+                                    .font(.system(size: 13, weight: .bold))
+                            } else if isCurrent {
+                                ProgressView()
+                                    .tint(.mint)
+                                    .scaleEffect(0.7)
+                                    .frame(width: 13, height: 13)
+                            } else {
+                                Circle()
+                                    .stroke(Color.white.opacity(0.2), lineWidth: 1.5)
+                                    .frame(width: 13, height: 13)
+                            }
+                            
+                            Text(generatingStatuses[idx])
+                                .font(.system(size: 11, weight: isCurrent ? .bold : .medium, design: .rounded))
+                                .foregroundStyle(isCurrent ? .white : (isDone ? .white.opacity(0.7) : .white.opacity(0.25)))
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top, 10)
+            }
+            .frame(height: 200)
+        }
+    }
+
     private var summary: some View {
         VStack(spacing: 24) {
             ZStack {
@@ -394,7 +571,7 @@ struct OnboardingFlowView: View {
                     .shadow(color: .mint.opacity(0.4), radius: 15)
             }
             
-            Text("Your plan is ready!")
+            Text(isRussian ? "План готов!" : "Your plan is ready!")
                 .font(.system(.largeTitle, design: .rounded).bold())
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
@@ -429,6 +606,30 @@ struct OnboardingFlowView: View {
                 .strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
         )
     }
+
+    private func startPlanGeneration() {
+        generatingProgress = 0.0
+        generatingStatusIndex = 0
+        
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { t in
+            withAnimation(.easeInOut(duration: 0.4)) {
+                generatingProgress += 0.167
+                if generatingStatusIndex < 5 {
+                    generatingStatusIndex += 1
+                    HapticsManager.shared.playLightImpact()
+                } else {
+                    t.invalidate()
+                    generatingProgress = 1.0
+                    HapticsManager.shared.playSuccess()
+                    
+                    withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+                        step += 1
+                    }
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Step Indicators
@@ -439,7 +640,6 @@ private struct LevelIndicatorView: View {
 
     var body: some View {
         ZStack {
-            // Metallic Outer Ring
             Circle()
                 .stroke(
                     LinearGradient(colors: [.white.opacity(0.18), .white.opacity(0.02), .mint.opacity(0.15), .clear], startPoint: .topLeading, endPoint: .bottomTrailing),
@@ -448,12 +648,10 @@ private struct LevelIndicatorView: View {
                 .frame(width: 104, height: 104)
                 .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
             
-            // Matte Chronograph Dial Face
             Circle()
                 .fill(Color.black.opacity(0.45))
                 .frame(width: 96, height: 96)
             
-            // Tick Marks
             ForEach(0..<12) { i in
                 Rectangle()
                     .fill(Color.white.opacity(i % 3 == 0 ? 0.35 : 0.15))
@@ -462,7 +660,6 @@ private struct LevelIndicatorView: View {
                     .rotationEffect(.degrees(Double(i) * 30))
             }
             
-            // Sweep Needle
             Rectangle()
                 .fill(LinearGradient(colors: [.mint, .teal], startPoint: .top, endPoint: .bottom))
                 .frame(width: 3, height: 38)
@@ -470,7 +667,6 @@ private struct LevelIndicatorView: View {
                 .rotationEffect(.degrees(sweepAngle))
                 .shadow(color: .mint.opacity(0.4), radius: 4)
             
-            // Glowing Center Pivot / Axis
             Circle()
                 .fill(Color.mint)
                 .frame(width: 10, height: 10)
@@ -499,28 +695,24 @@ private struct GoalIndicatorView: View {
 
     var body: some View {
         ZStack {
-            // Concentric Expanding Radar Waves
             Circle()
                 .stroke(Color.mint.opacity(0.15), lineWidth: 1.5)
                 .frame(width: 110, height: 110)
                 .scaleEffect(pulseWave ? 1.25 : 0.8)
                 .opacity(pulseWave ? 0 : 0.8)
             
-            // Outer Counter-Clockwise Dash Circle
             Circle()
                 .strokeBorder(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [6, 12]))
                 .foregroundStyle(.mint.opacity(0.35))
                 .frame(width: 96, height: 96)
                 .rotationEffect(.degrees(rotateOuter ? -360 : 0))
             
-            // Inner Clockwise Dash Circle
             Circle()
                 .strokeBorder(style: StrokeStyle(lineWidth: 1.2, lineCap: .round, dash: [4, 8]))
                 .foregroundStyle(.teal.opacity(0.25))
                 .frame(width: 80, height: 80)
                 .rotationEffect(.degrees(rotateInner ? 360 : 0))
             
-            // Radar Crosshairs
             ForEach(0..<4) { i in
                 Rectangle()
                     .fill(Color.mint.opacity(0.2))
@@ -529,7 +721,6 @@ private struct GoalIndicatorView: View {
                     .rotationEffect(.degrees(Double(i) * 90))
             }
             
-            // Center Glowing Target Icon
             Image(systemName: "target")
                 .font(.system(size: 40))
                 .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
@@ -555,14 +746,12 @@ private struct FocusIndicatorView: View {
 
     var body: some View {
         ZStack {
-            // Expanding neon pulse ring
             Image(systemName: "heart.fill")
                 .font(.system(size: 40))
                 .foregroundStyle(Color.red.opacity(0.15))
                 .scaleEffect(scale ? 1.35 : 0.8)
                 .opacity(scale ? 0 : 1)
             
-            // Glowing border orbit
             Circle()
                 .stroke(
                     LinearGradient(colors: [.red.opacity(0.3), .clear, .pink.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing),
@@ -594,13 +783,11 @@ private struct CadenceIndicatorView: View {
 
     var body: some View {
         ZStack {
-            // Glowing soft back-shadow
             Circle()
                 .fill(RadialGradient(colors: [.mint.opacity(0.25), .clear], center: .center, startRadius: 0, endRadius: 40))
                 .frame(width: 80, height: 80)
                 .scaleEffect(shadowScale ? 1.15 : 0.85)
             
-            // Floating calendar icon
             Image(systemName: "calendar")
                 .font(.system(size: 44))
                 .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
@@ -623,7 +810,6 @@ private struct TimeIndicatorView: View {
 
     var body: some View {
         ZStack {
-            // Starry Sky Plate
             Circle()
                 .fill(
                     RadialGradient(
@@ -643,7 +829,6 @@ private struct TimeIndicatorView: View {
                 )
                 .shadow(color: .black.opacity(0.4), radius: 8, y: 4)
             
-            // Orbit Track Ring (Golden)
             Circle()
                 .stroke(
                     LinearGradient(colors: [.yellow.opacity(0.25), .purple.opacity(0.2)], startPoint: .topLeading, endPoint: .bottomTrailing),
@@ -651,9 +836,7 @@ private struct TimeIndicatorView: View {
                 )
                 .frame(width: 72, height: 72)
             
-            // Celestial Bodies Group (rotating together)
             ZStack {
-                // Sun
                 Image(systemName: "sun.max.fill")
                     .font(.system(size: 20))
                     .foregroundStyle(
@@ -662,7 +845,6 @@ private struct TimeIndicatorView: View {
                     .shadow(color: .orange.opacity(0.55), radius: 6)
                     .offset(y: -36)
                 
-                // Moon
                 Image(systemName: "moon.stars.fill")
                     .font(.system(size: 16))
                     .foregroundStyle(
@@ -673,7 +855,6 @@ private struct TimeIndicatorView: View {
             }
             .rotationEffect(.degrees(orbitalRotation))
             
-            // Astrolabe Scale Markings
             ForEach(0..<24) { i in
                 Rectangle()
                     .fill(Color.white.opacity(i % 6 == 0 ? 0.25 : 0.08))
@@ -697,7 +878,6 @@ private struct LengthIndicatorView: View {
 
     var body: some View {
         ZStack {
-            // Background Recess
             Circle()
                 .fill(Color.black.opacity(0.35))
                 .frame(width: 96, height: 96)
@@ -706,7 +886,6 @@ private struct LengthIndicatorView: View {
                         .stroke(Color.white.opacity(0.06), lineWidth: 1.2)
                 )
             
-            // Mechanical Gear Cog (Rotating behind the hourglass)
             ZStack {
                 Circle()
                     .stroke(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [3, 9]))
@@ -723,16 +902,13 @@ private struct LengthIndicatorView: View {
             }
             .rotationEffect(.degrees(gearRotation))
             
-            // Flowing Sand Stream Indicator (Vertical pulsing line)
             VStack(spacing: 0) {
-                // Hourglass Glass Vessel and Sand
                 ZStack {
                     Image(systemName: "hourglass")
                         .font(.system(size: 42))
                         .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
                         .shadow(color: .mint.opacity(0.35), radius: 8)
                     
-                    // Streaming Sand Particles (Micro-pulse)
                     Rectangle()
                         .fill(Color.mint.opacity(0.6))
                         .frame(width: 2, height: 18)
@@ -757,6 +933,71 @@ private struct LengthIndicatorView: View {
     }
 }
 
+private struct ProfileIndicatorView: View {
+    let avatarIndex: Int
+    @State private var pulseOuter = false
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(
+                    LinearGradient(colors: [.white.opacity(0.15), .mint.opacity(0.2)], startPoint: .top, endPoint: .bottom),
+                    lineWidth: 2
+                )
+                .frame(width: 104, height: 104)
+                .scaleEffect(pulseOuter ? 1.08 : 0.96)
+                .opacity(pulseOuter ? 0.3 : 0.7)
+            
+            let preset = avatarPresets[safe: avatarIndex] ?? avatarPresets[0]
+            Circle()
+                .fill(LinearGradient(colors: preset.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                .frame(width: 88, height: 88)
+                .shadow(color: preset.gradient.first?.opacity(0.4) ?? .clear, radius: 12)
+            
+            Image(systemName: preset.iconName)
+                .font(.system(size: 32, weight: .bold))
+                .foregroundStyle(.white)
+                .shadow(color: .black.opacity(0.2), radius: 4)
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 1.8).repeatForever(autoreverses: true)) {
+                pulseOuter = true
+            }
+        }
+    }
+}
+
+private struct GeneratingIndicatorView: View {
+    let progress: Double
+    @State private var rotateCog = false
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(
+                    LinearGradient(colors: [.white.opacity(0.12), .mint.opacity(0.2)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                    lineWidth: 1.5
+                )
+                .frame(width: 104, height: 104)
+            
+            Circle()
+                .strokeBorder(style: StrokeStyle(lineWidth: 2.0, lineCap: .round, dash: [8, 16]))
+                .foregroundStyle(.mint)
+                .frame(width: 90, height: 90)
+                .rotationEffect(.degrees(rotateCog ? 360 : 0))
+            
+            Text(String(format: "%.0f%%", progress * 100))
+                .font(.system(size: 20, weight: .black, design: .rounded).monospacedDigit())
+                .foregroundStyle(LinearGradient(colors: [.white, .mint], startPoint: .top, endPoint: .bottom))
+                .shadow(color: .mint.opacity(0.35), radius: 6)
+        }
+        .onAppear {
+            withAnimation(.linear(duration: 3).repeatForever(autoreverses: false)) {
+                rotateCog = true
+            }
+        }
+    }
+}
 
 // MARK: - Reusable bits
 
@@ -831,23 +1072,32 @@ private struct SelectRow: View {
 
 private struct SelectChip: View {
     let title: String
+    let icon: String
     let selected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(.subheadline.weight(.bold))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .background(selected ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
-                            in: RoundedRectangle(cornerRadius: 18))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18)
-                        .strokeBorder(selected ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
-                )
-                .shadow(color: selected ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
-                .foregroundStyle(selected ? .black : .white)
+            HStack(spacing: 8) {
+                Image(systemName: icon)
+                    .font(.subheadline.bold())
+                    .foregroundStyle(selected ? .black : .mint)
+                Text(title)
+                    .font(.system(size: 12, weight: .bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 16)
+            .padding(.horizontal, 8)
+            .background(selected ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
+                        in: RoundedRectangle(cornerRadius: 18))
+            .overlay(
+                RoundedRectangle(cornerRadius: 18)
+                    .strokeBorder(selected ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
+            )
+            .shadow(color: selected ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
+            .foregroundStyle(selected ? .black : .white)
         }
         .buttonStyle(.tactile)
     }
