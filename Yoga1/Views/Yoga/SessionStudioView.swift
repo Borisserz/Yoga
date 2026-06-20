@@ -12,14 +12,12 @@ struct SessionStudioView: View {
 
     init() {}
 
-    /// Poses after applying level, category and search-text filters.
     var filteredPoses: [YogaPose] {
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
         return YogaLibrary.poses.filter { pose in
             guard pose.level <= selectedLevel else { return false }
             if let category = selectedCategory, pose.category != category { return false }
             guard !query.isEmpty else { return true }
-            // Match against the localized name, focus and the language-neutral sanskrit.
             return pose.name.lowercased().contains(query)
                 || pose.sanskrit.lowercased().contains(query)
                 || pose.focus.lowercased().contains(query)
@@ -32,78 +30,116 @@ struct SessionStudioView: View {
                 AnimatedGradientBackground(animate: $animateBackground)
                 
                 ScrollView {
-                    VStack(spacing: 18) {
-                        Picker("Level", selection: $selectedLevel) {
-                            Text("Easy").tag(1)
-                            Text("Medium").tag(2)
-                            Text("Advanced").tag(3)
-                        }
-                        .pickerStyle(.segmented)
-                        .padding(4)
-                        .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 12))
-
-                        CategoryFilterRow(selection: $selectedCategory)
-
-                        Button {
-                            if app.isPremiumActivated {
-                                showAmbient.toggle()
-                            } else {
-                                showPaywall.toggle()
-                                HapticsManager.shared.playWarning()
-                            }
-                        } label: {
-                            HStack(spacing: 14) {
-                                Image(systemName: "sparkles.tv")
-                                    .font(.title2)
-                                    .foregroundStyle(.white)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text("Ambient Yoga Realm")
-                                        .font(.headline.bold())
-                                        .foregroundStyle(.white)
-                                    Text("Breathe to the rhythm of ambient light")
-                                        .font(.caption2)
-                                        .foregroundStyle(.white.opacity(0.7))
-                                }
-                                Spacer()
-                                if !app.isPremiumActivated {
-                                    Image(systemName: "crown.fill")
-                                        .font(.caption2.bold())
-                                        .foregroundStyle(.yellow)
-                                        .padding(6)
-                                        .background(.white.opacity(0.12), in: Circle())
+                    VStack(spacing: 24) {
+                        // Cosmic Yoga 3D Hero Banner with Parallax Tilt
+                        VStack(alignment: .leading, spacing: 14) {
+                            Text("PRACTICE STUDIO")
+                                .font(.system(size: 10, weight: .black, design: .rounded))
+                                .foregroundStyle(.mint)
+                                .tracking(2.0)
+                            
+                            Text("Enter the Space of Flow")
+                                .font(.system(size: 26, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white)
+                                .shadow(color: .black.opacity(0.5), radius: 4, y: 2)
+                            
+                            Text("Engage with daily guided poses and visual breath-work.")
+                                .font(.system(size: 13, weight: .medium))
+                                .foregroundStyle(.white.opacity(0.75))
+                                .lineLimit(2)
+                                .padding(.bottom, 8)
+                            
+                            // Ambient realm entry button inside hero
+                            Button {
+                                if app.isPremiumActivated {
+                                    showAmbient.toggle()
+                                    HapticsManager.shared.playLightImpact()
                                 } else {
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption.bold())
-                                        .foregroundStyle(.white.opacity(0.5))
+                                    showPaywall.toggle()
+                                    HapticsManager.shared.playWarning()
                                 }
+                            } label: {
+                                HStack {
+                                    Label("Ambient Yoga Realm", systemImage: "sparkles.tv")
+                                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                                    Spacer()
+                                    if !app.isPremiumActivated {
+                                        Image(systemName: "crown.fill")
+                                            .font(.caption2)
+                                            .foregroundStyle(.yellow)
+                                            .padding(6)
+                                            .background(.white.opacity(0.15), in: Circle())
+                                    } else {
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: 12, weight: .bold))
+                                            .foregroundStyle(.black.opacity(0.6))
+                                            .padding(6)
+                                            .background(.black.opacity(0.08), in: Circle())
+                                    }
+                                }
+                                .foregroundStyle(.black)
+                                .padding(.horizontal, 18)
+                                .padding(.vertical, 12)
+                                .background(Color.white, in: Capsule())
+                                .shadow(color: .white.opacity(0.25), radius: 10, y: 4)
                             }
-                            .padding(16)
-                            .background(
-                                LinearGradient(colors: [.indigo, .purple, .teal], startPoint: .topLeading, endPoint: .bottomTrailing),
-                                in: RoundedRectangle(cornerRadius: 20)
-                            )
-                            .shadow(color: .indigo.opacity(0.35), radius: 10, y: 5)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
-                            )
+                            .buttonStyle(.tactile)
                         }
-                        .buttonStyle(.tactile)
+                        .padding(24)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            ZStack {
+                                Image("studio_hero")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(height: 230)
+                                    .clipped()
+                                
+                                LinearGradient(
+                                    colors: [.black.opacity(0.85), .black.opacity(0.3), .black.opacity(0.75)],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            }
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 32))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 32)
+                                .strokeBorder(
+                                    LinearGradient(
+                                        colors: [.white.opacity(0.28), .clear, .white.opacity(0.08)],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    lineWidth: 1.2
+                                )
+                        )
+                        .shadow(color: .black.opacity(0.35), radius: 18, y: 10)
+                        .card3DTilt(maxTilt: 10.0, cornerRadius: 32.0)
+                        .padding(.top, 8)
+
+                        // Premium Sliding Segmented Control
+                        CustomSegmentedPicker(selection: $selectedLevel)
+
+                        // Category Filter row using custom 3D illustration assets
+                        CategoryFilterRow(selection: $selectedCategory)
 
                         if filteredPoses.isEmpty {
                             ContentUnavailableView.search(text: searchText)
                                 .padding(.top, 40)
+                                .transition(.opacity)
                         } else {
-                            LazyVStack(spacing: 12) {
+                            LazyVStack(spacing: 14) {
                                 ForEach(filteredPoses) { pose in
                                     NavigationLink {
                                         PoseDetailView(pose: pose)
                                     } label: {
                                         PoseRow(pose: pose)
                                     }
-                                    .buttonStyle(.tactile)
+                                    .buttonStyle(.plain)
                                 }
                             }
+                            .animation(.spring(response: 0.45, dampingFraction: 0.78), value: filteredPoses)
                         }
                     }
                     .padding()
@@ -122,6 +158,53 @@ struct SessionStudioView: View {
     }
 }
 
+// MARK: - Premium sliding Segmented Picker
+
+private struct CustomSegmentedPicker: View {
+    @Binding var selection: Int
+    private let options = [(1, "Beginner"), (2, "Intermediate"), (3, "Advanced")]
+    @Namespace private var activeSegmentNamespace
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(options, id: \.0) { val, text in
+                let isActive = (selection == val)
+                
+                Button {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                        selection = val
+                    }
+                    HapticsManager.shared.playLightImpact()
+                } label: {
+                    Text(text)
+                        .font(.system(size: 13, weight: .bold, design: .rounded))
+                        .foregroundStyle(isActive ? .black : .white.opacity(0.65))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(
+                            ZStack {
+                                if isActive {
+                                    Capsule()
+                                        .fill(Color.mint)
+                                        .matchedGeometryEffect(id: "active_segment_indicator", in: activeSegmentNamespace)
+                                        .shadow(color: .mint.opacity(0.35), radius: 8)
+                                }
+                            }
+                        )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(4)
+        .background(Color.white.opacity(0.03), in: Capsule())
+        .overlay(
+            Capsule()
+                .strokeBorder(Color.white.opacity(0.08), lineWidth: 1.2)
+        )
+        .shadow(color: .black.opacity(0.1), radius: 4)
+    }
+}
+
 // MARK: - Category filter chips
 
 private struct CategoryFilterRow: View {
@@ -129,50 +212,74 @@ private struct CategoryFilterRow: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
+            HStack(spacing: 10) {
                 FilterChip(title: L("category.all"),
-                           systemImage: "square.grid.2x2",
+                           category: nil,
                            tint: .mint,
                            isSelected: selection == nil) {
-                    selection = nil
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+                        selection = nil
+                    }
                 }
                 ForEach(PoseCategory.allCases) { category in
                     FilterChip(title: category.title,
-                               systemImage: category.icon,
+                               category: category,
                                tint: category.tint,
                                isSelected: selection == category) {
-                        selection = (selection == category) ? nil : category
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+                            selection = (selection == category) ? nil : category
+                        }
                     }
                 }
             }
-            .padding(.vertical, 2)
+            .padding(.horizontal, 4)
+            .padding(.vertical, 4)
         }
     }
 }
 
 private struct FilterChip: View {
     let title: String
-    let systemImage: String
+    let category: PoseCategory?
     let tint: Color
     let isSelected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: systemImage)
+            HStack(spacing: 8) {
+                if let category {
+                    Image("category_\(category.rawValue)")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 22, height: 22)
+                        .shadow(color: tint.opacity(0.4), radius: 4)
+                } else {
+                    Image(systemName: "square.grid.2x2.fill")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(isSelected ? .black : tint)
+                }
                 Text(title)
+                    .font(.system(size: 12, weight: .bold, design: .rounded))
             }
-            .font(.subheadline.weight(.semibold))
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
             .background(
-                isSelected ? AnyShapeStyle(tint.opacity(0.85)) : AnyShapeStyle(Color.white.opacity(0.08)),
+                isSelected ? AnyShapeStyle(tint.opacity(0.9)) : AnyShapeStyle(Color.white.opacity(0.04)),
                 in: Capsule()
             )
-            .foregroundStyle(isSelected ? .white : .secondary)
+            .overlay(
+                Capsule()
+                    .strokeBorder(
+                        isSelected ? Color.white.opacity(0.25) : Color.white.opacity(0.08),
+                        lineWidth: 1.0
+                    )
+            )
+            .foregroundStyle(isSelected ? .black : .white.opacity(0.8))
+            .shadow(color: isSelected ? tint.opacity(0.3) : .clear, radius: 8, y: 3)
+            .scaleEffect(isSelected ? 1.04 : 1.0)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
     }
 }
 
@@ -182,53 +289,71 @@ private struct PoseRow: View {
     let pose: YogaPose
 
     var body: some View {
-        HStack(spacing: 14) {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: 48, height: 48)
-                .overlay(
-                    Image(systemName: "figure.yoga")
-                        .font(.body)
-                        .foregroundStyle(.white.opacity(0.8))
-                )
-                .shadow(color: pose.gradient.first?.opacity(0.3) ?? .clear, radius: 4)
+        HStack(spacing: 16) {
+            // Left: Glowing 3D card for Category Icon
+            ZStack {
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 58, height: 58)
+                    .shadow(color: pose.gradient.first?.opacity(0.45) ?? .clear, radius: 8, y: 4)
+                
+                Image("category_\(pose.category.rawValue)")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 38, height: 38)
+                    .shadow(color: .black.opacity(0.3), radius: 4)
+            }
             
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(pose.name)
-                    .font(.headline.bold())
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                 
                 HStack(spacing: 6) {
                     Text(pose.sanskrit)
-                        .font(.caption2.italic())
+                        .font(.system(size: 11, weight: .medium, design: .serif).italic())
                         .foregroundStyle(.white.opacity(0.55))
                     Text("•")
                         .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.3))
+                        .foregroundStyle(.white.opacity(0.2))
                     Text(L("%lld sec", pose.holdSeconds))
-                        .font(.caption2.weight(.bold).monospacedDigit())
+                        .font(.system(size: 11, weight: .bold).monospacedDigit())
                         .foregroundStyle(.mint)
                     Text("•")
                         .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.3))
+                        .foregroundStyle(.white.opacity(0.2))
                     Text(pose.focus)
-                        .font(.caption2)
+                        .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.65))
                 }
             }
             Spacer()
-            Image(systemName: pose.category.icon)
-                .font(.caption)
-                .foregroundStyle(pose.category.tint)
-                .padding(8)
-                .background(pose.category.tint.opacity(0.12), in: Circle())
+            
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(.white.opacity(0.4))
+                .padding(10)
+                .background(Color.white.opacity(0.04), in: Circle())
+                .overlay(
+                    Circle().strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
+                )
         }
-        .padding(12)
-        .background(Color.white.opacity(0.04))
-        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .padding(.vertical, 14)
+        .padding(.horizontal, 18)
+        .background(Color.white.opacity(0.02))
+        .clipShape(RoundedRectangle(cornerRadius: 24))
         .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 24)
+                .strokeBorder(
+                    LinearGradient(
+                        colors: [.white.opacity(0.12), .clear],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1.2
+                )
         )
+        .shadow(color: .black.opacity(0.12), radius: 10, y: 5)
+        .card3DTilt(maxTilt: 8.0, cornerRadius: 24.0)
     }
 }

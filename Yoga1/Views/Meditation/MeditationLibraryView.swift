@@ -194,6 +194,7 @@ struct MeditationDetailView: View {
     let meditation: Meditation
     @State private var selectedMinutes: Int
     @State private var showPlayer = false
+    @State private var pulseOrb = false
 
     init(meditation: Meditation) {
         self.meditation = meditation
@@ -203,104 +204,192 @@ struct MeditationDetailView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 22) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 28)
-                        .fill(LinearGradient(colors: meditation.gradient,
-                                             startPoint: .topLeading, endPoint: .bottomTrailing))
-                        .frame(height: 200)
-                    VStack(spacing: 8) {
+        ZStack {
+            // Dark premium background
+            Color.black.ignoresSafeArea()
+
+            // Soft ambient glow matching meditation category gradient
+            VStack {
+                Circle()
+                    .fill(LinearGradient(colors: meditation.gradient, startPoint: .topLeading, endPoint: .bottomTrailing).opacity(0.12))
+                    .frame(width: 320, height: 320)
+                    .blur(radius: 70)
+                    .offset(y: -100)
+                Spacer()
+            }
+            .ignoresSafeArea()
+
+            ScrollView {
+                VStack(spacing: 28) {
+                    Spacer()
+
+                    // Pulsing Meditating Orb
+                    ZStack {
+                        Circle()
+                            .fill(LinearGradient(colors: meditation.gradient, startPoint: .topLeading, endPoint: .bottomTrailing).opacity(0.08))
+                            .frame(width: 200, height: 200)
+                            .scaleEffect(pulseOrb ? 1.15 : 0.95)
+                            .blur(radius: 5)
+                        
+                        Circle()
+                            .stroke(LinearGradient(colors: meditation.gradient, startPoint: .topLeading, endPoint: .bottomTrailing).opacity(0.2), lineWidth: 1.5)
+                            .frame(width: 170, height: 170)
+                            .scaleEffect(pulseOrb ? 1.10 : 0.98)
+                        
                         Image(systemName: meditation.category.icon)
-                            .font(.system(size: 44))
+                            .font(.system(size: 70))
+                            .foregroundStyle(LinearGradient(colors: meditation.gradient, startPoint: .top, endPoint: .bottom))
+                            .shadow(color: meditation.gradient.first?.opacity(0.4) ?? .clear, radius: 10)
+                            .scaleEffect(pulseOrb ? 1.03 : 0.98)
+                    }
+                    .onAppear {
+                        withAnimation(.easeInOut(duration: 3.0).repeatForever(autoreverses: true)) {
+                            pulseOrb = true
+                        }
+                    }
+
+                    // Title & Description
+                    VStack(spacing: 8) {
                         Text(meditation.title)
-                            .font(.title.bold())
+                            .font(.system(.largeTitle, design: .rounded).bold())
+                            .foregroundStyle(.white)
                             .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+
+                        Text(meditation.subtitle)
+                            .font(.subheadline)
+                            .foregroundStyle(.white.opacity(0.65))
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                            .lineSpacing(4)
                     }
-                    .foregroundStyle(.white)
-                }
 
-                Text(meditation.subtitle)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+                    // Details Card
+                    VStack(spacing: 16) {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("MEDITATION STYLE")
+                                    .font(.system(size: 9, weight: .bold))
+                                    .foregroundStyle(.white.opacity(0.4))
+                                Label(meditation.guided ? "Guided Flow" : "Silent Timer", systemImage: meditation.guided ? "waveform" : "timer")
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(.white)
+                            }
+                            Spacer()
+                            VStack(alignment: .trailing, spacing: 4) {
+                                Text("CATEGORY")
+                                    .font(.system(size: 9, weight: .bold))
+                                    .foregroundStyle(.white.opacity(0.4))
+                                Label(meditation.category.title, systemImage: meditation.category.icon)
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(meditation.gradient.first ?? .mint)
+                            }
+                        }
 
-                HStack(spacing: 8) {
-                    InfoPill(icon: meditation.category.icon, text: meditation.category.title)
-                    InfoPill(icon: meditation.guided ? "waveform" : "timer",
-                             text: meditation.guided ? L("Guided") : L("Timer"))
-                    if meditation.guided {
-                        InfoPill(icon: "list.bullet", text: L("%lld steps", meditation.segments.count))
-                    }
-                }
+                        if meditation.guided {
+                            Divider()
+                                .background(Color.white.opacity(0.08))
 
-                if !meditation.guided {
-                    VStack(spacing: 12) {
-                        Text("Choose a length")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                        HStack(spacing: 8) {
-                            ForEach(meditation.durationOptions, id: \.self) { mins in
-                                Button {
-                                    selectedMinutes = mins
-                                } label: {
-                                    Text(L("%lld min", mins))
-                                        .font(.subheadline.weight(.semibold))
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, 12)
-                                        .background(selectedMinutes == mins
-                                                    ? AnyShapeStyle(Color.mint)
-                                                    : AnyShapeStyle(Color.white.opacity(0.06)),
-                                                    in: RoundedRectangle(cornerRadius: 12))
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 12)
-                                                .strokeBorder(selectedMinutes == mins ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
-                                        )
-                                        .foregroundStyle(selectedMinutes == mins ? .black : .white)
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("STAGES")
+                                        .font(.system(size: 9, weight: .bold))
+                                        .foregroundStyle(.white.opacity(0.4))
+                                    Text("\(meditation.segments.count) Steps")
+                                        .font(.subheadline.bold())
+                                        .foregroundStyle(.white)
                                 }
-                                .buttonStyle(.plain)
+                                Spacer()
+                                VStack(alignment: .trailing, spacing: 4) {
+                                    Text("XP REWARD")
+                                        .font(.system(size: 9, weight: .bold))
+                                        .foregroundStyle(.white.opacity(0.4))
+                                    Text("+\(meditation.displayMinutes * 15) XP")
+                                        .font(.subheadline.bold())
+                                        .foregroundStyle(.orange)
+                                }
                             }
                         }
                     }
-                }
+                    .padding(24)
+                    .background(Color.white.opacity(0.03), in: RoundedRectangle(cornerRadius: 24))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .strokeBorder(Color.white.opacity(0.08), lineWidth: 1.2)
+                    )
+                    .padding(.horizontal, 24)
 
-                Button {
-                    showPlayer = true
-                } label: {
-                    Label("Begin meditation", systemImage: "play.fill")
-                        .font(.headline.bold())
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 16)
-                        .background(Color.mint, in: Capsule())
-                        .foregroundStyle(.black)
-                        .shadow(color: Color.mint.opacity(0.3), radius: 8, y: 4)
+                    // Choose length (for timer meditations)
+                    if !meditation.guided {
+                        VStack(spacing: 14) {
+                            Text("Choose session duration")
+                                .font(.system(size: 13, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white.opacity(0.5))
+                            
+                            HStack(spacing: 10) {
+                                ForEach(meditation.durationOptions, id: \.self) { mins in
+                                    let isActive = (selectedMinutes == mins)
+                                    
+                                    Button {
+                                        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                                            selectedMinutes = mins
+                                        }
+                                        HapticsManager.shared.playLightImpact()
+                                    } label: {
+                                        Text(L("%lld min", mins))
+                                            .font(.system(size: 14, weight: .bold, design: .rounded))
+                                            .frame(maxWidth: .infinity)
+                                            .padding(.vertical, 14)
+                                            .background(
+                                                isActive ?
+                                                AnyShapeStyle(LinearGradient(colors: meditation.gradient, startPoint: .topLeading, endPoint: .bottomTrailing)) :
+                                                AnyShapeStyle(Color.white.opacity(0.04))
+                                            )
+                                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 16)
+                                                    .strokeBorder(
+                                                        isActive ? Color.white.opacity(0.2) : Color.white.opacity(0.08),
+                                                        lineWidth: 1
+                                                    )
+                                            )
+                                            .foregroundStyle(isActive ? .black : .white)
+                                            .shadow(color: isActive ? (meditation.gradient.first?.opacity(0.3) ?? .clear) : .clear, radius: 8, y: 3)
+                                    }
+                                    .buttonStyle(.tactile)
+                                }
+                            }
+                            .padding(.horizontal, 24)
+                        }
+                    }
+
+                    Spacer()
+
+                    // Launch button
+                    Button {
+                        showPlayer = true
+                    } label: {
+                        Label("Begin Meditation", systemImage: "play.fill")
+                            .font(.headline.bold())
+                            .foregroundStyle(.black)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .background(
+                                LinearGradient(colors: meditation.gradient, startPoint: .topLeading, endPoint: .bottomTrailing),
+                                in: Capsule()
+                            )
+                            .shadow(color: meditation.gradient.first?.opacity(0.4) ?? .clear, radius: 10, y: 4)
+                    }
+                    .buttonStyle(.tactile)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 24)
                 }
-                .buttonStyle(.tactile)
             }
-            .padding()
         }
-        .navigationTitle(meditation.title)
+        .navigationTitle("Session Info")
         .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(isPresented: $showPlayer) {
             MeditationPlayerView(meditation: meditation, minutes: selectedMinutes)
         }
-    }
-}
-
-private struct InfoPill: View {
-    let icon: String
-    let text: String
-
-    var body: some View {
-        Label(text, systemImage: icon)
-            .font(.caption2.weight(.bold))
-            .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(Color.white.opacity(0.06), in: Capsule())
-            .overlay(
-                Capsule()
-                    .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
-            )
-            .foregroundStyle(.white.opacity(0.8))
     }
 }

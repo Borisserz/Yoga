@@ -672,69 +672,7 @@ private struct BentoQuickActionCard: View {
                 )
         )
         .shadow(color: .black.opacity(0.35), radius: 10, y: 6)
-        .shadow(color: color.opacity(0.15), radius: 16)
+         .shadow(color: color.opacity(0.15), radius: 16)
     }
 }
 
-
-// MARK: - 3D Card Parallax Tilt Modifier
-
-private struct Card3DTiltModifier: ViewModifier {
-    @State private var dragOffset: CGSize = .zero
-
-    func body(content: Content) -> some View {
-        content
-            // 3D rotation based on drag offset
-            .rotation3DEffect(
-                .degrees(Double(dragOffset.width / 12.0)),
-                axis: (x: 0.0, y: 1.0, z: 0.0),
-                anchor: .center,
-                perspective: 0.5
-            )
-            .rotation3DEffect(
-                .degrees(Double(-dragOffset.height / 12.0)),
-                axis: (x: 1.0, y: 0.0, z: 0.0),
-                anchor: .center,
-                perspective: 0.5
-            )
-            // Specular gloss reflection overlay shifting with drag translation
-            .overlay(
-                GeometryReader { geo in
-                    LinearGradient(
-                        colors: [.clear, .white.opacity(0.18), .clear],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .blendMode(.plusLighter)
-                    .offset(x: dragOffset.width * 1.5, y: dragOffset.height * 1.5)
-                    .mask(
-                        RoundedRectangle(cornerRadius: 28)
-                    )
-                }
-                .allowsHitTesting(false)
-            )
-            // Touch gesture to track displacement
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { value in
-                        let width = value.translation.width
-                        let height = value.translation.height
-                        dragOffset = CGSize(
-                            width: min(max(width, -80), 80),
-                            height: min(max(height, -80), 80)
-                        )
-                    }
-                    .onEnded { _ in
-                        withAnimation(.spring(response: 0.45, dampingFraction: 0.65)) {
-                            dragOffset = .zero
-                        }
-                    }
-            )
-    }
-}
-
-extension View {
-    fileprivate func card3DTilt() -> some View {
-        self.modifier(Card3DTiltModifier())
-    }
-}

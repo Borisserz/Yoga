@@ -111,6 +111,7 @@ struct ChallengeQuest: Identifiable, Hashable {
     var title: String { L("\(keyPrefix).title") }
     var subtitle: String { L("\(keyPrefix).subtitle") }
     var reward: String { L("\(keyPrefix).reward") }
+    var description: String { L("\(keyPrefix).description") }
 }
 
 // MARK: - Session Record (persisted history)

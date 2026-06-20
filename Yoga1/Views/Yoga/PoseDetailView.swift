@@ -7,68 +7,201 @@ struct PoseDetailView: View {
     @State private var isPlaying = false
     @State private var timer: Timer?
     @State private var showAICamera = false
+    @State private var pulseOrb = false
+    @State private var animateBackground = false
 
     init(pose: YogaPose) {
         self.pose = pose
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 30)
-                        .fill(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                        .frame(height: 260)
-                    Circle()
-                        .trim(from: 0, to: progress)
-                        .stroke(.white.opacity(0.8), style: StrokeStyle(lineWidth: 10, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-                        .frame(width: 160, height: 160)
-                    VStack {
-                        Text(pose.name)
-                            .font(.title.bold())
-                        Text(L("%lld / %lld sec", Int(progress * Double(pose.holdSeconds)), pose.holdSeconds))
-                            .font(.headline)
-                    }
-                }
+        ZStack {
+            // Dark night background
+            Color.black.ignoresSafeArea()
 
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Steps")
-                        .font(.title3.bold())
-                    ForEach(Array(pose.instructions.enumerated()), id: \.offset) { index, step in
-                        Text("\(index + 1). \(step)")
-                            .padding(10)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
-                    }
-                }
+            // Dynamic ambient background glow matching pose gradient
+            VStack {
+                Circle()
+                    .fill(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing).opacity(0.12))
+                    .frame(width: 320, height: 320)
+                    .blur(radius: 70)
+                    .offset(y: -100)
+                Spacer()
+            }
+            .ignoresSafeArea()
 
-                Text(L("Mantra: %@", pose.mantra))
-                    .font(.headline)
-                    .padding()
-                    .background(.pink.opacity(0.2), in: RoundedRectangle(cornerRadius: 14))
+            AnimatedGradientBackground(animate: $animateBackground)
 
-                HStack(spacing: 16) {
-                    Button(isPlaying ? "Stop" : "Start") {
-                        isPlaying ? stop() : start()
-                    }
-                    .buttonStyle(.borderedProminent)
+            ScrollView {
+                VStack(spacing: 26) {
+                    Spacer()
 
-                    Button {
-                        showAICamera = true
-                    } label: {
-                        Label("AI Camera", systemImage: "camera.viewfinder")
+                    // Pulsing 3D-like progress dial
+                    ZStack {
+                        // Recessed track
+                        Circle()
+                            .stroke(Color.white.opacity(0.04), lineWidth: 12)
+                            .frame(width: 220, height: 220)
+                        
+                        // Ambient inner glow
+                        Circle()
+                            .fill(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing).opacity(0.08))
+                            .frame(width: 210, height: 210)
+                            .scaleEffect(pulseOrb ? 1.06 : 0.96)
+                            .blur(radius: 4)
+
+                        // Progress ring
+                        Circle()
+                            .trim(from: 0, to: CGFloat(progress))
+                            .stroke(
+                                LinearGradient(colors: pose.gradient, startPoint: .top, endPoint: .bottom),
+                                style: StrokeStyle(lineWidth: 12, lineCap: .round)
+                            )
+                            .frame(width: 220, height: 220)
+                            .rotationEffect(.degrees(-90))
+                            .shadow(color: pose.gradient.first?.opacity(0.4) ?? .clear, radius: 10)
+                            .scaleEffect(pulseOrb ? 1.02 : 0.98)
+                        
+                        // Specular glass highlight ring
+                        Circle()
+                            .trim(from: 0, to: CGFloat(progress))
+                            .stroke(Color.white.opacity(0.3), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                            .frame(width: 224, height: 224)
+                            .rotationEffect(.degrees(-90))
+                            .blur(radius: 0.5)
+                        
+                        VStack(spacing: 8) {
+                            Image(systemName: "figure.yoga")
+                                .font(.system(size: 40))
+                                .foregroundStyle(LinearGradient(colors: pose.gradient, startPoint: .top, endPoint: .bottom))
+                                .shadow(color: pose.gradient.first?.opacity(0.35) ?? .clear, radius: 6)
+                            
+                            Text(L("%lld / %lld sec", Int(progress * Double(pose.holdSeconds)), pose.holdSeconds))
+                                .font(.system(size: 20, weight: .bold, design: .rounded).monospacedDigit())
+                                .foregroundStyle(.white)
+                        }
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.indigo)
+                    .frame(height: 250)
+                    .onAppear {
+                        withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) {
+                            pulseOrb = true
+                        }
+                    }
+
+                    // Mantra Section
+                    HStack(spacing: 14) {
+                        Image(systemName: "quote.opening")
+                            .font(.title3)
+                            .foregroundStyle(pose.gradient.first ?? .mint)
+                        Text(L("Mantra: %@", pose.mantra))
+                            .font(.system(size: 14, weight: .semibold, design: .serif).italic())
+                            .foregroundStyle(.white.opacity(0.9))
+                    }
+                    .padding(18)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(
+                        RoundedRectangle(cornerRadius: 22)
+                            .fill(LinearGradient(colors: pose.gradient.map { $0.opacity(0.04) }, startPoint: .topLeading, endPoint: .bottomTrailing))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 22)
+                            .strokeBorder(Color.white.opacity(0.06), lineWidth: 1.2)
+                    )
+                    .padding(.horizontal)
+
+                    // Step Instructions List
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Practice Steps")
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                        
+                        VStack(spacing: 12) {
+                            ForEach(Array(pose.instructions.enumerated()), id: \.offset) { index, step in
+                                HStack(spacing: 14) {
+                                    // Step Number Pin
+                                    ZStack {
+                                        Circle()
+                                            .fill(pose.gradient.first?.opacity(0.15) ?? Color.white.opacity(0.04))
+                                            .frame(width: 28, height: 28)
+                                        Text("\(index + 1)")
+                                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                                            .foregroundStyle(pose.gradient.first ?? .mint)
+                                    }
+                                    
+                                    Text(step)
+                                        .font(.system(size: 13, weight: .medium))
+                                        .foregroundStyle(.white.opacity(0.8))
+                                        .lineSpacing(3)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                    
+                                    Spacer()
+                                }
+                                .padding(14)
+                                .background(Color.white.opacity(0.03), in: RoundedRectangle(cornerRadius: 18))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 18)
+                                        .strokeBorder(Color.white.opacity(0.06), lineWidth: 1.0)
+                                )
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    // Control Buttons
+                    HStack(spacing: 16) {
+                        Button {
+                            isPlaying ? stop() : start()
+                        } label: {
+                            Label(isPlaying ? "Pause Flow" : "Start Pose", systemImage: isPlaying ? "pause.fill" : "play.fill")
+                                .font(.headline.bold())
+                                .foregroundStyle(isPlaying ? .white : .black)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(
+                                    isPlaying ?
+                                    AnyView(Color.white.opacity(0.08)) :
+                                    AnyView(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                                )
+                                .clipShape(Capsule())
+                                .overlay(
+                                    Capsule()
+                                        .strokeBorder(isPlaying ? Color.white.opacity(0.12) : Color.clear, lineWidth: 1)
+                                )
+                                .shadow(color: isPlaying ? .clear : (pose.gradient.first?.opacity(0.3) ?? .clear), radius: 8, y: 3)
+                        }
+                        .buttonStyle(.tactile)
+                        
+                        Button {
+                            showAICamera = true
+                        } label: {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.indigo.opacity(0.15))
+                                    .frame(width: 52, height: 52)
+                                Image(systemName: "camera.viewfinder")
+                                    .font(.system(size: 18, weight: .bold))
+                                    .foregroundStyle(.indigo)
+                                    .shadow(color: .indigo.opacity(0.3), radius: 4)
+                            }
+                            .overlay(
+                                Circle()
+                                    .strokeBorder(Color.indigo.opacity(0.4), lineWidth: 1.2)
+                            )
+                        }
+                        .buttonStyle(.tactile)
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, 24)
                 }
             }
-            .padding()
         }
         .navigationTitle(pose.name)
         .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(isPresented: $showAICamera) {
             AICameraSessionView(poseKey: pose.key)
+        }
+        .onAppear {
+            animateBackground = true
         }
         .onDisappear { stop() }
     }

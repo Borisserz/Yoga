@@ -6295,6 +6295,23 @@
         }
       }
     },
+    "quest.1.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Complete a continuous flow of 4 active yoga poses (Downward Dog, Warrior I, Warrior II, and Plank) to stimulate metabolism, increase core temperature, and boost mental clarity."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Выполни непрерывную связку из 4 активных поз йоги (Собака мордой вниз, Воин I, Воин II и Планка) для стимуляции метаболизма, разогрева тела и повышения концентрации."
+          }
+        }
+      }
+    },
     "quest.2.reward": {
       "extractionState": "manual",
       "localizations": {
@@ -6346,6 +6363,23 @@
         }
       }
     },
+    "quest.2.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Complete a deep breathing session using the box breathing technique for 10 minutes. Focus on slow, rhythmic chest movement to activate your parasympathetic nervous system."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Проведи сессию глубокого дыхания по методике квадратного дыхания в течение 10 минут. Сосредоточься на медленных ритмичных вдохах и выдохах для снятия стресса."
+          }
+        }
+      }
+    },
     "quest.3.reward": {
       "extractionState": "manual",
       "localizations": {
@@ -6393,6 +6427,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Квест 3: Испытание огнем"
+          }
+        }
+      }
+    },
+    "quest.3.description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold advanced strength-building poses (like Boat Pose and Bakasana Crane Pose) for at least 15 seconds each to build wrist stability, core definition, and shoulder power."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Удерживай сложные силовые позы (такие как Поза лодки и Бакасана) не менее 15 секунд каждую для укрепления запястий, мышц кора и плечевого пояса."
           }
         }
       }
