@@ -1,16 +1,16 @@
 internal import SwiftUI
 
-struct Card3DTiltModifier: ViewModifier {
+internal struct Card3DTiltModifier: ViewModifier {
     @State private var dragOffset: CGSize = .zero
-    let maxTilt: Double
-    let cornerRadius: CGFloat
+    internal let maxTilt: Double
+    internal let cornerRadius: CGFloat
 
-    init(maxTilt: Double = 12.0, cornerRadius: CGFloat = 24.0) {
+    internal init(maxTilt: Double = 12.0, cornerRadius: CGFloat = 24.0) {
         self.maxTilt = maxTilt
         self.cornerRadius = cornerRadius
     }
 
-    func body(content: Content) -> some View {
+    internal func body(content: Content) -> some View {
         content
             // 3D rotation based on drag offset
             .rotation3DEffect(
@@ -61,8 +61,8 @@ struct Card3DTiltModifier: ViewModifier {
     }
 }
 
-extension View {
-    func card3DTilt(maxTilt: Double = 12.0, cornerRadius: CGFloat = 24.0) -> some View {
+internal extension View {
+    internal func card3DTilt(maxTilt: Double = 12.0, cornerRadius: CGFloat = 24.0) -> some View {
         self.modifier(Card3DTiltModifier(maxTilt: maxTilt, cornerRadius: cornerRadius))
     }
 }
