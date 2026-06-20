@@ -25,6 +25,22 @@ struct OnboardingFlowView: View {
 
     init() {}
 
+    private func iconForLevel(_ level: String) -> String {
+        switch level {
+        case "onb.level.beginner": return "leaf.fill"
+        case "onb.level.intermediate": return "bolt.fill"
+        default: return "flame.fill"
+        }
+    }
+
+    private func iconForGoal(_ goal: String) -> String {
+        switch goal {
+        case "onb.goal.flexibility": return "water.waves"
+        case "onb.goal.strength": return "figure.strengthtraining.traditional"
+        default: return "brain.headset"
+        }
+    }
+
     var body: some View {
         ZStack {
             AnimatedGradientBackground(animate: $animateBackground)
@@ -47,7 +63,7 @@ struct OnboardingFlowView: View {
 
                 Spacer()
 
-                // Frosted card container
+                // Frosted card container with 3D Page transitions
                 VStack {
                     Group {
                         switch step {
@@ -61,6 +77,11 @@ struct OnboardingFlowView: View {
                         default: summary
                         }
                     }
+                    .id(step)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .trailing).combined(with: .opacity).combined(with: .scale(scale: 0.92)),
+                        removal: .move(edge: .leading).combined(with: .opacity).combined(with: .scale(scale: 0.92))
+                    ))
                 }
                 .padding(24)
                 .background(
@@ -78,7 +99,7 @@ struct OnboardingFlowView: View {
 
                 // Control Button
                 Button {
-                    withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                    withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
                         if step < lastStep {
                             step += 1
                         } else {
@@ -149,7 +170,7 @@ struct OnboardingFlowView: View {
         StepScaffold(title: "Your level?") {
             VStack(spacing: 12) {
                 ForEach(levels, id: \.self) { level in
-                    SelectRow(title: L(level), selected: experienceLevel == level) {
+                    SelectRow(title: L(level), icon: iconForLevel(level), selected: experienceLevel == level) {
                         experienceLevel = level
                     }
                 }
@@ -161,7 +182,7 @@ struct OnboardingFlowView: View {
         StepScaffold(title: "Main goal?") {
             VStack(spacing: 12) {
                 ForEach(goals, id: \.self) { goal in
-                    SelectRow(title: L(goal), selected: mainGoal == goal) {
+                    SelectRow(title: L(goal), icon: iconForGoal(goal), selected: mainGoal == goal) {
                         mainGoal = goal
                     }
                 }
@@ -184,13 +205,37 @@ struct OnboardingFlowView: View {
 
     private var cadenceStep: some View {
         StepScaffold(title: "How many days a week?") {
-            VStack(spacing: 12) {
-                ForEach(targets, id: \.self) { n in
-                    SelectRow(title: n == 7 ? L("Every day") : L("%lld days a week", n),
-                              selected: weeklyTarget == n) {
-                        weeklyTarget = n
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(targets, id: \.self) { n in
+                        Button {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                weeklyTarget = n
+                            }
+                            HapticsManager.shared.playLightImpact()
+                        } label: {
+                            VStack(spacing: 8) {
+                                Text("\(n)")
+                                    .font(.system(.title2, design: .rounded).bold().monospacedDigit())
+                                Text(n == 7 ? L("Every day") : L("days"))
+                                    .font(.caption2.bold())
+                                    .foregroundStyle(.white.opacity(0.6))
+                            }
+                            .frame(width: 80, height: 80)
+                            .background(weeklyTarget == n ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
+                                        in: RoundedRectangle(cornerRadius: 20))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .strokeBorder(weeklyTarget == n ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
+                            )
+                            .shadow(color: weeklyTarget == n ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
+                            .foregroundStyle(weeklyTarget == n ? .black : .white)
+                        }
+                        .buttonStyle(.tactile)
                     }
                 }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
             }
         }
     }
@@ -209,12 +254,37 @@ struct OnboardingFlowView: View {
 
     private var lengthStep: some View {
         StepScaffold(title: "Session length?") {
-            VStack(spacing: 12) {
-                ForEach(lengths, id: \.self) { mins in
-                    SelectRow(title: L("%lld min", mins), selected: sessionLength == mins) {
-                        sessionLength = mins
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(lengths, id: \.self) { mins in
+                        Button {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                sessionLength = mins
+                            }
+                            HapticsManager.shared.playLightImpact()
+                        } label: {
+                            VStack(spacing: 8) {
+                                Text("\(mins)")
+                                    .font(.system(.title2, design: .rounded).bold().monospacedDigit())
+                                Text("min")
+                                    .font(.caption2.bold())
+                                    .foregroundStyle(.white.opacity(0.6))
+                            }
+                            .frame(width: 80, height: 80)
+                            .background(sessionLength == mins ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
+                                        in: RoundedRectangle(cornerRadius: 20))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .strokeBorder(sessionLength == mins ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
+                            )
+                            .shadow(color: sessionLength == mins ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
+                            .foregroundStyle(sessionLength == mins ? .black : .white)
+                        }
+                        .buttonStyle(.tactile)
                     }
                 }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 8)
             }
         }
     }
@@ -300,12 +370,21 @@ private struct StepScaffold<Content: View>: View {
 
 private struct SelectRow: View {
     let title: String
+    var icon: String? = nil
     let selected: Bool
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: 16) {
+                if let icon {
+                    Image(systemName: icon)
+                        .font(.title3)
+                        .foregroundStyle(selected ? .black : .mint)
+                        .scaleEffect(selected ? 1.15 : 1.0)
+                        .animation(.spring(response: 0.35, dampingFraction: 0.5), value: selected)
+                }
+                
                 Text(title)
                     .font(.headline.bold())
                 Spacer()

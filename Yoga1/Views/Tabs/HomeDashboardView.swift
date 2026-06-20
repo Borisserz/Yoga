@@ -288,6 +288,23 @@ struct AnimatedGradientBackground: View {
                 .frame(width: 250)
                 .blur(radius: 100)
                 .offset(x: animate ? 50 : -50, y: animate ? 0 : 200)
+
+            // Drifting ambient stardust particles
+            ForEach(0..<15, id: \.self) { i in
+                Circle()
+                    .fill(Color.white.opacity(0.08))
+                    .frame(width: CGFloat((i % 3) + 3) * 2)
+                    .blur(radius: 0.5)
+                    .offset(
+                        x: animate ? CGFloat((i * 27) % 320 - 160) : CGFloat((i * 13) % 320 - 160),
+                        y: animate ? CGFloat((i * 19) % 600 - 300) : CGFloat((i * 31) % 600 - 300)
+                    )
+                    .animation(
+                        .easeInOut(duration: Double((i % 5) + 6))
+                        .repeatForever(autoreverses: true),
+                        value: animate
+                    )
+            }
         }
         .ignoresSafeArea()
         .animation(.easeInOut(duration: 8).repeatForever(autoreverses: true), value: animate)
