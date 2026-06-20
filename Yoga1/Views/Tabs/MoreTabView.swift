@@ -14,6 +14,7 @@ struct MoreTabView: View {
     @State private var showStreakDetail = false
     @State private var showAIDetail = false
     @State private var showMinutesDetail = false
+    @State private var currentAchievementIndex = 0
     
     private var isRussian: Bool {
         Locale.current.language.languageCode?.identifier == "ru"
@@ -414,88 +415,50 @@ struct MoreTabView: View {
                         }
                         .buttonStyle(.plain)
                         
-                        // --- INTERACTIVE ACHIEVEMENTS SECTION ---
+                        // --- PREMIUM ACHIEVEMENTS CAROUSEL ---
                         VStack(alignment: .leading, spacing: 12) {
                             Text(isRussian ? "Ваши достижения" : "Achievements")
                                 .font(.system(size: 13, weight: .bold, design: .rounded))
                                 .foregroundStyle(.white.opacity(0.6))
                                 .padding(.horizontal, 4)
                             
-                            if !app.earnedAchievements.isEmpty {
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack(spacing: 14) {
-                                        ForEach(app.earnedAchievements, id: \.self) { badge in
-                                            Button {
+                            VStack(spacing: 0) {
+                                TabView(selection: $currentAchievementIndex) {
+                                    ForEach(0..<AchievementDefinition.allAchievements.count, id: \.self) { index in
+                                        let achievement = AchievementDefinition.allAchievements[index]
+                                        let isUnlocked = app.earnedAchievements.contains(achievement.id)
+                                        
+                                        AchievementCarouselCard(
+                                            achievement: achievement,
+                                            isUnlocked: isUnlocked,
+                                            isRussian: isRussian,
+                                            onShare: {
                                                 HapticsManager.shared.playLightImpact()
-                                                shareAchievement = ShareableAchievement(id: badge)
-                                            } label: {
-                                                VStack(spacing: 8) {
-                                                    ZStack(alignment: .bottomTrailing) {
-                                                        if UIImage(named: badge) != nil {
-                                                            Image(badge)
-                                                                .resizable()
-                                                                .aspectRatio(contentMode: .fit)
-                                                                .frame(width: 58, height: 58)
-                                                                .shadow(color: .black.opacity(0.25), radius: 4)
-                                                        } else {
-                                                            Circle()
-                                                                .fill(
-                                                                    RadialGradient(
-                                                                        colors: [.orange.opacity(0.25), .clear],
-                                                                        center: .center,
-                                                                        startRadius: 0,
-                                                                        endRadius: 28
-                                                                    )
-                                                                )
-                                                                .frame(width: 58, height: 58)
-                                                            
-                                                            Image(systemName: "medal.fill")
-                                                                .font(.system(size: 24))
-                                                                .foregroundStyle(
-                                                                    LinearGradient(colors: [.yellow, .orange], startPoint: .top, endPoint: .bottom)
-                                                                )
-                                                                .padding(14)
-                                                                .background(Color.white.opacity(0.06), in: Circle())
-                                                                .overlay(Circle().strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
-                                                        }
-                                                        
-                                                        Image(systemName: "square.and.arrow.up.circle.fill")
-                                                            .font(.system(size: 15))
-                                                            .foregroundStyle(.mint)
-                                                            .background(Circle().fill(.black))
-                                                    }
-                                                    
-                                                    Text(AchievementDefinition.resolvedTitle(forKey: badge))
-                                                        .font(.system(size: 11, weight: .bold, design: .rounded))
-                                                        .foregroundStyle(.white.opacity(0.85))
-                                                        .lineLimit(1)
-                                                        .frame(width: 80)
-                                                }
+                                                shareAchievement = ShareableAchievement(id: achievement.id)
                                             }
-                                            .buttonStyle(.plain)
-                                        }
+                                        )
+                                        .padding(.horizontal, 8)
+                                        .scaleEffect(currentAchievementIndex == index ? 1.0 : 0.92)
+                                        .opacity(currentAchievementIndex == index ? 1.0 : 0.5)
+                                        .animation(.spring(response: 0.35, dampingFraction: 0.7), value: currentAchievementIndex)
+                                        .tag(index)
                                     }
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal, 4)
                                 }
-                            } else {
-                                // Locked state placeholder
-                                HStack(spacing: 14) {
-                                    Image(systemName: "lock.shield.fill")
-                                        .font(.title2)
-                                        .foregroundStyle(.white.opacity(0.3))
-                                    Text(isRussian ? "Выполните первую асану для открытия достижений!" : "Complete a pose to earn your first achievement!")
-                                        .font(.system(size: 12, weight: .medium))
-                                        .foregroundStyle(.white.opacity(0.5))
+                                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                                .frame(height: 250)
+                                
+                                // Custom Pagination Dots
+                                HStack(spacing: 6) {
+                                    ForEach(0..<AchievementDefinition.allAchievements.count, id: \.self) { index in
+                                        let isActive = (currentAchievementIndex == index)
+                                        Capsule()
+                                            .fill(isActive ? Color.mint : Color.white.opacity(0.2))
+                                            .frame(width: isActive ? 16 : 6, height: 6)
+                                            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: currentAchievementIndex)
+                                    }
                                 }
-                                .padding(18)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.white.opacity(0.02))
-                                .cornerRadius(20)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
-                                )
+                                .padding(.top, 6)
+                                .padding(.bottom, 8)
                             }
                         }
                         
@@ -670,3 +633,128 @@ private struct InfoRow: View {
         .contentShape(Rectangle())
     }
 }
+
+// MARK: - Carousel Card Subview
+private struct AchievementCarouselCard: View {
+    let achievement: AchievementDefinition
+    let isUnlocked: Bool
+    let isRussian: Bool
+    let onShare: () -> Void
+
+    private var fillGradientColors: [Color] {
+        if isUnlocked {
+            return achievement.gradient.map { $0.opacity(0.08) }
+        } else {
+            return [.clear]
+        }
+    }
+
+    private var strokeGradientColors: [Color] {
+        if isUnlocked {
+            return achievement.gradient.map { $0.opacity(0.3) }
+        } else {
+            return [Color.white.opacity(0.08), Color.white.opacity(0.02)]
+        }
+    }
+
+    var body: some View {
+        VStack(spacing: 12) {
+            // Achievement Image with glowing border
+            ZStack {
+                let imageName = achievement.id.replacingOccurrences(of: ".", with: "_")
+                if UIImage(named: imageName) != nil {
+                    Image(imageName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 80, height: 80)
+                        .saturation(isUnlocked ? 1.0 : 0.0)
+                        .opacity(isUnlocked ? 1.0 : 0.3)
+                        .shadow(color: isUnlocked ? achievement.gradient.first?.opacity(0.4) ?? .clear : .clear, radius: 10)
+                } else {
+                    Circle()
+                        .fill(Color.white.opacity(0.04))
+                        .frame(width: 80, height: 80)
+                    Image(systemName: achievement.icon)
+                        .font(.system(size: 32))
+                        .foregroundStyle(isUnlocked ? LinearGradient(colors: achievement.gradient, startPoint: .top, endPoint: .bottom) : LinearGradient(colors: [.white.opacity(0.25)], startPoint: .top, endPoint: .bottom))
+                }
+                
+                if !isUnlocked {
+                    Image(systemName: "lock.fill")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.7))
+                        .padding(8)
+                        .background(Color.black.opacity(0.6), in: Circle())
+                        .offset(x: 25, y: 25)
+                }
+            }
+            .padding(.top, 14)
+            
+            VStack(spacing: 4) {
+                Text(achievement.title)
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(isUnlocked ? .white : .white.opacity(0.5))
+                    .lineLimit(1)
+                
+                Text(achievement.description)
+                    .font(.system(size: 10, weight: .medium, design: .rounded))
+                    .foregroundStyle(.white.opacity(isUnlocked ? 0.6 : 0.35))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .frame(height: 30)
+            }
+            .padding(.horizontal, 12)
+            
+            Spacer(minLength: 0)
+            
+            // Bottom Action
+            if isUnlocked {
+                Button(action: onShare) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "square.and.arrow.up")
+                            .font(.system(size: 10, weight: .bold))
+                        Text(isRussian ? "Поделиться" : "Share")
+                            .font(.system(size: 10, weight: .bold, design: .rounded))
+                    }
+                    .foregroundStyle(.black)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.mint, in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .padding(.bottom, 14)
+            } else {
+                Text(isRussian ? "Заблокировано" : "Locked")
+                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.3))
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color.white.opacity(0.04), in: Capsule())
+                    .overlay(Capsule().strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+                    .padding(.bottom, 14)
+            }
+        }
+        .frame(width: 200, height: 230)
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                .fill(.ultraThinMaterial)
+        )
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                .fill(LinearGradient(colors: fillGradientColors, startPoint: .topLeading, endPoint: .bottomTrailing))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                .strokeBorder(
+                    LinearGradient(
+                        colors: strokeGradientColors,
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 1.5
+                )
+        )
+        .shadow(color: isUnlocked ? achievement.gradient.first?.opacity(0.15) ?? .clear : .clear, radius: 12, y: 6)
+    }
+}
+

@@ -186,8 +186,9 @@ struct LeaderboardView: View {
             } label: {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(alignment: .top) {
-                        if UIImage(named: def.id) != nil {
-                            Image(def.id)
+                        let imageName = def.id.replacingOccurrences(of: ".", with: "_")
+                        if UIImage(named: imageName) != nil {
+                            Image(imageName)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 36, height: 36)
@@ -475,8 +476,9 @@ private struct AchievementDetailSheet: View {
                 Spacer(minLength: 0)
 
                 // Large Glowing Icon
-                if UIImage(named: achievement.id) != nil {
-                    Image(achievement.id)
+                let imageName = achievement.id.replacingOccurrences(of: ".", with: "_")
+                if UIImage(named: imageName) != nil {
+                    Image(imageName)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 120, height: 120)

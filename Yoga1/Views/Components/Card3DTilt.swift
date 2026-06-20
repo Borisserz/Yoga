@@ -41,15 +41,15 @@ internal struct Card3DTiltModifier: ViewModifier {
                 }
                 .allowsHitTesting(false)
             )
-            // Touch gesture to track displacement
-            .gesture(
-                DragGesture(minimumDistance: 10)
+            // Touch gesture to track displacement without blocking scrolling
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 20)
                     .onChanged { value in
                         let width = value.translation.width
                         let height = value.translation.height
                         dragOffset = CGSize(
-                            width: min(max(width, -80), 80),
-                            height: min(max(height, -80), 80)
+                            width: min(max(width, -60), 60),
+                            height: min(max(height, -60), 60)
                         )
                     }
                     .onEnded { _ in

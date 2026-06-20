@@ -90,8 +90,9 @@ struct AchievementCard: View {
             }
             .foregroundStyle(.white.opacity(0.9))
 
-            if UIImage(named: achievementKey) != nil {
-                Image(achievementKey)
+            let imageName = achievementKey.replacingOccurrences(of: ".", with: "_")
+            if UIImage(named: imageName) != nil {
+                Image(imageName)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 120, height: 120)
