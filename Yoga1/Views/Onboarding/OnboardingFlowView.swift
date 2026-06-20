@@ -63,7 +63,7 @@ struct OnboardingFlowView: View {
 
                 Spacer()
 
-                // Frosted card container with 3D Page transitions
+                // Frosted card container with Glassmorphism 2.0 & double shadows
                 VStack {
                     Group {
                         switch step {
@@ -83,16 +83,28 @@ struct OnboardingFlowView: View {
                         removal: .move(edge: .leading).combined(with: .opacity).combined(with: .scale(scale: 0.92))
                     ))
                 }
-                .padding(24)
+                .padding(26)
                 .background(
-                    RoundedRectangle(cornerRadius: 30)
+                    RoundedRectangle(cornerRadius: 32)
                         .fill(.ultraThinMaterial)
                 )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 30)
-                        .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+                .background(
+                    RoundedRectangle(cornerRadius: 32)
+                        .fill(LinearGradient(colors: [.white.opacity(0.03), .clear], startPoint: .topLeading, endPoint: .bottomTrailing))
                 )
-                .shadow(color: .black.opacity(0.2), radius: 15, y: 10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 32)
+                        .strokeBorder(
+                            LinearGradient(
+                                colors: [.white.opacity(0.22), .white.opacity(0.02), .mint.opacity(0.15), .clear],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 1.5
+                        )
+                )
+                .shadow(color: .black.opacity(0.35), radius: 20, x: 0, y: 12)
+                .shadow(color: .mint.opacity(0.06), radius: 30, x: 0, y: -10)
                 .padding(.horizontal)
 
                 Spacer()
@@ -167,7 +179,7 @@ struct OnboardingFlowView: View {
     }
 
     private var levelStep: some View {
-        StepScaffold(title: "Your level?") {
+        StepScaffold(title: "Your level?", headerIcon: AnyView(LevelIndicatorView())) {
             VStack(spacing: 12) {
                 ForEach(levels, id: \.self) { level in
                     SelectRow(title: L(level), icon: iconForLevel(level), selected: experienceLevel == level) {
@@ -179,7 +191,7 @@ struct OnboardingFlowView: View {
     }
 
     private var goalStep: some View {
-        StepScaffold(title: "Main goal?") {
+        StepScaffold(title: "Main goal?", headerIcon: AnyView(GoalIndicatorView())) {
             VStack(spacing: 12) {
                 ForEach(goals, id: \.self) { goal in
                     SelectRow(title: L(goal), icon: iconForGoal(goal), selected: mainGoal == goal) {
@@ -191,7 +203,7 @@ struct OnboardingFlowView: View {
     }
 
     private var focusStep: some View {
-        StepScaffold(title: "What needs love?", subtitle: "Pick any — or none.") {
+        StepScaffold(title: "What needs love?", subtitle: "Pick any — or none.", headerIcon: AnyView(FocusIndicatorView())) {
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                 ForEach(focusOptions, id: \.self) { focus in
                     SelectChip(title: L(focus), selected: focusAreas.contains(focus)) {
@@ -204,7 +216,7 @@ struct OnboardingFlowView: View {
     }
 
     private var cadenceStep: some View {
-        StepScaffold(title: "How many days a week?") {
+        StepScaffold(title: "How many days a week?", headerIcon: AnyView(CadenceIndicatorView())) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(targets, id: \.self) { n in
@@ -241,7 +253,7 @@ struct OnboardingFlowView: View {
     }
 
     private var timeStep: some View {
-        StepScaffold(title: "When do you practice?") {
+        StepScaffold(title: "When do you practice?", headerIcon: AnyView(TimeIndicatorView())) {
             VStack(spacing: 12) {
                 ForEach(times, id: \.self) { time in
                     SelectRow(title: L(time), selected: preferredTime == time) {
@@ -253,7 +265,7 @@ struct OnboardingFlowView: View {
     }
 
     private var lengthStep: some View {
-        StepScaffold(title: "Session length?") {
+        StepScaffold(title: "Session length?", headerIcon: AnyView(LengthIndicatorView())) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
                     ForEach(lengths, id: \.self) { mins in
@@ -339,21 +351,144 @@ struct OnboardingFlowView: View {
     }
 }
 
+// MARK: - Step Indicators
+
+private struct LevelIndicatorView: View {
+    @State private var pulse = false
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(RadialGradient(colors: [.mint.opacity(0.2), .clear], center: .center, startRadius: 0, endRadius: 50))
+                .frame(width: 100, height: 100)
+                .scaleEffect(pulse ? 1.15 : 0.85)
+                .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: pulse)
+            
+            Image(systemName: "gauge.with.needle.fill")
+                .font(.system(size: 48))
+                .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .shadow(color: .mint.opacity(0.4), radius: 10)
+        }
+        .onAppear { pulse = true }
+    }
+}
+
+private struct GoalIndicatorView: View {
+    @State private var rotate = false
+    var body: some View {
+        ZStack {
+            Circle()
+                .strokeBorder(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [4, 6]))
+                .foregroundStyle(.mint.opacity(0.4))
+                .frame(width: 80, height: 80)
+                .rotationEffect(.degrees(rotate ? 360 : 0))
+                .animation(.linear(duration: 12).repeatForever(autoreverses: false), value: rotate)
+            
+            Image(systemName: "target")
+                .font(.system(size: 46))
+                .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .shadow(color: .mint.opacity(0.4), radius: 10)
+        }
+        .onAppear { rotate = true }
+    }
+}
+
+private struct FocusIndicatorView: View {
+    @State private var pulse = false
+    var body: some View {
+        ZStack {
+            Image(systemName: "heart.fill")
+                .font(.system(size: 48))
+                .foregroundStyle(LinearGradient(colors: [.pink, .red], startPoint: .top, endPoint: .bottom))
+                .scaleEffect(pulse ? 1.12 : 0.9)
+                .shadow(color: .pink.opacity(0.4), radius: 12)
+                .animation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true), value: pulse)
+        }
+        .onAppear { pulse = true }
+    }
+}
+
+private struct CadenceIndicatorView: View {
+    @State private var float = false
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(.mint.opacity(0.12))
+                .frame(width: 80, height: 80)
+            
+            Image(systemName: "calendar")
+                .font(.system(size: 44))
+                .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .offset(y: float ? -4 : 4)
+                .shadow(color: .mint.opacity(0.35), radius: 8)
+                .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: float)
+        }
+        .onAppear { float = true }
+    }
+}
+
+private struct TimeIndicatorView: View {
+    @State private var rotate = false
+    var body: some View {
+        ZStack {
+            Circle()
+                .strokeBorder(Color.white.opacity(0.1), lineWidth: 1)
+                .frame(width: 84, height: 84)
+            
+            Image(systemName: "sun.max.fill")
+                .font(.system(size: 32))
+                .foregroundStyle(.orange)
+                .offset(y: -30)
+                .rotationEffect(.degrees(rotate ? 360 : 0))
+                .shadow(color: .orange.opacity(0.4), radius: 6)
+            
+            Image(systemName: "moon.stars.fill")
+                .font(.system(size: 26))
+                .foregroundStyle(.purple)
+                .offset(y: 30)
+                .rotationEffect(.degrees(rotate ? 360 : 0))
+                .shadow(color: .purple.opacity(0.4), radius: 6)
+        }
+        .onAppear {
+            withAnimation(.linear(duration: 16).repeatForever(autoreverses: false)) {
+                rotate = true
+            }
+        }
+    }
+}
+
+private struct LengthIndicatorView: View {
+    @State private var tilt = false
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(.mint.opacity(0.1))
+                .frame(width: 80, height: 80)
+            
+            Image(systemName: "hourglass")
+                .font(.system(size: 42))
+                .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .rotationEffect(.degrees(tilt ? 15 : -15))
+                .shadow(color: .mint.opacity(0.35), radius: 8)
+                .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: tilt)
+        }
+        .onAppear { tilt = true }
+    }
+}
+
 // MARK: - Reusable bits
 
 private struct StepScaffold<Content: View>: View {
     let title: LocalizedStringKey
     var subtitle: LocalizedStringKey?
+    var headerIcon: AnyView? = nil
     @ViewBuilder let content: Content
-
-    init(title: LocalizedStringKey, subtitle: LocalizedStringKey? = nil, @ViewBuilder content: () -> Content) {
-        self.title = title
-        self.subtitle = subtitle
-        self.content = content()
-    }
 
     var body: some View {
         VStack(spacing: 18) {
+            if let headerIcon {
+                headerIcon
+                    .padding(.bottom, 6)
+            }
             Text(title)
                 .font(.system(.title2, design: .rounded).bold())
                 .foregroundStyle(.white)
@@ -362,6 +497,7 @@ private struct StepScaffold<Content: View>: View {
                 Text(subtitle)
                     .font(.footnote)
                     .foregroundStyle(.white.opacity(0.6))
+                    .multilineTextAlignment(.center)
             }
             content
         }

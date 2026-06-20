@@ -14,10 +14,10 @@
       "computedHash": "fbeba4ea8cc5063c9280a0f29af46f05ff66326d49ff7e59b61ee021b4d424c8"
     },
     "ui-design": {
-      "source": "shajith003/awesome-claude-skills",
+      "source": "mblode/agent-skills",
       "sourceType": "github",
-      "skillPath": "ui-design/SKILL.md",
-      "computedHash": "841ae21b87a7e12a46fe036051a6d94447fc41f6cf520872736c40870c61cc6c"
+      "skillPath": "skills/ui-design/SKILL.md",
+      "computedHash": "62e74572b149086ec0488ac8734c711cd818748018fed06607a04dac0e23ef6a"
     }
   }
 }
