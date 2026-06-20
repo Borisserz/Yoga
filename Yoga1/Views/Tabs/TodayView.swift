@@ -525,8 +525,6 @@ private struct BentoStatPill: View {
     }
 }
 
-// MARK: - Bento Quick Actions
-
 private struct BentoQuickActionsRow: View {
     var body: some View {
         HStack(spacing: 12) {
@@ -546,7 +544,7 @@ private struct BentoQuickActionsRow: View {
                 BentoQuickActionCard(title: "Quests", systemImage: "flame.fill", color: .orange)
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.tactile)
     }
 }
 
@@ -559,9 +557,9 @@ private struct BentoQuickActionCard: View {
         VStack(spacing: 10) {
             ZStack {
                 Circle()
-                    .fill(color.opacity(0.2))
+                    .fill(color.opacity(0.25))
                     .frame(width: 44, height: 44)
-                    .shadow(color: color.opacity(0.3), radius: 6)
+                    .shadow(color: color.opacity(0.4), radius: 6)
                 Image(systemName: systemImage)
                     .font(.title3)
                     .foregroundStyle(color)
@@ -572,21 +570,27 @@ private struct BentoQuickActionCard: View {
         }
         .padding(.vertical, 16)
         .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 22)
+                .fill(LinearGradient(colors: [color.opacity(0.18), color.opacity(0.04)], startPoint: .topLeading, endPoint: .bottomTrailing))
+        )
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22))
         .overlay(
             RoundedRectangle(cornerRadius: 22)
                 .strokeBorder(
                     LinearGradient(
-                        colors: [.white.opacity(0.14), .white.opacity(0.02)],
+                        colors: [.white.opacity(0.24), color.opacity(0.4), .white.opacity(0.04)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),
-                    lineWidth: 1.2
+                    lineWidth: 1.5
                 )
         )
-        .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
+        .shadow(color: .black.opacity(0.35), radius: 10, y: 6)
+        .shadow(color: color.opacity(0.15), radius: 16)
     }
 }
+
 
 // MARK: - 3D Card Parallax Tilt Modifier
 

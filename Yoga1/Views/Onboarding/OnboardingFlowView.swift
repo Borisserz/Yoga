@@ -354,126 +354,329 @@ struct OnboardingFlowView: View {
 // MARK: - Step Indicators
 
 private struct LevelIndicatorView: View {
-    @State private var pulse = false
+    @State private var sweepAngle: Double = -90
+    @State private var pulseAxis = false
+
     var body: some View {
         ZStack {
+            // Metallic Outer Ring
             Circle()
-                .fill(RadialGradient(colors: [.mint.opacity(0.2), .clear], center: .center, startRadius: 0, endRadius: 50))
-                .frame(width: 100, height: 100)
-                .scaleEffect(pulse ? 1.15 : 0.85)
-                .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: pulse)
+                .stroke(
+                    LinearGradient(colors: [.white.opacity(0.18), .white.opacity(0.02), .mint.opacity(0.15), .clear], startPoint: .topLeading, endPoint: .bottomTrailing),
+                    lineWidth: 4
+                )
+                .frame(width: 104, height: 104)
+                .shadow(color: .black.opacity(0.3), radius: 6, y: 3)
             
-            Image(systemName: "gauge.with.needle.fill")
-                .font(.system(size: 48))
-                .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .shadow(color: .mint.opacity(0.4), radius: 10)
+            // Matte Chronograph Dial Face
+            Circle()
+                .fill(Color.black.opacity(0.45))
+                .frame(width: 96, height: 96)
+            
+            // Tick Marks
+            ForEach(0..<12) { i in
+                Rectangle()
+                    .fill(Color.white.opacity(i % 3 == 0 ? 0.35 : 0.15))
+                    .frame(width: 2, height: i % 3 == 0 ? 8 : 4)
+                    .offset(y: -42)
+                    .rotationEffect(.degrees(Double(i) * 30))
+            }
+            
+            // Sweep Needle
+            Rectangle()
+                .fill(LinearGradient(colors: [.mint, .teal], startPoint: .top, endPoint: .bottom))
+                .frame(width: 3, height: 38)
+                .offset(y: -19)
+                .rotationEffect(.degrees(sweepAngle))
+                .shadow(color: .mint.opacity(0.4), radius: 4)
+            
+            // Glowing Center Pivot / Axis
+            Circle()
+                .fill(Color.mint)
+                .frame(width: 10, height: 10)
+                .overlay(
+                    Circle()
+                        .stroke(Color.white, lineWidth: 1.5)
+                )
+                .scaleEffect(pulseAxis ? 1.2 : 0.9)
+                .shadow(color: .mint.opacity(0.6), radius: 6)
         }
-        .onAppear { pulse = true }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) {
+                sweepAngle = 90
+            }
+            withAnimation(.easeInOut(duration: 1.1).repeatForever(autoreverses: true)) {
+                pulseAxis = true
+            }
+        }
     }
 }
 
 private struct GoalIndicatorView: View {
-    @State private var rotate = false
+    @State private var rotateOuter = false
+    @State private var rotateInner = false
+    @State private var pulseWave = false
+
     var body: some View {
         ZStack {
+            // Concentric Expanding Radar Waves
             Circle()
-                .strokeBorder(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [4, 6]))
-                .foregroundStyle(.mint.opacity(0.4))
-                .frame(width: 80, height: 80)
-                .rotationEffect(.degrees(rotate ? 360 : 0))
-                .animation(.linear(duration: 12).repeatForever(autoreverses: false), value: rotate)
+                .stroke(Color.mint.opacity(0.15), lineWidth: 1.5)
+                .frame(width: 110, height: 110)
+                .scaleEffect(pulseWave ? 1.25 : 0.8)
+                .opacity(pulseWave ? 0 : 0.8)
             
+            // Outer Counter-Clockwise Dash Circle
+            Circle()
+                .strokeBorder(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [6, 12]))
+                .foregroundStyle(.mint.opacity(0.35))
+                .frame(width: 96, height: 96)
+                .rotationEffect(.degrees(rotateOuter ? -360 : 0))
+            
+            // Inner Clockwise Dash Circle
+            Circle()
+                .strokeBorder(style: StrokeStyle(lineWidth: 1.2, lineCap: .round, dash: [4, 8]))
+                .foregroundStyle(.teal.opacity(0.25))
+                .frame(width: 80, height: 80)
+                .rotationEffect(.degrees(rotateInner ? 360 : 0))
+            
+            // Radar Crosshairs
+            ForEach(0..<4) { i in
+                Rectangle()
+                    .fill(Color.mint.opacity(0.2))
+                    .frame(width: 1.5, height: 8)
+                    .offset(y: -44)
+                    .rotationEffect(.degrees(Double(i) * 90))
+            }
+            
+            // Center Glowing Target Icon
             Image(systemName: "target")
-                .font(.system(size: 46))
+                .font(.system(size: 40))
                 .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .shadow(color: .mint.opacity(0.4), radius: 10)
+                .shadow(color: .mint.opacity(0.45), radius: 10)
         }
-        .onAppear { rotate = true }
+        .onAppear {
+            withAnimation(.linear(duration: 16).repeatForever(autoreverses: false)) {
+                rotateOuter = true
+            }
+            withAnimation(.linear(duration: 10).repeatForever(autoreverses: false)) {
+                rotateInner = true
+            }
+            withAnimation(.easeInOut(duration: 1.6).repeatForever(autoreverses: false)) {
+                pulseWave = true
+            }
+        }
     }
 }
 
 private struct FocusIndicatorView: View {
-    @State private var pulse = false
-    var body: some View {
-        ZStack {
-            Image(systemName: "heart.fill")
-                .font(.system(size: 48))
-                .foregroundStyle(LinearGradient(colors: [.pink, .red], startPoint: .top, endPoint: .bottom))
-                .scaleEffect(pulse ? 1.12 : 0.9)
-                .shadow(color: .pink.opacity(0.4), radius: 12)
-                .animation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true), value: pulse)
-        }
-        .onAppear { pulse = true }
-    }
-}
-
-private struct CadenceIndicatorView: View {
-    @State private var float = false
-    var body: some View {
-        ZStack {
-            Circle()
-                .fill(.mint.opacity(0.12))
-                .frame(width: 80, height: 80)
-            
-            Image(systemName: "calendar")
-                .font(.system(size: 44))
-                .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .offset(y: float ? -4 : 4)
-                .shadow(color: .mint.opacity(0.35), radius: 8)
-                .animation(.easeInOut(duration: 2).repeatForever(autoreverses: true), value: float)
-        }
-        .onAppear { float = true }
-    }
-}
-
-private struct TimeIndicatorView: View {
+    @State private var scale = false
     @State private var rotate = false
+
     var body: some View {
         ZStack {
+            // Expanding neon pulse ring
+            Image(systemName: "heart.fill")
+                .font(.system(size: 40))
+                .foregroundStyle(Color.red.opacity(0.15))
+                .scaleEffect(scale ? 1.35 : 0.8)
+                .opacity(scale ? 0 : 1)
+            
+            // Glowing border orbit
             Circle()
-                .strokeBorder(Color.white.opacity(0.1), lineWidth: 1)
-                .frame(width: 84, height: 84)
-            
-            Image(systemName: "sun.max.fill")
-                .font(.system(size: 32))
-                .foregroundStyle(.orange)
-                .offset(y: -30)
+                .stroke(
+                    LinearGradient(colors: [.red.opacity(0.3), .clear, .pink.opacity(0.3)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                    lineWidth: 1
+                )
+                .frame(width: 80, height: 80)
                 .rotationEffect(.degrees(rotate ? 360 : 0))
-                .shadow(color: .orange.opacity(0.4), radius: 6)
-            
-            Image(systemName: "moon.stars.fill")
-                .font(.system(size: 26))
-                .foregroundStyle(.purple)
-                .offset(y: 30)
-                .rotationEffect(.degrees(rotate ? 360 : 0))
-                .shadow(color: .purple.opacity(0.4), radius: 6)
+
+            Image(systemName: "heart.fill")
+                .font(.system(size: 46))
+                .foregroundStyle(LinearGradient(colors: [.pink, .red], startPoint: .top, endPoint: .bottom))
+                .scaleEffect(scale ? 1.08 : 0.94)
+                .shadow(color: .red.opacity(0.4), radius: 12)
         }
         .onAppear {
-            withAnimation(.linear(duration: 16).repeatForever(autoreverses: false)) {
+            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
+                scale = true
+            }
+            withAnimation(.linear(duration: 12).repeatForever(autoreverses: false)) {
                 rotate = true
             }
         }
     }
 }
 
-private struct LengthIndicatorView: View {
-    @State private var tilt = false
+private struct CadenceIndicatorView: View {
+    @State private var float = false
+    @State private var shadowScale = false
+
     var body: some View {
         ZStack {
+            // Glowing soft back-shadow
             Circle()
-                .fill(.mint.opacity(0.1))
+                .fill(RadialGradient(colors: [.mint.opacity(0.25), .clear], center: .center, startRadius: 0, endRadius: 40))
                 .frame(width: 80, height: 80)
+                .scaleEffect(shadowScale ? 1.15 : 0.85)
             
-            Image(systemName: "hourglass")
-                .font(.system(size: 42))
+            // Floating calendar icon
+            Image(systemName: "calendar")
+                .font(.system(size: 44))
                 .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .rotationEffect(.degrees(tilt ? 15 : -15))
-                .shadow(color: .mint.opacity(0.35), radius: 8)
-                .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: tilt)
+                .offset(y: float ? -5 : 5)
+                .shadow(color: .mint.opacity(0.4), radius: 8)
         }
-        .onAppear { tilt = true }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 1.8).repeatForever(autoreverses: true)) {
+                float = true
+            }
+            withAnimation(.easeInOut(duration: 1.8).repeatForever(autoreverses: true)) {
+                shadowScale = true
+            }
+        }
     }
 }
+
+private struct TimeIndicatorView: View {
+    @State private var orbitalRotation: Double = 0
+
+    var body: some View {
+        ZStack {
+            // Starry Sky Plate
+            Circle()
+                .fill(
+                    RadialGradient(
+                        colors: [Color(red: 0.1, green: 0.1, blue: 0.25), Color(red: 0.05, green: 0.05, blue: 0.12)],
+                        center: .center,
+                        startRadius: 0,
+                        endRadius: 55
+                    )
+                )
+                .frame(width: 100, height: 100)
+                .overlay(
+                    Circle()
+                        .stroke(
+                            LinearGradient(colors: [.white.opacity(0.12), .white.opacity(0.02)], startPoint: .top, endPoint: .bottom),
+                            lineWidth: 1.5
+                        )
+                )
+                .shadow(color: .black.opacity(0.4), radius: 8, y: 4)
+            
+            // Orbit Track Ring (Golden)
+            Circle()
+                .stroke(
+                    LinearGradient(colors: [.yellow.opacity(0.25), .purple.opacity(0.2)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                    lineWidth: 1
+                )
+                .frame(width: 72, height: 72)
+            
+            // Celestial Bodies Group (rotating together)
+            ZStack {
+                // Sun
+                Image(systemName: "sun.max.fill")
+                    .font(.system(size: 20))
+                    .foregroundStyle(
+                        LinearGradient(colors: [.orange, .yellow], startPoint: .top, endPoint: .bottom)
+                    )
+                    .shadow(color: .orange.opacity(0.55), radius: 6)
+                    .offset(y: -36)
+                
+                // Moon
+                Image(systemName: "moon.stars.fill")
+                    .font(.system(size: 16))
+                    .foregroundStyle(
+                        LinearGradient(colors: [.purple, .indigo], startPoint: .top, endPoint: .bottom)
+                    )
+                    .shadow(color: .purple.opacity(0.5), radius: 6)
+                    .offset(y: 36)
+            }
+            .rotationEffect(.degrees(orbitalRotation))
+            
+            // Astrolabe Scale Markings
+            ForEach(0..<24) { i in
+                Rectangle()
+                    .fill(Color.white.opacity(i % 6 == 0 ? 0.25 : 0.08))
+                    .frame(width: 1, height: i % 6 == 0 ? 5 : 2.5)
+                    .offset(y: -48)
+                    .rotationEffect(.degrees(Double(i) * 15))
+            }
+        }
+        .onAppear {
+            withAnimation(.linear(duration: 18).repeatForever(autoreverses: false)) {
+                orbitalRotation = 360
+            }
+        }
+    }
+}
+
+private struct LengthIndicatorView: View {
+    @State private var gearRotation: Double = 0
+    @State private var sandPulse = false
+    @State private var tiltAngle: Double = -10
+
+    var body: some View {
+        ZStack {
+            // Background Recess
+            Circle()
+                .fill(Color.black.opacity(0.35))
+                .frame(width: 96, height: 96)
+                .overlay(
+                    Circle()
+                        .stroke(Color.white.opacity(0.06), lineWidth: 1.2)
+                )
+            
+            // Mechanical Gear Cog (Rotating behind the hourglass)
+            ZStack {
+                Circle()
+                    .stroke(style: StrokeStyle(lineWidth: 1.5, lineCap: .round, dash: [3, 9]))
+                    .foregroundStyle(.mint.opacity(0.18))
+                    .frame(width: 76, height: 76)
+                
+                ForEach(0..<8) { i in
+                    Rectangle()
+                        .fill(Color.mint.opacity(0.12))
+                        .frame(width: 6, height: 6)
+                        .offset(y: -38)
+                        .rotationEffect(.degrees(Double(i) * 45))
+                }
+            }
+            .rotationEffect(.degrees(gearRotation))
+            
+            // Flowing Sand Stream Indicator (Vertical pulsing line)
+            VStack(spacing: 0) {
+                // Hourglass Glass Vessel and Sand
+                ZStack {
+                    Image(systemName: "hourglass")
+                        .font(.system(size: 42))
+                        .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        .shadow(color: .mint.opacity(0.35), radius: 8)
+                    
+                    // Streaming Sand Particles (Micro-pulse)
+                    Rectangle()
+                        .fill(Color.mint.opacity(0.6))
+                        .frame(width: 2, height: 18)
+                        .opacity(sandPulse ? 0.3 : 0.9)
+                        .shadow(color: .mint.opacity(0.5), radius: 2)
+                        .offset(y: 1)
+                }
+                .rotationEffect(.degrees(tiltAngle))
+            }
+        }
+        .onAppear {
+            withAnimation(.linear(duration: 25).repeatForever(autoreverses: false)) {
+                gearRotation = 360
+            }
+            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                sandPulse = true
+            }
+            withAnimation(.easeInOut(duration: 2).repeatForever(autoreverses: true)) {
+                tiltAngle = 10
+            }
+        }
+    }
+}
+
 
 // MARK: - Reusable bits
 
