@@ -76,10 +76,7 @@ struct PoseDetailView: View {
                             .blur(radius: 0.5)
                         
                         VStack(spacing: 8) {
-                            Image(systemName: "figure.yoga")
-                                .font(.system(size: 40))
-                                .foregroundStyle(LinearGradient(colors: pose.gradient, startPoint: .top, endPoint: .bottom))
-                                .shadow(color: pose.gradient.first?.opacity(0.35) ?? .clear, radius: 6)
+                            AnimatedPoseView(pose: pose, size: 60)
                             
                             Text(L("%lld / %lld sec", Int(progress * Double(pose.holdSeconds)), pose.holdSeconds))
                                 .font(.system(size: 20, weight: .bold, design: .rounded).monospacedDigit())

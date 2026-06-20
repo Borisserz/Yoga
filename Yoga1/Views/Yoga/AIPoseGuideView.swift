@@ -138,10 +138,7 @@ struct AIPoseGuideView: View {
                                 )
                                 .shadow(color: pose.gradient.first?.opacity(0.4) ?? .clear, radius: 10)
                             
-                            Image(systemName: "figure.yoga")
-                                .font(.system(size: 26))
-                                .foregroundStyle(.white)
-                                .shadow(color: .black.opacity(0.3), radius: 3)
+                            AnimatedPoseView(pose: pose, size: 56)
                         }
                     }
                     .frame(height: 120)

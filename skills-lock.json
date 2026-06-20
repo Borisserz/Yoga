@@ -1,11 +1,23 @@
 {
   "version": 1,
   "skills": {
+    "3d-visualizer": {
+      "source": "daffy0208/ai-dev-standards",
+      "sourceType": "github",
+      "skillPath": "skills/3d-visualizer/SKILL.md",
+      "computedHash": "b40dd41e60b3d96671deecfc1695e9f30dfce5c7d5c1622d0366a04fecfcd2f1"
+    },
     "3d-web-experience": {
       "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "github",
       "skillPath": "skills/3d-web-experience/SKILL.md",
       "computedHash": "abf349a30764951de0ff17fe6e4b0d3a5332d3682b3b97109d7a23f813406d1a"
+    },
+    "antigravity-image-gen": {
+      "source": "win4r/antigravity-image-gen",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "7b7abd347a5d42bb8eb9ca9484bbaa940b251c4879c78e5a87f59fbb3356e652"
     },
     "apple-ui-designer": {
       "source": "heyman333/atelier-ui",
@@ -19,11 +31,29 @@
       "skillPath": "SKILL.md",
       "computedHash": "fbeba4ea8cc5063c9280a0f29af46f05ff66326d49ff7e59b61ee021b4d424c8"
     },
+    "swiftui-expert-skill": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/swiftui-expert-skill/SKILL.md",
+      "computedHash": "715cc05f9b573ec232fe0c56ced8ad9a3203c8558b0a248c68b38476eec9c06b"
+    },
+    "swiftui-ui-patterns": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/swiftui-ui-patterns/SKILL.md",
+      "computedHash": "5d01f474ca9302c5b386e9edb9824053286729192ba64b3efcd6a3205e321fea"
+    },
     "ui-design": {
       "source": "mblode/agent-skills",
       "sourceType": "github",
       "skillPath": "skills/ui-design/SKILL.md",
       "computedHash": "62e74572b149086ec0488ac8734c711cd818748018fed06607a04dac0e23ef6a"
+    },
+    "ui-ux-pro-max": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/ui-ux-pro-max/SKILL.md",
+      "computedHash": "703dda85be57e33ee32212488e017be0863bc796dfbe41bfad273e457648d42a"
     }
   }
 }
