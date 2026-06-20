@@ -5,55 +5,97 @@ struct ProgramsTabView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(AppState.self) private var app
     @Query(sort: \YogaCourse.title) private var courses: [YogaCourse]
+    @State private var animateBackground = false
 
     init() {}
 
     var body: some View {
         NavigationStack {
-            Group {
-                if courses.isEmpty {
-                    ContentUnavailableView {
-                        Label("No programs", systemImage: "tray")
-                    } description: {
-                        Text("Generate your first program.")
-                    } actions: {
-                        Button("Generate") {
-                            generateAdaptiveCourse()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.mint)
-                    }
-                } else {
-                    List(courses) { course in
-                        NavigationLink(destination: CourseDetailView(course: course)) {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(course.title)
-                                    .font(.headline)
-                                Text(course.desc)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-
-                                let completed = course.days.filter { $0.isCompleted }.count
-                                let total = course.days.count
-                                let progress = total > 0 ? Double(completed) / Double(total) : 0.0
-
-                                ProgressView(value: progress)
-                                    .tint(.mint)
-
-                                Text(L("Completed: %lld of %lld days", completed, total))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+            ZStack {
+                AnimatedGradientBackground(animate: $animateBackground)
+                
+                Group {
+                    if courses.isEmpty {
+                        ContentUnavailableView {
+                            Label("No programs", systemImage: "tray")
+                        } description: {
+                            Text("Generate your first program.")
+                        } actions: {
+                            Button("Generate") {
+                                generateAdaptiveCourse()
                             }
-                            .padding(.vertical, 8)
+                            .buttonStyle(.borderedProminent)
+                            .tint(.mint)
                         }
-                        .listRowBackground(Color.white.opacity(0.04))
+                    } else {
+                        ScrollView {
+                            LazyVStack(spacing: 16) {
+                                ForEach(courses) { course in
+                                    NavigationLink(destination: CourseDetailView(course: course)) {
+                                        VStack(alignment: .leading, spacing: 14) {
+                                            HStack {
+                                                VStack(alignment: .leading, spacing: 4) {
+                                                    Text(course.title)
+                                                        .font(.headline.bold())
+                                                        .foregroundStyle(.white)
+                                                    Text(course.desc)
+                                                        .font(.caption)
+                                                        .foregroundStyle(.white.opacity(0.6))
+                                                        .lineLimit(2)
+                                                        .multilineTextAlignment(.leading)
+                                                }
+                                                Spacer()
+                                                Image(systemName: "chevron.right")
+                                                    .font(.caption.bold())
+                                                    .foregroundStyle(.white.opacity(0.4))
+                                            }
+
+                                            let completed = course.days.filter { $0.isCompleted }.count
+                                            let total = course.days.count
+                                            let progress = total > 0 ? Double(completed) / Double(total) : 0.0
+
+                                            VStack(alignment: .leading, spacing: 8) {
+                                                HStack {
+                                                    Text(L("Completed: %lld of %lld days", completed, total))
+                                                        .font(.caption2.weight(.bold))
+                                                        .foregroundStyle(.mint)
+                                                    Spacer()
+                                                    Text(String(format: "%.0f%%", progress * 100))
+                                                        .font(.caption2.weight(.bold).monospacedDigit())
+                                                        .foregroundStyle(.mint)
+                                                }
+                                                
+                                                GeometryReader { geo in
+                                                    ZStack(alignment: .leading) {
+                                                        Capsule()
+                                                            .fill(Color.white.opacity(0.08))
+                                                        Capsule()
+                                                            .fill(LinearGradient(colors: [.mint, .teal], startPoint: .leading, endPoint: .trailing))
+                                                            .frame(width: geo.size.width * CGFloat(progress))
+                                                    }
+                                                }
+                                                .frame(height: 6)
+                                            }
+                                        }
+                                        .padding(18)
+                                        .background(Color.white.opacity(0.05))
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 20)
+                                                .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
+                                        )
+                                    }
+                                    .buttonStyle(.tactile)
+                                }
+                            }
+                            .padding()
+                        }
                     }
-                    .scrollContentBackground(.hidden)
-                    .listStyle(.plain)
                 }
             }
             .navigationTitle("Programs")
             .onAppear {
+                animateBackground = true
                 if courses.isEmpty {
                     generateAdaptiveCourse()
                 }

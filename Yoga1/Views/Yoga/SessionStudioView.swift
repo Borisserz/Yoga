@@ -8,6 +8,7 @@ struct SessionStudioView: View {
     @State private var searchText = ""
     @State private var showAmbient = false
     @State private var showPaywall = false
+    @State private var animateBackground = false
 
     init() {}
 
@@ -27,56 +28,90 @@ struct SessionStudioView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 14) {
-                Picker("Level", selection: $selectedLevel) {
-                    Text("Easy").tag(1)
-                    Text("Medium").tag(2)
-                    Text("Advanced").tag(3)
-                }
-                .pickerStyle(.segmented)
-
-                CategoryFilterRow(selection: $selectedCategory)
-
-                Button {
-                    if app.isPremiumActivated {
-                        showAmbient.toggle()
-                    } else {
-                        showPaywall.toggle()
-                        HapticsManager.shared.playWarning()
-                    }
-                } label: {
-                    HStack {
-                        Label("Open Ambient scene", systemImage: "sparkles.tv")
-                        if !app.isPremiumActivated {
-                            Spacer()
-                            Image(systemName: "crown.fill").foregroundStyle(.yellow)
+            ZStack {
+                AnimatedGradientBackground(animate: $animateBackground)
+                
+                ScrollView {
+                    VStack(spacing: 18) {
+                        Picker("Level", selection: $selectedLevel) {
+                            Text("Easy").tag(1)
+                            Text("Medium").tag(2)
+                            Text("Advanced").tag(3)
                         }
-                    }
-                    .font(.headline)
-                    .padding(12)
-                    .frame(maxWidth: .infinity)
-                    .background(.mint.opacity(0.2), in: RoundedRectangle(cornerRadius: 14))
-                }
+                        .pickerStyle(.segmented)
+                        .padding(4)
+                        .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 12))
 
-                if filteredPoses.isEmpty {
-                    ContentUnavailableView.search(text: searchText)
-                        .frame(maxHeight: .infinity)
-                } else {
-                    List(filteredPoses) { pose in
-                        NavigationLink {
-                            PoseDetailView(pose: pose)
+                        CategoryFilterRow(selection: $selectedCategory)
+
+                        Button {
+                            if app.isPremiumActivated {
+                                showAmbient.toggle()
+                            } else {
+                                showPaywall.toggle()
+                                HapticsManager.shared.playWarning()
+                            }
                         } label: {
-                            PoseRow(pose: pose)
+                            HStack(spacing: 14) {
+                                Image(systemName: "sparkles.tv")
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Ambient Yoga Realm")
+                                        .font(.headline.bold())
+                                        .foregroundStyle(.white)
+                                    Text("Breathe to the rhythm of ambient light")
+                                        .font(.caption2)
+                                        .foregroundStyle(.white.opacity(0.7))
+                                }
+                                Spacer()
+                                if !app.isPremiumActivated {
+                                    Image(systemName: "crown.fill")
+                                        .font(.caption2.bold())
+                                        .foregroundStyle(.yellow)
+                                        .padding(6)
+                                        .background(.white.opacity(0.12), in: Circle())
+                                } else {
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption.bold())
+                                        .foregroundStyle(.white.opacity(0.5))
+                                }
+                            }
+                            .padding(16)
+                            .background(
+                                LinearGradient(colors: [.indigo, .purple, .teal], startPoint: .topLeading, endPoint: .bottomTrailing),
+                                in: RoundedRectangle(cornerRadius: 20)
+                            )
+                            .shadow(color: .indigo.opacity(0.35), radius: 10, y: 5)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .strokeBorder(Color.white.opacity(0.15), lineWidth: 1)
+                            )
                         }
-                        .listRowBackground(Color.white.opacity(0.04))
+                        .buttonStyle(.tactile)
+
+                        if filteredPoses.isEmpty {
+                            ContentUnavailableView.search(text: searchText)
+                                .padding(.top, 40)
+                        } else {
+                            LazyVStack(spacing: 12) {
+                                ForEach(filteredPoses) { pose in
+                                    NavigationLink {
+                                        PoseDetailView(pose: pose)
+                                    } label: {
+                                        PoseRow(pose: pose)
+                                    }
+                                    .buttonStyle(.tactile)
+                                }
+                            }
+                        }
                     }
-                    .scrollContentBackground(.hidden)
-                    .listStyle(.plain)
+                    .padding()
                 }
             }
-            .padding()
             .navigationTitle("Studio")
             .searchable(text: $searchText, prompt: Text("Search poses"))
+            .onAppear { animateBackground = true }
         }
         .sheet(isPresented: $showAmbient) {
             AmbientSceneView()
@@ -147,23 +182,53 @@ private struct PoseRow: View {
     let pose: YogaPose
 
     var body: some View {
-        HStack {
-            RoundedRectangle(cornerRadius: 8)
+        HStack(spacing: 14) {
+            RoundedRectangle(cornerRadius: 12)
                 .fill(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: 44, height: 44)
-            VStack(alignment: .leading, spacing: 2) {
+                .frame(width: 48, height: 48)
+                .overlay(
+                    Image(systemName: "figure.yoga")
+                        .font(.body)
+                        .foregroundStyle(.white.opacity(0.8))
+                )
+                .shadow(color: pose.gradient.first?.opacity(0.3) ?? .clear, radius: 4)
+            
+            VStack(alignment: .leading, spacing: 4) {
                 Text(pose.name)
-                    .font(.headline)
-                Text(L("%lld sec • %@", pose.holdSeconds, pose.focus))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .font(.headline.bold())
+                    .foregroundStyle(.white)
+                
+                HStack(spacing: 6) {
+                    Text(pose.sanskrit)
+                        .font(.caption2.italic())
+                        .foregroundStyle(.white.opacity(0.55))
+                    Text("•")
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.3))
+                    Text(L("%lld sec", pose.holdSeconds))
+                        .font(.caption2.weight(.bold).monospacedDigit())
+                        .foregroundStyle(.mint)
+                    Text("•")
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.3))
+                    Text(pose.focus)
+                        .font(.caption2)
+                        .foregroundStyle(.white.opacity(0.65))
+                }
             }
             Spacer()
             Image(systemName: pose.category.icon)
                 .font(.caption)
                 .foregroundStyle(pose.category.tint)
-                .padding(6)
-                .background(pose.category.tint.opacity(0.18), in: Circle())
+                .padding(8)
+                .background(pose.category.tint.opacity(0.12), in: Circle())
         }
+        .padding(12)
+        .background(Color.white.opacity(0.04))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
+        )
     }
 }

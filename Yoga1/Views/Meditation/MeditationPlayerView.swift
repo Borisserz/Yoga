@@ -97,33 +97,51 @@ struct MeditationPlayerView: View {
 
             Spacer()
 
-            // Breathing orb with progress ring.
+            // Glowing breathing orb
             ZStack {
+                // Outer glow shadow circle
                 Circle()
                     .fill(
                         RadialGradient(colors: meditation.gradient, center: .center,
-                                       startRadius: 8, endRadius: 150)
+                                       startRadius: 10, endRadius: 130)
                     )
-                    .frame(width: 240, height: 240)
-                    .scaleEffect(pulse ? 1.0 : 0.78)
-                    .shadow(color: meditation.gradient.first?.opacity(0.6) ?? .clear, radius: 30)
-                    .animation(.easeInOut(duration: 5).repeatForever(autoreverses: true), value: pulse)
-
+                    .frame(width: 250, height: 250)
+                    .blur(radius: 20)
+                    .opacity(pulse ? 0.5 : 0.25)
+                    .scaleEffect(pulse ? 1.15 : 0.85)
+                    .animation(.easeInOut(duration: 4.5).repeatForever(autoreverses: true), value: pulse)
+                
+                // Main breathing orb
+                Circle()
+                    .fill(
+                        LinearGradient(colors: meditation.gradient, startPoint: .topLeading, endPoint: .bottomTrailing)
+                    )
+                    .frame(width: 230, height: 230)
+                    .scaleEffect(pulse ? 1.0 : 0.8)
+                    .shadow(color: meditation.gradient.first?.opacity(0.4) ?? .clear, radius: 25)
+                    .animation(.easeInOut(duration: 4.5).repeatForever(autoreverses: true), value: pulse)
+                
+                // Ring tracking the progress
                 Circle()
                     .trim(from: 0, to: CGFloat(min(1, elapsed / max(1, total))))
-                    .stroke(.white.opacity(0.85), style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                    .stroke(
+                        LinearGradient(colors: [.white, .white.opacity(0.5)], startPoint: .top, endPoint: .bottom),
+                        style: StrokeStyle(lineWidth: 6, lineCap: .round)
+                    )
                     .rotationEffect(.degrees(-90))
-                    .frame(width: 268, height: 268)
-
+                    .frame(width: 260, height: 260)
+                    .shadow(color: .white.opacity(0.15), radius: 4)
+                
                 Text(timeString(remaining))
-                    .font(.system(size: 40, weight: .light, design: .rounded).monospacedDigit())
+                    .font(.system(size: 38, weight: .semibold, design: .rounded).monospacedDigit())
                     .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.15), radius: 3)
             }
 
             Text(currentText)
-                .font(.title3.weight(.medium))
+                .font(.headline)
                 .multilineTextAlignment(.center)
-                .foregroundStyle(.white)
+                .foregroundStyle(.white.opacity(0.9))
                 .padding(.horizontal, 28)
                 .frame(minHeight: 90)
                 .id(currentText)
@@ -139,9 +157,11 @@ struct MeditationPlayerView: View {
                 Image(systemName: isRunning ? "pause.fill" : "play.fill")
                     .font(.title)
                     .foregroundStyle(.black)
-                    .frame(width: 76, height: 76)
-                    .background(.white.opacity(0.9), in: Circle())
+                    .frame(width: 72, height: 72)
+                    .background(Color.white.opacity(0.95), in: Circle())
+                    .shadow(color: .black.opacity(0.15), radius: 10, y: 5)
             }
+            .buttonStyle(.tactile)
             .padding(.bottom, 30)
         }
         .padding()
