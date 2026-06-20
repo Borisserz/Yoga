@@ -39,62 +39,70 @@ struct SessionStudioView: View {
                 ScrollView {
                     VStack(spacing: 16) {
                         // Compact Cosmic Yoga 3D Hero Banner with Parallax Tilt
-                        HStack(spacing: 16) {
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text("PRACTICE STUDIO")
-                                    .font(.system(size: 11, weight: .black, design: .rounded))
-                                    .foregroundStyle(.mint)
-                                    .tracking(2.5)
-                                
-                                Text("Space of Flow")
-                                    .font(.system(size: 26, weight: .bold, design: .rounded))
-                                    .foregroundStyle(.white)
-                                    .shadow(color: .black.opacity(0.5), radius: 4, y: 2)
-                                
-                                Text(isRussian ? "Найдите баланс тела и разума" : "Find balance for your body & mind")
-                                    .font(.system(size: 12, weight: .medium, design: .rounded))
-                                    .foregroundStyle(.white.opacity(0.75))
-                            }
-                            
-                            Spacer()
-                            
-                            // Ambient realm entry button inside hero
-                            Button {
-                                if app.isPremiumActivated {
-                                    showAmbient.toggle()
-                                    HapticsManager.shared.playLightImpact()
-                                } else {
-                                    showPaywall.toggle()
-                                    HapticsManager.shared.playWarning()
+                        VStack(alignment: .leading, spacing: 14) {
+                            HStack(alignment: .center, spacing: 12) {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("PRACTICE STUDIO")
+                                        .font(.system(size: 10, weight: .black, design: .rounded))
+                                        .foregroundStyle(.mint)
+                                        .tracking(2.5)
+                                    
+                                    Text("Space of Flow")
+                                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                                        .foregroundStyle(.white)
+                                        .shadow(color: .black.opacity(0.5), radius: 4, y: 2)
+                                        .minimumScaleFactor(0.8)
+                                        .lineLimit(1)
                                 }
-                            } label: {
-                                HStack(spacing: 6) {
-                                    Image(systemName: "sparkles.tv")
-                                        .font(.system(size: 14, weight: .bold))
-                                    Text(app.isPremiumActivated ? "Ambient" : "Unlock")
-                                        .font(.system(size: 14, weight: .bold, design: .rounded))
-                                    if !app.isPremiumActivated {
-                                        Image(systemName: "crown.fill")
-                                            .font(.system(size: 12))
-                                            .foregroundStyle(.yellow)
+                                
+                                Spacer()
+                                
+                                // Ambient realm entry button inside hero
+                                Button {
+                                    if app.isPremiumActivated {
+                                        showAmbient.toggle()
+                                        HapticsManager.shared.playLightImpact()
+                                    } else {
+                                        showPaywall.toggle()
+                                        HapticsManager.shared.playWarning()
                                     }
+                                } label: {
+                                    HStack(spacing: 5) {
+                                        Image(systemName: "sparkles.tv")
+                                            .font(.system(size: 12, weight: .bold))
+                                        Text(app.isPremiumActivated ? "Ambient" : "Unlock")
+                                            .font(.system(size: 12, weight: .bold, design: .rounded))
+                                            .minimumScaleFactor(0.8)
+                                            .lineLimit(1)
+                                        if !app.isPremiumActivated {
+                                            Image(systemName: "crown.fill")
+                                                .font(.system(size: 10))
+                                                .foregroundStyle(.yellow)
+                                        }
+                                    }
+                                    .foregroundStyle(.black)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 8)
+                                    .background(Color.white, in: Capsule())
+                                    .shadow(color: .white.opacity(0.15), radius: 6, y: 2)
                                 }
-                                .foregroundStyle(.black)
-                                .padding(.horizontal, 18)
-                                .padding(.vertical, 11)
-                                .background(Color.white, in: Capsule())
-                                .shadow(color: .white.opacity(0.15), radius: 6, y: 2)
+                                .buttonStyle(.tactile)
                             }
-                            .buttonStyle(.tactile)
+                            
+                            Text(isRussian ? "Найдите баланс тела и разума с помощью ИИ" : "Find balance for your body & mind with AI guidance")
+                                .font(.system(size: 11, weight: .medium, design: .rounded))
+                                .foregroundStyle(.white.opacity(0.7))
+                                .lineLimit(2)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 24)
+                        .padding(.horizontal, 18)
+                        .padding(.vertical, 18)
                         .background(
                             ZStack {
                                 Image("studio_hero")
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
-                                    .frame(height: 120)
+                                    .frame(height: 110)
                                     .clipped()
                                 
                                 LinearGradient(
@@ -315,61 +323,72 @@ private struct PoseRow: View {
     let pose: YogaPose
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 12) {
             // Left: Glowing 3D card for Category Icon
             ZStack {
-                RoundedRectangle(cornerRadius: 18)
+                RoundedRectangle(cornerRadius: 14)
                     .fill(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                    .frame(width: 58, height: 58)
-                    .shadow(color: pose.gradient.first?.opacity(0.45) ?? .clear, radius: 8, y: 4)
+                    .frame(width: 48, height: 48)
+                    .shadow(color: pose.gradient.first?.opacity(0.45) ?? .clear, radius: 6, y: 3)
                 
                 Image("category_\(pose.category.rawValue)")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width: 38, height: 38)
-                    .shadow(color: .black.opacity(0.3), radius: 4)
+                    .frame(width: 30, height: 30)
+                    .shadow(color: .black.opacity(0.3), radius: 3)
             }
             
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(pose.name)
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .font(.system(size: 15, weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
                 
-                HStack(spacing: 6) {
+                HStack(spacing: 4) {
                     Text(pose.sanskrit)
-                        .font(.system(size: 11, weight: .medium, design: .serif).italic())
+                        .font(.system(size: 10, weight: .medium, design: .serif).italic())
                         .foregroundStyle(.white.opacity(0.55))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                    
                     Text("•")
-                        .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.2))
+                        .font(.system(size: 8))
+                        .foregroundStyle(.white.opacity(0.15))
+                    
                     Text(L("%lld sec", pose.holdSeconds))
-                        .font(.system(size: 11, weight: .bold).monospacedDigit())
+                        .font(.system(size: 10, weight: .bold).monospacedDigit())
                         .foregroundStyle(.mint)
+                    
                     Text("•")
-                        .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.2))
+                        .font(.system(size: 8))
+                        .foregroundStyle(.white.opacity(0.15))
+                    
                     Text(pose.focus)
-                        .font(.system(size: 11, weight: .semibold))
+                        .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(.white.opacity(0.65))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                 }
             }
+            
             Spacer()
             
             Image(systemName: "chevron.right")
-                .font(.system(size: 12, weight: .bold))
+                .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(.white.opacity(0.4))
-                .padding(10)
+                .padding(8)
                 .background(Color.white.opacity(0.04), in: Circle())
                 .overlay(
                     Circle().strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
                 )
         }
-        .padding(.vertical, 14)
-        .padding(.horizontal, 18)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 12)
         .background(Color.white.opacity(0.02))
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
         .overlay(
-            RoundedRectangle(cornerRadius: 24)
+            RoundedRectangle(cornerRadius: 20)
                 .strokeBorder(
                     LinearGradient(
                         colors: [.white.opacity(0.12), .clear],
@@ -379,8 +398,8 @@ private struct PoseRow: View {
                     lineWidth: 1.2
                 )
         )
-        .shadow(color: .black.opacity(0.12), radius: 10, y: 5)
-        .card3DTilt(maxTilt: 8.0, cornerRadius: 24.0)
+        .shadow(color: .black.opacity(0.12), radius: 8, y: 4)
+        .card3DTilt(maxTilt: 8.0, cornerRadius: 20.0)
     }
 }
 

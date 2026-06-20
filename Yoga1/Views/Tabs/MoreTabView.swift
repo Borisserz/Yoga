@@ -214,65 +214,73 @@ struct MoreTabView: View {
                         }
                         
                         // --- REDESIGNED STATS 2X2 DASHBOARD GRID ---
-                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
+                        LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                             
                             // Level Stat Card
-                            VStack(alignment: .leading, spacing: 12) {
+                            VStack(alignment: .leading, spacing: 8) {
                                 Text(isRussian ? "Уровень" : "Level Progress")
                                     .font(.system(size: 11, weight: .bold, design: .rounded))
                                     .foregroundStyle(.white.opacity(0.5))
                                 
-                                HStack(spacing: 12) {
+                                HStack(spacing: 8) {
                                     LevelRing(level: app.level, progress: app.levelProgress)
-                                        .frame(width: 44, height: 44)
+                                        .frame(width: 36, height: 36)
                                     
-                                    VStack(alignment: .leading, spacing: 2) {
+                                    VStack(alignment: .leading, spacing: 1) {
                                         Text(L("Lvl %lld", app.level))
-                                            .font(.system(size: 15, weight: .bold, design: .rounded))
+                                            .font(.system(size: 14, weight: .bold, design: .rounded))
                                             .foregroundStyle(.white)
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.8)
                                         Text(L("xp.total", app.totalXP))
-                                            .font(.system(size: 10, weight: .medium).monospacedDigit())
+                                            .font(.system(size: 9, weight: .medium).monospacedDigit())
                                             .foregroundStyle(.white.opacity(0.4))
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.85)
                                     }
                                 }
                             }
-                            .padding(16)
+                            .padding(12)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.white.opacity(0.03))
-                            .cornerRadius(22)
-                            .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+                            .cornerRadius(18)
+                            .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
                             
                             // Total Practice Minutes Card
-                            VStack(alignment: .leading, spacing: 12) {
+                            VStack(alignment: .leading, spacing: 8) {
                                 Text(isRussian ? "Практика" : "Total Practice")
                                     .font(.system(size: 11, weight: .bold, design: .rounded))
                                     .foregroundStyle(.white.opacity(0.5))
                                 
-                                HStack(spacing: 12) {
+                                HStack(spacing: 8) {
                                     ZStack {
                                         Circle()
                                             .fill(Color.indigo.opacity(0.12))
-                                            .frame(width: 44, height: 44)
+                                            .frame(width: 36, height: 36)
                                         Image(systemName: "clock.fill")
-                                            .font(.system(size: 18))
+                                            .font(.system(size: 16))
                                             .foregroundStyle(.indigo)
                                     }
                                     
-                                    VStack(alignment: .leading, spacing: 2) {
+                                    VStack(alignment: .leading, spacing: 1) {
                                         Text(isRussian ? "\(app.completedMinutes) мин" : "\(app.completedMinutes) min")
-                                            .font(.system(size: 15, weight: .bold, design: .rounded).monospacedDigit())
+                                            .font(.system(size: 14, weight: .bold, design: .rounded).monospacedDigit())
                                             .foregroundStyle(.white)
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.8)
                                         Text(isRussian ? "Всего в потоке" : "Time in flow")
-                                            .font(.system(size: 10, weight: .medium))
+                                            .font(.system(size: 9, weight: .medium))
                                             .foregroundStyle(.white.opacity(0.4))
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.8)
                                     }
                                 }
                             }
-                            .padding(16)
+                            .padding(12)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.white.opacity(0.03))
-                            .cornerRadius(22)
-                            .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+                            .cornerRadius(18)
+                            .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 HapticsManager.shared.playLightImpact()
@@ -280,42 +288,46 @@ struct MoreTabView: View {
                             }
                             
                             // Last AI Score Card
-                            VStack(alignment: .leading, spacing: 12) {
+                            VStack(alignment: .leading, spacing: 8) {
                                 Text(isRussian ? "Оценка ИИ" : "Last AI Accuracy")
                                     .font(.system(size: 11, weight: .bold, design: .rounded))
                                     .foregroundStyle(.white.opacity(0.5))
                                 
-                                HStack(spacing: 12) {
+                                HStack(spacing: 8) {
                                     ZStack {
                                         Circle()
                                             .fill(Color.mint.opacity(0.12))
-                                            .frame(width: 44, height: 44)
+                                            .frame(width: 36, height: 36)
                                         Image(systemName: "camera.viewfinder")
-                                            .font(.system(size: 18))
+                                            .font(.system(size: 16))
                                             .foregroundStyle(.mint)
                                     }
                                     
-                                    VStack(alignment: .leading, spacing: 2) {
+                                    VStack(alignment: .leading, spacing: 1) {
                                         if app.lastSessionScore > 0 {
                                             Text(L("score.percent", app.lastSessionScore))
-                                                .font(.system(size: 15, weight: .bold, design: .rounded).monospacedDigit())
+                                                .font(.system(size: 14, weight: .bold, design: .rounded).monospacedDigit())
                                                 .foregroundStyle(.mint)
+                                                .lineLimit(1)
+                                                .minimumScaleFactor(0.8)
                                         } else {
                                             Text("—")
-                                                .font(.system(size: 15, weight: .bold))
+                                                .font(.system(size: 14, weight: .bold))
                                                 .foregroundStyle(.white.opacity(0.3))
                                         }
                                         Text(isRussian ? "Качество асан" : "Technique score")
-                                            .font(.system(size: 10, weight: .medium))
+                                            .font(.system(size: 9, weight: .medium))
                                             .foregroundStyle(.white.opacity(0.4))
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.8)
                                     }
                                 }
                             }
-                            .padding(16)
+                            .padding(12)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.white.opacity(0.03))
-                            .cornerRadius(22)
-                            .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+                            .cornerRadius(18)
+                            .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 HapticsManager.shared.playLightImpact()
@@ -323,43 +335,47 @@ struct MoreTabView: View {
                             }
                             
                             // Daily Streaks Card
-                            VStack(alignment: .leading, spacing: 12) {
+                            VStack(alignment: .leading, spacing: 8) {
                                 Text(isRussian ? "Серия дней" : "Consistency")
                                     .font(.system(size: 11, weight: .bold, design: .rounded))
                                     .foregroundStyle(.white.opacity(0.5))
                                 
-                                HStack(spacing: 12) {
+                                HStack(spacing: 8) {
                                     ZStack {
                                         Circle()
                                             .fill(Color.orange.opacity(0.12))
-                                            .frame(width: 44, height: 44)
+                                            .frame(width: 36, height: 36)
                                         Image(systemName: "flame.fill")
-                                            .font(.system(size: 18))
+                                            .font(.system(size: 16))
                                             .foregroundStyle(.orange)
                                     }
                                     
-                                    VStack(alignment: .leading, spacing: 2) {
+                                    VStack(alignment: .leading, spacing: 1) {
                                         Text(L("%lld days", app.streakDays))
-                                            .font(.system(size: 15, weight: .bold, design: .rounded).monospacedDigit())
+                                            .font(.system(size: 14, weight: .bold, design: .rounded).monospacedDigit())
                                             .foregroundStyle(.white)
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.8)
                                         Text(isRussian ? "Регулярность" : "Current streak")
-                                            .font(.system(size: 10, weight: .medium))
+                                            .font(.system(size: 9, weight: .medium))
                                             .foregroundStyle(.white.opacity(0.4))
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.8)
                                     }
                                 }
                             }
-                            .padding(16)
+                            .padding(12)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.white.opacity(0.03))
-                            .cornerRadius(22)
-                            .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+                            .cornerRadius(18)
+                            .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 HapticsManager.shared.playLightImpact()
                                 showStreakDetail = true
                             }
                         }
-                        .card3DTilt(maxTilt: 6.0, cornerRadius: 22.0)
+                        .card3DTilt(maxTilt: 6.0, cornerRadius: 18.0)
                         
                         // --- LEADERBOARD & COMMUNITY ROW ---
                         NavigationLink {
