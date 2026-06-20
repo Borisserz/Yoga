@@ -21,83 +21,137 @@ struct OnboardingFlowView: View {
 
     private let lastStep = 7
 
+    @State private var animateBackground = false
+
     init() {}
 
     var body: some View {
-        VStack(spacing: 24) {
-            ProgressView(value: Double(step), total: Double(lastStep))
-                .tint(.mint)
-                .padding(.top)
-
-            Spacer()
-
-            Group {
-                switch step {
-                case 0: welcome
-                case 1: levelStep
-                case 2: goalStep
-                case 3: focusStep
-                case 4: cadenceStep
-                case 5: timeStep
-                case 6: lengthStep
-                default: summary
-                }
-            }
-            .frame(maxWidth: .infinity)
-
-            Spacer()
-
-            Button {
-                withAnimation {
-                    if step < lastStep {
-                        step += 1
-                    } else {
-                        app.completeOnboarding(
-                            levelKey: experienceLevel,
-                            goalKey: mainGoal,
-                            focusAreas: Array(focusAreas),
-                            weeklyTarget: weeklyTarget,
-                            preferredTime: preferredTime,
-                            sessionLength: sessionLength
-                        )
+        ZStack {
+            AnimatedGradientBackground(animate: $animateBackground)
+            
+            VStack(spacing: 20) {
+                // Top Progress tracker
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(Color.white.opacity(0.08))
+                        Capsule()
+                            .fill(LinearGradient(colors: [.mint, .teal], startPoint: .leading, endPoint: .trailing))
+                            .frame(width: geo.size.width * CGFloat(step) / CGFloat(lastStep))
+                            .shadow(color: .mint.opacity(0.3), radius: 4)
                     }
                 }
-            } label: {
-                Text(step == lastStep ? "Begin" : "Next")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.mint)
-                    .foregroundStyle(.black)
-                    .clipShape(Capsule())
+                .frame(height: 6)
+                .padding(.top, 20)
+                .padding(.horizontal)
+
+                Spacer()
+
+                // Frosted card container
+                VStack {
+                    Group {
+                        switch step {
+                        case 0: welcome
+                        case 1: levelStep
+                        case 2: goalStep
+                        case 3: focusStep
+                        case 4: cadenceStep
+                        case 5: timeStep
+                        case 6: lengthStep
+                        default: summary
+                        }
+                    }
+                }
+                .padding(24)
+                .background(
+                    RoundedRectangle(cornerRadius: 30)
+                        .fill(.ultraThinMaterial)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 30)
+                        .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+                )
+                .shadow(color: .black.opacity(0.2), radius: 15, y: 10)
+                .padding(.horizontal)
+
+                Spacer()
+
+                // Control Button
+                Button {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                        if step < lastStep {
+                            step += 1
+                        } else {
+                            app.completeOnboarding(
+                                levelKey: experienceLevel,
+                                goalKey: mainGoal,
+                                focusAreas: Array(focusAreas),
+                                weeklyTarget: weeklyTarget,
+                                preferredTime: preferredTime,
+                                sessionLength: sessionLength
+                            )
+                        }
+                    }
+                } label: {
+                    Text(step == lastStep ? "Begin" : "Next")
+                        .font(.headline.bold())
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color.mint, in: Capsule())
+                        .foregroundStyle(.black)
+                        .shadow(color: Color.mint.opacity(0.3), radius: 10, y: 5)
+                }
+                .buttonStyle(.tactile)
+                .padding(.horizontal)
+                .padding(.bottom, 30)
             }
-            .padding(.bottom, 40)
         }
-        .padding()
+        .onAppear {
+            animateBackground = true
+        }
     }
 
     // MARK: - Steps
 
     private var welcome: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "figure.yoga")
-                .font(.system(size: 80))
-                .foregroundStyle(.mint)
+        VStack(spacing: 24) {
+            ZStack {
+                Circle()
+                    .fill(RadialGradient(colors: [.mint.opacity(0.25), .clear], center: .center, startRadius: 0, endRadius: 80))
+                    .frame(width: 160, height: 160)
+                    .blur(radius: 10)
+                
+                Circle()
+                    .stroke(LinearGradient(colors: [.mint, .teal], startPoint: .top, endPoint: .bottom), lineWidth: 2)
+                    .frame(width: 120, height: 120)
+                    .opacity(0.3)
+                
+                Image(systemName: "figure.yoga")
+                    .font(.system(size: 70))
+                    .foregroundStyle(LinearGradient(colors: [.mint, .teal], startPoint: .top, endPoint: .bottom))
+                    .shadow(color: .mint.opacity(0.4), radius: 15)
+            }
+            .padding(.bottom, 10)
+            
             Text("Welcome to Yoga Epic")
-                .font(.largeTitle.bold())
+                .font(.system(.largeTitle, design: .rounded).bold())
+                .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
+            
             Text("Let's tailor a practice that fits you.")
-                .font(.title3)
-                .foregroundStyle(.secondary)
+                .font(.headline)
+                .foregroundStyle(.white.opacity(0.6))
                 .multilineTextAlignment(.center)
         }
     }
 
     private var levelStep: some View {
         StepScaffold(title: "Your level?") {
-            ForEach(levels, id: \.self) { level in
-                SelectRow(title: L(level), selected: experienceLevel == level) {
-                    experienceLevel = level
+            VStack(spacing: 12) {
+                ForEach(levels, id: \.self) { level in
+                    SelectRow(title: L(level), selected: experienceLevel == level) {
+                        experienceLevel = level
+                    }
                 }
             }
         }
@@ -105,9 +159,11 @@ struct OnboardingFlowView: View {
 
     private var goalStep: some View {
         StepScaffold(title: "Main goal?") {
-            ForEach(goals, id: \.self) { goal in
-                SelectRow(title: L(goal), selected: mainGoal == goal) {
-                    mainGoal = goal
+            VStack(spacing: 12) {
+                ForEach(goals, id: \.self) { goal in
+                    SelectRow(title: L(goal), selected: mainGoal == goal) {
+                        mainGoal = goal
+                    }
                 }
             }
         }
@@ -115,7 +171,7 @@ struct OnboardingFlowView: View {
 
     private var focusStep: some View {
         StepScaffold(title: "What needs love?", subtitle: "Pick any — or none.") {
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                 ForEach(focusOptions, id: \.self) { focus in
                     SelectChip(title: L(focus), selected: focusAreas.contains(focus)) {
                         if focusAreas.contains(focus) { focusAreas.remove(focus) }
@@ -128,10 +184,12 @@ struct OnboardingFlowView: View {
 
     private var cadenceStep: some View {
         StepScaffold(title: "How many days a week?") {
-            ForEach(targets, id: \.self) { n in
-                SelectRow(title: n == 7 ? L("Every day") : L("%lld days a week", n),
-                          selected: weeklyTarget == n) {
-                    weeklyTarget = n
+            VStack(spacing: 12) {
+                ForEach(targets, id: \.self) { n in
+                    SelectRow(title: n == 7 ? L("Every day") : L("%lld days a week", n),
+                              selected: weeklyTarget == n) {
+                        weeklyTarget = n
+                    }
                 }
             }
         }
@@ -139,9 +197,11 @@ struct OnboardingFlowView: View {
 
     private var timeStep: some View {
         StepScaffold(title: "When do you practice?") {
-            ForEach(times, id: \.self) { time in
-                SelectRow(title: L(time), selected: preferredTime == time) {
-                    preferredTime = time
+            VStack(spacing: 12) {
+                ForEach(times, id: \.self) { time in
+                    SelectRow(title: L(time), selected: preferredTime == time) {
+                        preferredTime = time
+                    }
                 }
             }
         }
@@ -149,23 +209,35 @@ struct OnboardingFlowView: View {
 
     private var lengthStep: some View {
         StepScaffold(title: "Session length?") {
-            ForEach(lengths, id: \.self) { mins in
-                SelectRow(title: L("%lld min", mins), selected: sessionLength == mins) {
-                    sessionLength = mins
+            VStack(spacing: 12) {
+                ForEach(lengths, id: \.self) { mins in
+                    SelectRow(title: L("%lld min", mins), selected: sessionLength == mins) {
+                        sessionLength = mins
+                    }
                 }
             }
         }
     }
 
     private var summary: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "sparkles")
-                .font(.system(size: 80))
-                .foregroundStyle(.mint)
+        VStack(spacing: 24) {
+            ZStack {
+                Circle()
+                    .fill(RadialGradient(colors: [.mint.opacity(0.25), .clear], center: .center, startRadius: 0, endRadius: 60))
+                    .frame(width: 120, height: 120)
+                    .blur(radius: 8)
+                Image(systemName: "sparkles")
+                    .font(.system(size: 64))
+                    .foregroundStyle(LinearGradient(colors: [.yellow, .mint], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .shadow(color: .mint.opacity(0.4), radius: 15)
+            }
+            
             Text("Your plan is ready!")
-                .font(.largeTitle.bold())
+                .font(.system(.largeTitle, design: .rounded).bold())
+                .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
-            VStack(spacing: 6) {
+            
+            VStack(spacing: 10) {
                 summaryLine("target", L(mainGoal))
                 summaryLine("figure.strengthtraining.traditional", L(experienceLevel))
                 if !focusAreas.isEmpty {
@@ -174,18 +246,26 @@ struct OnboardingFlowView: View {
                 summaryLine("calendar", weeklyTarget == 7 ? L("Every day") : L("%lld days a week", weeklyTarget))
                 summaryLine("clock", L("%lld min", sessionLength))
             }
-            .font(.callout)
-            .foregroundStyle(.secondary)
         }
     }
 
     private func summaryLine(_ icon: String, _ text: String) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon).foregroundStyle(.mint).frame(width: 22)
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .foregroundStyle(.mint)
+                .frame(width: 24)
             Text(text)
+                .font(.subheadline.bold())
+                .foregroundStyle(.white.opacity(0.9))
             Spacer()
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .strokeBorder(Color.white.opacity(0.06), lineWidth: 1)
+        )
     }
 }
 
@@ -203,10 +283,15 @@ private struct StepScaffold<Content: View>: View {
     }
 
     var body: some View {
-        VStack(spacing: 16) {
-            Text(title).font(.largeTitle.bold()).multilineTextAlignment(.center)
+        VStack(spacing: 18) {
+            Text(title)
+                .font(.system(.title2, design: .rounded).bold())
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
             if let subtitle {
-                Text(subtitle).font(.subheadline).foregroundStyle(.secondary)
+                Text(subtitle)
+                    .font(.footnote)
+                    .foregroundStyle(.white.opacity(0.6))
             }
             content
         }
@@ -221,16 +306,28 @@ private struct SelectRow: View {
     var body: some View {
         Button(action: action) {
             HStack {
-                Text(title).font(.headline)
+                Text(title)
+                    .font(.headline.bold())
                 Spacer()
-                if selected { Image(systemName: "checkmark") }
+                if selected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(.black)
+                }
             }
             .frame(maxWidth: .infinity)
-            .padding()
-            .background(selected ? Color.mint : Color.gray.opacity(0.2))
+            .padding(.vertical, 16)
+            .padding(.horizontal, 20)
+            .background(selected ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
+                        in: RoundedRectangle(cornerRadius: 18))
+            .overlay(
+                RoundedRectangle(cornerRadius: 18)
+                    .strokeBorder(selected ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
+            )
+            .shadow(color: selected ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
             .foregroundStyle(selected ? .black : .white)
-            .clipShape(RoundedRectangle(cornerRadius: 15))
         }
+        .buttonStyle(.tactile)
     }
 }
 
@@ -242,12 +339,18 @@ private struct SelectChip: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.subheadline.weight(.semibold))
+                .font(.subheadline.weight(.bold))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(selected ? Color.mint : Color.gray.opacity(0.2))
+                .background(selected ? AnyShapeStyle(Color.mint) : AnyShapeStyle(Color.white.opacity(0.06)),
+                            in: RoundedRectangle(cornerRadius: 18))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18)
+                        .strokeBorder(selected ? Color.mint.opacity(0.3) : Color.white.opacity(0.08), lineWidth: 1)
+                )
+                .shadow(color: selected ? .mint.opacity(0.35) : .clear, radius: 8, y: 4)
                 .foregroundStyle(selected ? .black : .white)
-                .clipShape(RoundedRectangle(cornerRadius: 15))
         }
+        .buttonStyle(.tactile)
     }
 }
