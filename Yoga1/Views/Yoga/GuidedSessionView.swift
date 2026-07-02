@@ -135,7 +135,13 @@ struct GuidedSessionView: View {
                     .rotationEffect(.degrees(-90))
                     .blur(radius: 0.5)
                 
-                VStack(spacing: 8) {
+                VStack(spacing: 10) {
+                    AnimatedPoseView(pose: pose, size: 76)
+                        .clipShape(Circle())
+                        .overlay(Circle().strokeBorder(Color.white.opacity(0.2), lineWidth: 1.5))
+                        .shadow(color: pose.gradient.first?.opacity(0.35) ?? .clear, radius: 8)
+                        .padding(.bottom, 2)
+                    
                     Text(pose.name)
                         .font(.system(size: 18, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)

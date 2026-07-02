@@ -204,6 +204,12 @@ private struct TodayPlanCard3D: View {
                                 Circle()
                                     .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
                             )
+                        
+                        AnimatedPoseView(pose: pose, size: 36)
+                            .clipShape(Circle())
+                            .overlay(Circle().strokeBorder(Color.white.opacity(0.15), lineWidth: 1))
+                            .shadow(color: pose.gradient.first?.opacity(0.3) ?? .clear, radius: 4)
+                        
                         Text(pose.name)
                             .font(.subheadline.weight(.semibold))
                         Spacer()

@@ -25,22 +25,6 @@ internal struct Card3DTiltModifier: ViewModifier {
                 anchor: .center,
                 perspective: 0.5
             )
-            // Specular gloss reflection overlay shifting with drag translation
-            .overlay(
-                GeometryReader { geo in
-                    LinearGradient(
-                        colors: [.clear, .white.opacity(0.18), .clear],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .blendMode(.plusLighter)
-                    .offset(x: dragOffset.width * 1.5, y: dragOffset.height * 1.5)
-                    .mask(
-                        RoundedRectangle(cornerRadius: cornerRadius)
-                    )
-                }
-                .allowsHitTesting(false)
-            )
             // Touch gesture to track displacement without blocking scrolling
             .simultaneousGesture(
                 DragGesture(minimumDistance: 20)

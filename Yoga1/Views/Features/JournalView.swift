@@ -9,6 +9,7 @@ struct JournalView: View {
     @State private var editorPulse = false
     @State private var timelineNodePulse = false
     @State private var isChartAnimated = false
+    @State private var selectedPose: YogaPose? = nil
     
     private var isRussian: Bool {
         Locale.current.language.languageCode?.identifier == "ru"
@@ -153,43 +154,49 @@ struct JournalView: View {
                                 ForEach(YogaLibrary.poses) { pose in
                                     let isMastered = masteredPoses.contains(pose.key)
                                     
-                                    VStack(spacing: 6) {
-                                        ZStack {
-                                            Circle()
-                                                .fill(
-                                                    isMastered
-                                                    ? AnyShapeStyle(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
-                                                    : AnyShapeStyle(Color.white.opacity(0.03))
-                                                )
-                                                .frame(width: 46, height: 46)
-                                                .shadow(color: isMastered ? pose.gradient.first?.opacity(0.3) ?? .clear : .clear, radius: 4, y: 2)
-                                                .overlay(
-                                                    Circle()
-                                                        .strokeBorder(isMastered ? Color.white.opacity(0.15) : Color.white.opacity(0.06), lineWidth: 1)
-                                                )
-                                            
-                                            if isMastered {
-                                                Image(systemName: "figure.yoga")
-                                                    .font(.system(size: 18))
-                                                    .foregroundStyle(.white)
-                                                    .shadow(color: .black.opacity(0.2), radius: 2)
-                                            } else {
-                                                Image(systemName: "lock.fill")
-                                                    .font(.system(size: 12))
-                                                    .foregroundStyle(.white.opacity(0.15))
+                                    Button {
+                                        HapticsManager.shared.playLightImpact()
+                                        selectedPose = pose
+                                    } label: {
+                                        VStack(spacing: 6) {
+                                            ZStack {
+                                                Circle()
+                                                    .fill(
+                                                        isMastered
+                                                        ? AnyShapeStyle(LinearGradient(colors: pose.gradient, startPoint: .topLeading, endPoint: .bottomTrailing))
+                                                        : AnyShapeStyle(Color.white.opacity(0.03))
+                                                    )
+                                                    .frame(width: 46, height: 46)
+                                                    .shadow(color: isMastered ? pose.gradient.first?.opacity(0.3) ?? .clear : .clear, radius: 4, y: 2)
+                                                    .overlay(
+                                                        Circle()
+                                                            .strokeBorder(isMastered ? Color.white.opacity(0.15) : Color.white.opacity(0.06), lineWidth: 1)
+                                                    )
+                                                
+                                                if isMastered {
+                                                    Image(systemName: "figure.yoga")
+                                                        .font(.system(size: 18))
+                                                        .foregroundStyle(.white)
+                                                        .shadow(color: .black.opacity(0.2), radius: 2)
+                                                } else {
+                                                    Image(systemName: "lock.fill")
+                                                        .font(.system(size: 12))
+                                                        .foregroundStyle(.white.opacity(0.15))
+                                                }
                                             }
+                                            
+                                            Text(pose.name)
+                                                .font(.system(size: 9, weight: .bold, design: .rounded))
+                                                .foregroundStyle(isMastered ? .white : .white.opacity(0.35))
+                                                .lineLimit(1)
+                                                .multilineTextAlignment(.center)
                                         }
-                                        
-                                        Text(pose.name)
-                                            .font(.system(size: 9, weight: .bold, design: .rounded))
-                                            .foregroundStyle(isMastered ? .white : .white.opacity(0.35))
-                                            .lineLimit(1)
-                                            .multilineTextAlignment(.center)
+                                        .padding(.vertical, 6)
+                                        .padding(.horizontal, 4)
+                                        .background(isMastered ? Color.white.opacity(0.01) : Color.clear)
+                                        .cornerRadius(12)
                                     }
-                                    .padding(.vertical, 6)
-                                    .padding(.horizontal, 4)
-                                    .background(isMastered ? Color.white.opacity(0.01) : Color.clear)
-                                    .cornerRadius(12)
+                                    .buttonStyle(.plain)
                                 }
                             }
                         }
@@ -303,6 +310,9 @@ struct JournalView: View {
                 }
             }
             .navigationTitle("Progress")
+            .sheet(item: $selectedPose) { pose in
+                AIPoseGuideView(pose: pose)
+            }
             .onAppear {
                 animateBackground = true
                 withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
